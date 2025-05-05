@@ -1,8 +1,7 @@
 "use client";
-
 import useSWR from "swr";
 import { useState, ChangeEvent, FormEvent } from "react";
-import { Post } from "../page";
+import { Post } from "@prisma/client";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

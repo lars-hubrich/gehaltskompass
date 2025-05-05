@@ -4,7 +4,7 @@
 !.idea/prettier.xml
 *.db
 *.db-journal
-generated
+app/generated
 
 # dependencies
 /node_modules

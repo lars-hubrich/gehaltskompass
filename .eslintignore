@@ -1,0 +1,4 @@
+app/generated/**
+.next/
+dist/
+build/
