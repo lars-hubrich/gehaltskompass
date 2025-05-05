@@ -9,6 +9,7 @@ export interface Post {
   updatedAt: string;
 }
 
+export const runtime = "edge";
 export default async function Page() {
   const res = await fetch(`/api/posts`, {
     cache: "no-store",
