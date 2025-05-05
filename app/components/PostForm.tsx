@@ -1,7 +1,8 @@
 "use client";
+
 import { useState, FormEvent } from "react";
 import { mutate } from "swr";
-import { Post } from "@prisma/client";
+import { Post } from "../page";
 
 export default function PostForm() {
   const [title, setTitle] = useState<string>("");
