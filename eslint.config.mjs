@@ -5,6 +5,14 @@ const compat = new FlatCompat({
 });
 
 const config = [
+  {
+    ignores: [
+      ".next/**", // Next.js output
+      "dist/**", // your dist folder
+      "build/**", // any other build folder
+      "app/generated/**", // prisma generated files
+    ],
+  },
   ...compat.config({
     extends: ["next/core-web-vitals", "next/typescript", "prettier"],
   }),
