@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "lightningcss": "^1.29.3",
     "next": "15.3.1",
     "next-auth": "^4.24.11",
     "pg": "^8.15.6",
