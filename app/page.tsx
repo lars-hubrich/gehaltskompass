@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
@@ -11,14 +12,33 @@ export interface Post {
   updatedAt: string;
 }
 
-export default async function Page() {
-  const res = await fetch(
-    `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/posts`,
-    {
-      cache: "no-store",
-    },
-  );
-  const posts: Post[] = await res.json();
+export default function Page() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch(
+          `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/posts`,
+          {
+            cache: "no-store",
+          },
+        );
+        const data = await res.json();
+        setPosts(data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // noinspection JSIgnoredPromiseFromCall
+    fetchPosts();
+  }, []);
+
+  if (loading) return <div>Lädt...</div>;
 
   return (
     <main className="container mx-auto p-4">
