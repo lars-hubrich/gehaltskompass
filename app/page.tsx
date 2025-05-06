@@ -9,11 +9,13 @@ export interface Post {
   updatedAt: string;
 }
 
-export const runtime = "edge";
 export default async function Page() {
-  const res = await fetch(`/api/posts`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${process.env.VERCEL_URL || "http://localhost:3000"}/api/posts`,
+    {
+      cache: "no-store",
+    },
+  );
   const posts: Post[] = await res.json();
 
   return (
