@@ -1,4 +1,4 @@
-name: Lint, Format & Testing
+name: Linting, Formatting & Testing
 
 on: [ push ]
 
@@ -25,6 +25,7 @@ jobs:
         run: npm run format:check
 
   unit:
+    needs: linting_and_formatting
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +44,7 @@ jobs:
         run: npm run test
 
   e2e:
+    needs: unit
     name: E2E Tests
     runs-on: ubuntu-latest
     steps:
@@ -59,8 +61,10 @@ jobs:
 
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6.9.0
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         with:
           start: npm run dev
           wait-on: http://localhost:3000
           wait-on-timeout: 60
-          command: npm run cypress:run
+          command: npm run e2e:run
