@@ -1,3 +1,5 @@
+"use client";
+import { signIn } from "next-auth/react";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
 
@@ -23,6 +25,15 @@ export default async function Page() {
       <h1 className="text-2xl font-bold mb-4">CRUD-Beispiel</h1>
       <PostForm />
       <PostList initialPosts={posts} />
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-4xl mb-6">Willkommen</h1>
+        <button
+          onClick={() => signIn("google")}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          Mit Google einloggen
+        </button>
+      </div>
     </main>
   );
 }

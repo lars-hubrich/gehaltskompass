@@ -7,10 +7,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// testing
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
   content   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model user {
+  id       String   @id @default(cuid())
+  email    String   @unique
+  name     String?
+  salaries salary[]
+}
+
+model salary {
+  id    String @id
+  month String // Format "YYYY-MM"
+
+  // Relation zum User
+  user_id String
+  user    user   @relation(fields: [user_id], references: [id])
+
+  // Einkommenspositionen
+  incomes income[]
+
+  // Brutto-Bestandteile
+  brutto_tax Float
+  brutto_av  Float
+  brutto_pv  Float
+  brutto_rv  Float
+  brutto_kv  Float
+
+  // Steuer-Abzug
+  deduction_tax_income Float
+  deduction_tax_church Int
+
+  // Sozialversicherungs-Abzug
+  social_av Float
+  social_pv Float
+  social_rv Float
+  social_kv Float
+
+  // Auszahlung
+  payout_netto    Float
+  payout_transfer Float
+  payout_vwl      Float
+  payout_other    Float
+
+  // Metadaten zur Abrechnung
+  sap_number Int
+  svn_number Int
+
+  // Zeitstempel
+  updated DateTime
+  created DateTime
+
+  @@map("salaries")
+}
+
+model income {
+  id         Int    @id @default(autoincrement())
+  salary_id  String
+  salary     salary @relation(fields: [salary_id], references: [id])
+  name       String
+  identifier String
+  value      Float
+
+  @@map("income")
 }
