@@ -53,6 +53,12 @@ export default function Page() {
         >
           Mit Google einloggen
         </button>
+        <button
+          onClick={() => signIn("github")}
+          className="px-4 py-2 bg-gray-800 text-white rounded"
+        >
+          Mit GitHub einloggen
+        </button>
       </div>
     </main>
   );
