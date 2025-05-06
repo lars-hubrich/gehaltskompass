@@ -2,6 +2,8 @@
 .idea
 !.idea/jsLinters/eslint.xml
 !.idea/prettier.xml
+*.db
+*.db-journal
 
 # dependencies
 /node_modules
@@ -35,9 +37,6 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
-
-# vercel
-.vercel
 
 # typescript
 *.tsbuildinfo
