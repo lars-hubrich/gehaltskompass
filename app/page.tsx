@@ -11,7 +11,7 @@ export interface Post {
 
 export default async function Page() {
   const res = await fetch(
-    `${process.env.VERCEL_URL || "http://localhost:3000"}/api/posts`,
+    `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/posts`,
     {
       cache: "no-store",
     },
