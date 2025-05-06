@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { SessionProvider } from "next-auth/react";
+import AuthProvider from "./providers/AuthProvider";
 
 export const metadata: Metadata = {
   title: "GehaltsKompass",
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <AuthProvider>{children}</AuthProvider>
         <Analytics />
         <SpeedInsights />
       </body>
