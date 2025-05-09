@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   callbacks: {
     async session({ session, token }) {
+      console.log("Session Callback:", { session, token });
       session.user!.email = token.sub!;
       return session;
     },
