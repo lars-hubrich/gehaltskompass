@@ -47,6 +47,8 @@ jobs:
     needs: linting_and_formatting
     name: E2E Tests
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -67,8 +69,6 @@ jobs:
 
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6.9.0
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         with:
           start: npm run dev
           wait-on: http://localhost:3000
