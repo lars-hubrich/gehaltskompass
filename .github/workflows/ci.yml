@@ -59,12 +59,18 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Run Prisma Generate
+        run: npx prisma generate
+
+      - name: Run Prisma DB Push
+        run: npx prisma db push
+
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6.9.0
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         with:
-          start: npx prisma generate; npx prisma db push; npm run dev
+          start: npm run dev
           wait-on: http://localhost:3000
           wait-on-timeout: 60
           command: npm run e2e:run
