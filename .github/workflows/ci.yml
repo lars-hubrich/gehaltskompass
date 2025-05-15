@@ -1,0 +1,76 @@
+name: Linting, Formatting & Testing
+
+on: [ push ]
+
+jobs:
+  linting_and_formatting:
+    name: Linting & Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run formatting
+        run: npm run format:check
+
+  unit:
+    needs: linting_and_formatting
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm run test
+
+  e2e:
+    needs: linting_and_formatting
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Prisma Generate
+        run: npx prisma generate
+
+      - name: Run Prisma DB Push
+        run: npx prisma db push
+
+      - name: Run Cypress E2E Tests
+        uses: cypress-io/github-action@v6.9.0
+        with:
+          start: npm run dev
+          wait-on: http://localhost:3000
+          wait-on-timeout: 60
+          command: npm run e2e:run

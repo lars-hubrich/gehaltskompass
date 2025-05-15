@@ -11,3 +11,9 @@ npx prisma generate
 npx prisma db push
 npm run dev
 ```
+
+On APS set Proxy before hand. Only use local sqlite db.
+
+```bash
+ $env:HTTPS_PROXY="http://sia-lb.telekom.de:8080"
+```
