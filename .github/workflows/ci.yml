@@ -63,7 +63,7 @@ jobs:
         run: npx prisma generate
 
       - name: Run Prisma DB Push
-        run: npx prisma db push
+        run: npx prisma db push --accept-data-loss
 
       - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6.9.0
