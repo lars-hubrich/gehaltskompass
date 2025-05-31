@@ -36,7 +36,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const statement = await prisma.Statements.findUnique({
+    const statement = await prisma.statement.findUnique({
       where: { id },
       include: { incomes: true },
     });
@@ -61,7 +61,7 @@ export async function PATCH(
     const { id } = await params;
     const body: StatementUpdateBody = await request.json();
 
-    const exists = await prisma.Statements.findUnique({ where: { id } });
+    const exists = await prisma.statement.findUnique({ where: { id } });
     if (!exists) {
       return NextResponse.json({ error: "Not Found" }, { status: 404 });
     }
@@ -113,7 +113,7 @@ export async function PATCH(
       };
     }
 
-    const updated = await prisma.Statements.update({
+    const updated = await prisma.statement.update({
       where: { id },
       data: updateData,
       include: { incomes: true },
@@ -135,12 +135,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const exists = await prisma.Statements.findUnique({ where: { id } });
+    const exists = await prisma.statement.findUnique({ where: { id } });
     if (!exists) {
       return NextResponse.json({ error: "Not Found" }, { status: 404 });
     }
 
-    await prisma.Statements.delete({ where: { id } });
+    await prisma.statement.delete({ where: { id } });
     return new Response(null, { status: 204 });
   } catch (error: any) {
     console.error("DELETE /api/statements/[id] error:", error);

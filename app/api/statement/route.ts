@@ -34,7 +34,7 @@ type StatementCreateBody = {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
   try {
-    const statements = await prisma.Statements.findMany({
+    const statements = await prisma.statement.findMany({
       include: { incomes: true },
       orderBy: { year: "desc", month: "desc" },
     });
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
   try {
     const body: StatementCreateBody = await request.json();
 
-    const newStatement = await prisma.Statements.create({
+    const newStatement = await prisma.statement.create({
       data: {
         id: body.id,
         month: body.month,
