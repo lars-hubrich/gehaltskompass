@@ -39,8 +39,12 @@ export async function GET(_request: NextRequest) {
       orderBy: { year: "desc", month: "desc" },
     });
     return NextResponse.json(statements);
-  } catch (error: any) {
-    console.error("GET /api/statements error:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("GET /api/statements error:", error.message);
+    } else {
+      console.error("GET /api/statements error (unknown):", error);
+    }
     return NextResponse.json(
       { error: "Could not fetch statements." },
       { status: 500 },
@@ -89,8 +93,12 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(newStatement, { status: 201 });
-  } catch (error: any) {
-    console.error("POST /api/statements error:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("POST /api/statements error:", error.message);
+    } else {
+      console.error("POST /api/statements error (unknown):", error);
+    }
     return NextResponse.json(
       { error: "Could not create statement." },
       { status: 500 },

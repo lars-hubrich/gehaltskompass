@@ -44,7 +44,7 @@ export async function GET(
       return NextResponse.json({ error: "Not Found" }, { status: 404 });
     }
     return NextResponse.json(statement);
-  } catch (error: any) {
+  } catch (error) {
     console.error("GET /api/statements/[id] error:", error);
     return NextResponse.json(
       { error: "Could not fetch statement." },
@@ -66,7 +66,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Not Found" }, { status: 404 });
     }
 
-    const updateData: any = {
+    const updateData = {
       ...(body.month !== undefined && { month: body.month }),
       ...(body.year !== undefined && { year: body.year }),
       ...(body.brutto_tax !== undefined && { brutto_tax: body.brutto_tax }),
@@ -100,18 +100,19 @@ export async function PATCH(
       ...(body.payout_other !== undefined && {
         payout_other: body.payout_other,
       }),
+      ...(body.incomes && {
+        incomes: {
+          deleteMany: {},
+          create: body.incomes.map((inc) => {
+            return {
+              name: inc.name,
+              identifier: inc.identifier,
+              value: inc.value,
+            };
+          }),
+        },
+      }),
     };
-
-    if (body.incomes) {
-      updateData.incomes = {
-        deleteMany: {},
-        create: body.incomes.map((inc) => ({
-          name: inc.name,
-          identifier: inc.identifier,
-          value: inc.value,
-        })),
-      };
-    }
 
     const updated = await prisma.statement.update({
       where: { id },
@@ -120,7 +121,7 @@ export async function PATCH(
     });
 
     return NextResponse.json(updated);
-  } catch (error: any) {
+  } catch (error) {
     console.error("PATCH /api/statements/[id] error:", error);
     return NextResponse.json(
       { error: "Could not update statement." },
@@ -142,7 +143,7 @@ export async function DELETE(
 
     await prisma.statement.delete({ where: { id } });
     return new Response(null, { status: 204 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("DELETE /api/statements/[id] error:", error);
     return NextResponse.json(
       { error: "Could not delete statement." },
