@@ -17,7 +17,7 @@
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^22.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.4",
-    "@prisma/client": "^6.7.0",
+    "@prisma/client": "^6.8.2",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "lightningcss": "^1.29.3",
