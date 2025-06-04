@@ -58,7 +58,12 @@ export default function LandingPage() {
         {/* 🧭 Navbar */}
         <AppBar position="static" color="transparent" elevation={0}>
           <Toolbar>
-            <Image src="/images/logo.png" alt="Logo" width={40} height={40} />
+            <Image
+              src="/images/logo_transparent.png"
+              alt="Logo"
+              width={200}
+              height={50}
+            />
             {/*<Typography variant="h6" sx={{ ml: 1 }}>*/}
             {/*  Gehaltskompass*/}
             {/*</Typography>*/}
