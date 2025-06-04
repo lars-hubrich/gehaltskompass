@@ -31,7 +31,7 @@ const bulletPoints = [
   "Sicher und privat - deine Daten gehören dir",
 ];
 
-// 🌙 Dark mode-freundliches Theme mit Primärfarbe
+// Dark mode theme
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -55,7 +55,7 @@ export default function LandingPage() {
           background: "linear-gradient(to right, #0f2027, #203a43, #2c5364)",
         }}
       >
-        {/* 🧭 Navbar */}
+        {/* Navbar */}
         <AppBar position="static" color="transparent" elevation={0}>
           <Toolbar>
             <Image
@@ -67,7 +67,7 @@ export default function LandingPage() {
           </Toolbar>
         </AppBar>
 
-        {/* 🔐 Login Area */}
+        {/* Login Area */}
         <Container maxWidth="md" sx={{ mt: 10 }}>
           <Paper elevation={3} sx={{ p: 5, borderRadius: 4 }}>
             <Grid
