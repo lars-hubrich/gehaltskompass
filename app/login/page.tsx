@@ -21,9 +21,9 @@ import {
   Google as GoogleIcon,
   GitHub as GitHubIcon,
   CheckCircleOutline,
-  AccountBalanceWallet as LogoIcon,
 } from "@mui/icons-material";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 const bulletPoints = [
   "Sofortige Analyse deiner Gehaltsabrechnungen",
@@ -58,10 +58,10 @@ export default function LandingPage() {
         {/* 🧭 Navbar */}
         <AppBar position="static" color="transparent" elevation={0}>
           <Toolbar>
-            <LogoIcon sx={{ mr: 1 }} />
-            <Typography variant="h6" component="div">
-              Gehaltskompass
-            </Typography>
+            <Image src="/images/logo.png" alt="Logo" width={40} height={40} />
+            {/*<Typography variant="h6" sx={{ ml: 1 }}>*/}
+            {/*  Gehaltskompass*/}
+            {/*</Typography>*/}
           </Toolbar>
         </AppBar>
 
@@ -76,7 +76,7 @@ export default function LandingPage() {
             >
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h3" gutterBottom>
-                  Gehaltskompass
+                  Analysiere deine Gehaltsabrechnung!
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 2 }}>
                   Erhalte Einblick in deine Gehaltsabrechnungen mit
