@@ -62,11 +62,8 @@ export default function LandingPage() {
               src="/images/logo_transparent.png"
               alt="Logo"
               width={200}
-              height={50}
+              height={200}
             />
-            {/*<Typography variant="h6" sx={{ ml: 1 }}>*/}
-            {/*  Gehaltskompass*/}
-            {/*</Typography>*/}
           </Toolbar>
         </AppBar>
 
