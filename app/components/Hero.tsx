@@ -108,7 +108,7 @@ export default function Hero() {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert("Sign in with Facebook")}
+              onClick={() => alert("Sign in with Github")}
               startIcon={<GithubIcon />}
             >
               Mit Github Anmelden
