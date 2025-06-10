@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Gehaltskompass",
-  description: "Unsere Website ermöglicht es dir, deine Gehaltsabrechnungen hochzuladen und zu speichern, um dir aufbereitete Graphen und Statistiken zu bieten. Mit KI-gestützten Antworten erhältst du wertvolle Informationen zu all deinen Gehaltsfragen, und unsere benutzerfreundliche Oberfläche sorgt für eine nahtlose Erfahrung auf allen Geräten.",
+  description:
+    "Unsere Website ermöglicht es dir, deine Gehaltsabrechnungen hochzuladen und zu speichern, um dir aufbereitete Graphen und Statistiken zu bieten. Mit KI-gestützten Antworten erhältst du wertvolle Informationen zu all deinen Gehaltsfragen, und unsere benutzerfreundliche Oberfläche sorgt für eine nahtlose Erfahrung auf allen Geräten.",
 };
 
 export default function RootLayout({
