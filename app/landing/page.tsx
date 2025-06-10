@@ -1,0 +1,27 @@
+"use client";
+
+import * as React from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import AppTheme from "@/app/shared-theme/AppTheme";
+import AppAppBar from "@/app/components/AppAppBar";
+import Hero from "@/app/components/Hero";
+import Highlights from "@/app/components/Highlights";
+import Features from "@/app/components/Features";
+
+export default function LandingPage(props: { disableCustomTheme?: boolean }) {
+  return (
+    <AppTheme {...props}>
+      <CssBaseline enableColorScheme />
+
+      <AppAppBar />
+      <Hero />
+      <div>
+        <Features />
+        <Divider />
+        <Highlights />
+        <Divider />
+      </div>
+    </AppTheme>
+  );
+}

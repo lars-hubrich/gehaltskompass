@@ -45,7 +45,7 @@ const darkTheme = createTheme({
   },
 });
 
-export default function LandingPage() {
+export default function LoginPage() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
