@@ -52,12 +52,22 @@ export default function AppAppBar() {
           <Box
             sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
           >
-            <GehaltskompassIcon />
+            <a
+              href="#top"
+              style={{ display: "inline-flex", alignItems: "center" }}
+            >
+              <GehaltskompassIcon />
+            </a>
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <Button variant="text" color="info" size="small">
+              <Button href="#features" variant="text" color="info" size="small">
                 Features
               </Button>
-              <Button variant="text" color="info" size="small">
+              <Button
+                href="#highlights"
+                variant="text"
+                color="info"
+                size="small"
+              >
                 Highlights
               </Button>
             </Box>
@@ -97,9 +107,20 @@ export default function AppAppBar() {
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
-
-                <MenuItem>Features</MenuItem>
-                <MenuItem>Highlights</MenuItem>
+                <MenuItem
+                  component="a"
+                  href="#features"
+                  onClick={toggleDrawer(false)}
+                >
+                  Features
+                </MenuItem>
+                <MenuItem
+                  component="a"
+                  href="#highlights"
+                  onClick={toggleDrawer(false)}
+                >
+                  Highlights
+                </MenuItem>
               </Box>
             </Drawer>
           </Box>

@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
 import DevicesRoundedIcon from "@mui/icons-material/DevicesRounded";
-import EdgesensorHighRoundedIcon from "@mui/icons-material/EdgesensorHighRounded";
+import InsightsIcon from "@mui/icons-material/Insights";
 import ViewQuiltRoundedIcon from "@mui/icons-material/ViewQuiltRounded";
 
 const items = [
@@ -16,25 +16,37 @@ const items = [
     icon: <ViewQuiltRoundedIcon />,
     title: "Dashboard",
     description:
-      "This item could provide a snapshot of the most important metrics or data points related to the product.",
-    imageLight: `url("${process.env.TEMPLATE_IMAGE_URL || "https://mui.com"}/static/images/templates/templates-images/dash-light.png")`,
-    imageDark: `url("${process.env.TEMPLATE_IMAGE_URL || "https://mui.com"}/static/images/templates/templates-images/dash-dark.png")`,
+      "Behalte deine Gehaltsentwicklung sowie Steuer- und Sozialabgaben im Blick",
+    imageLight: `url("${
+      process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
+    }/static/images/templates/templates-images/dash-light.png")`,
+    imageDark: `url("${
+      process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
+    }/static/images/templates/templates-images/dash-dark.png")`,
   },
   {
-    icon: <EdgesensorHighRoundedIcon />,
-    title: "Mobile integration",
+    icon: <InsightsIcon />,
+    title: "KI Insights",
     description:
-      "This item could provide information about the mobile app version of the product.",
-    imageLight: `url("${process.env.TEMPLATE_IMAGE_URL || "https://mui.com"}/static/images/templates/templates-images/mobile-light.png")`,
-    imageDark: `url("${process.env.TEMPLATE_IMAGE_URL || "https://mui.com"}/static/images/templates/templates-images/mobile-dark.png")`,
+      "Stelle Fragen zu deiner Gehaltsabrechung und erhalte KI-gestützte Einblicke.",
+    imageLight: `url("${
+      process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
+    }/static/images/templates/templates-images/mobile-light.png")`,
+    imageDark: `url("${
+      process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
+    }/static/images/templates/templates-images/mobile-dark.png")`,
   },
   {
     icon: <DevicesRoundedIcon />,
-    title: "Available on all platforms",
+    title: "Plattformübergreifend",
     description:
-      "This item could let users know the product is available on all platforms, such as web, mobile, and desktop.",
-    imageLight: `url("${process.env.TEMPLATE_IMAGE_URL || "https://mui.com"}/static/images/templates/templates-images/devices-light.png")`,
-    imageDark: `url("${process.env.TEMPLATE_IMAGE_URL || "https://mui.com"}/static/images/templates/templates-images/devices-dark.png")`,
+      "Greife im Browser auf Tablet, Desktop oder Smartphone auf deine Daten zu.",
+    imageLight: `url("${
+      process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
+    }/static/images/templates/templates-images/devices-light.png")`,
+    imageDark: `url("${
+      process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
+    }/static/images/templates/templates-images/devices-dark.png")`,
   },
 ];
 
@@ -144,6 +156,7 @@ export default function Features() {
 
   return (
     <Container id="features" sx={{ py: { xs: 8, sm: 16 } }}>
+      {/* Kopfbereich */}
       <Box sx={{ width: { sm: "100%", md: "60%" } }}>
         <Typography
           component="h2"
@@ -151,17 +164,22 @@ export default function Features() {
           gutterBottom
           sx={{ color: "text.primary" }}
         >
-          Product features
+          Features
         </Typography>
         <Typography
           variant="body1"
           sx={{ color: "text.secondary", mb: { xs: 2, sm: 4 } }}
         >
-          Provide a brief overview of the key features of the product. For
-          example, you could list the number of features, their types or
-          benefits, and add-ons.
+          Unsere Website ermöglicht es dir, deine Gehaltsabrechnungen
+          hochzuladen und zu speichern, um dir aufbereitete Graphen und
+          Statistiken zu bieten. Mit KI-gestützten Antworten erhältst du
+          wertvolle Informationen zu all deinen Gehaltsfragen, und unsere
+          benutzerfreundliche Oberfläche sorgt für eine nahtlose Erfahrung auf
+          allen Geräten.
         </Typography>
       </Box>
+
+      {/* Desktop-/Tablet-Layout */}
       <Box
         sx={{
           display: "flex",
@@ -169,6 +187,7 @@ export default function Features() {
           gap: 2,
         }}
       >
+        {/* linke Spalte mit Buttons (nur ≥ sm) */}
         <div>
           <Box
             sx={{
@@ -216,19 +235,22 @@ export default function Features() {
                   ]}
                 >
                   {icon}
-
                   <Typography variant="h6">{title}</Typography>
                   <Typography variant="body2">{description}</Typography>
                 </Box>
               </Box>
             ))}
           </Box>
+
+          {/* Mobile-Layout */}
           <MobileLayout
             selectedItemIndex={selectedItemIndex}
             handleItemClick={handleItemClick}
             selectedFeature={selectedFeature}
           />
         </div>
+
+        {/* rechte Spalte mit Screenshot */}
         <Box
           sx={{
             display: { xs: "none", sm: "flex" },

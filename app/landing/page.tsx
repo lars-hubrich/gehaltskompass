@@ -12,13 +12,17 @@ export default function LandingPage(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-
+      <div id="top" />
       <AppAppBar />
       <Hero />
       <div>
-        <Features />
+        <div id="features">
+          <Features />
+        </div>
         <Divider />
-        <Highlights />
+        <div id="highlights">
+          <Highlights />
+        </div>
         <Divider />
       </div>
     </AppTheme>
