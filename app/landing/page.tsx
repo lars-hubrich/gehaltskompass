@@ -8,9 +8,9 @@ import Hero from "@/app/components/Hero";
 import Highlights from "@/app/components/Highlights";
 import Features from "@/app/components/Features";
 
-export default function LandingPage(props: { disableCustomTheme?: boolean }) {
+export default function LandingPage() {
   return (
-    <AppTheme {...props}>
+    <AppTheme>
       <CssBaseline enableColorScheme />
       <div id="top" />
       <AppAppBar />
