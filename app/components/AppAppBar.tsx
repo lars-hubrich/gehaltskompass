@@ -62,14 +62,6 @@ export default function AppAppBar() {
               <Button href="#features" variant="text" color="info" size="small">
                 Features
               </Button>
-              <Button
-                href="#highlights"
-                variant="text"
-                color="info"
-                size="small"
-              >
-                Highlights
-              </Button>
             </Box>
           </Box>
           <Box
@@ -113,13 +105,6 @@ export default function AppAppBar() {
                   onClick={toggleDrawer(false)}
                 >
                   Features
-                </MenuItem>
-                <MenuItem
-                  component="a"
-                  href="#highlights"
-                  onClick={toggleDrawer(false)}
-                >
-                  Highlights
                 </MenuItem>
               </Box>
             </Drawer>
