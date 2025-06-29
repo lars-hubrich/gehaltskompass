@@ -7,9 +7,9 @@ export default function StatementPage() {
   const params = useParams<{ id: string }>();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
-      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 border border-gray-100">
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center drop-shadow-sm">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-blue-100">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-10 border border-gray-200">
+        <h1 className="text-4xl font-extrabold text-gray-800 mb-10 text-center drop-shadow-md">
           {params.id === "new"
             ? "Neue Abrechnung erstellen"
             : "Abrechnung bearbeiten"}

@@ -31,7 +31,7 @@ interface StatementData {
   payout_transfer: number;
   payout_vwl: number;
   payout_other: number;
-  [key: string]: any;
+  [key: string]: string | number | Income[];
 }
 
 interface StatementFormProps {
@@ -186,7 +186,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     name: string,
     type: string = "number",
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    value?: any,
+    value?: string | number,
     inputName?: string, // Use a specific name for the input element if provided
   ) => (
     <div className="mb-4">
@@ -211,23 +211,26 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-4xl mb-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100"
+      className="w-full max-w-4xl mb-8 bg-gradient-to-b from-white to-gray-50 p-10 rounded-2xl shadow-2xl border border-gray-200"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">
+          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
             Abrechnungszeitraum
           </h2>
           {renderInputField("Monat", "month")}
           {renderInputField("Jahr", "year")}
         </div>
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">
+          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
             Einkommensarten
           </h2>
           {statementData.incomes.map((income, index) => (
-            <div key={index} className="p-4 border rounded-md mb-4 bg-gray-50">
-              <div className="grid grid-cols-2 gap-4">
+            <div
+              key={index}
+              className="p-6 border rounded-lg mb-6 bg-gray-100 shadow-sm"
+            >
+              <div className="grid grid-cols-2 gap-6">
                 {renderInputField(
                   `Bezeichnung`,
                   `incomes[${index}].name`,
@@ -256,7 +259,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
               <button
                 type="button"
                 onClick={() => removeIncome(index)}
-                className="mt-2 px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition"
+                className="mt-4 text-red-600 hover:underline"
               >
                 Entfernen
               </button>
@@ -265,81 +268,61 @@ export default function StatementForm({ statementId }: StatementFormProps) {
           <button
             type="button"
             onClick={addIncome}
-            className="mb-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
           >
-            Einkommen hinzufügen
+            Einkommensart hinzufügen
           </button>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
         <div>
-          <h2 className="text-2xl font-bold mb-4 mt-6 text-gray-800">
-            Steuer- & Sozialversicherungs-Brutto
-          </h2>
-          {renderInputField("Steuer-Brutto", "brutto_tax")}
-          {renderInputField("Arbeitslosenversicherungs-Brutto", "brutto_av")}
-          {renderInputField("Pflegeversicherungs-Brutto", "brutto_pv")}
-          {renderInputField("Rentenversicherungs-Brutto", "brutto_rv")}
-          {renderInputField("Krankenversicherungs-Brutto", "brutto_kv")}
+          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">Brutto</h2>
+          {renderInputField("Steuer", "brutto_tax")}
+          {renderInputField("AV", "brutto_av")}
+          {renderInputField("PV", "brutto_pv")}
+          {renderInputField("RV", "brutto_rv")}
+          {renderInputField("KV", "brutto_kv")}
         </div>
-
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">
-            Gesetzliche Abzüge
-          </h2>
-          {renderInputField("Lohnsteuer", "deduction_tax_income")}
+          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">Abzüge</h2>
+          {renderInputField("Einkommensteuer", "deduction_tax_income")}
           {renderInputField("Kirchensteuer", "deduction_tax_church")}
           {renderInputField("Solidaritätszuschlag", "deduction_tax_solidarity")}
-          {renderInputField("Sonstige Steuerabzüge", "deduction_tax_other")}
-
-          <h2 className="text-2xl font-bold mb-4 mt-6 text-gray-800">
-            Sozialversicherungsbeiträge
+          {renderInputField("Sonstige Abzüge", "deduction_tax_other")}
+        </div>
+        <div>
+          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
+            Sozialabgaben
           </h2>
           {renderInputField("Arbeitslosenversicherung", "social_av")}
           {renderInputField("Pflegeversicherung", "social_pv")}
           {renderInputField("Rentenversicherung", "social_rv")}
           {renderInputField("Krankenversicherung", "social_kv")}
         </div>
-      </div>
-
-      <div className="mt-6">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Auszahlungsbeträge
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {renderInputField("Netto-Auszahlung", "payout_netto")}
+        <div>
+          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
+            Auszahlung
+          </h2>
+          {renderInputField("Nettoauszahlung", "payout_netto")}
           {renderInputField("Überweisung", "payout_transfer")}
-          {renderInputField("Vermögenswirksame Leistungen", "payout_vwl")}
+          {renderInputField("VWL", "payout_vwl")}
           {renderInputField("Sonstige Auszahlungen", "payout_other")}
         </div>
       </div>
-
-      <div className="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            {statementId === "new" ? "Erstellen" : "Speichern"}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/")}
-            className="px-5 py-2 bg-gray-300 rounded-lg shadow hover:bg-gray-400 transition font-semibold text-base focus:outline-none focus:ring-2 focus:ring-gray-400"
-          >
-            Abbrechen
-          </button>
-        </div>
-        {statementId !== "new" && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="px-5 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition font-semibold text-base focus:outline-none focus:ring-2 focus:ring-red-400"
-          >
-            Löschen
-          </button>
-        )}
+      <div className="mt-10 flex justify-end gap-4">
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="px-6 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
+        >
+          Löschen
+        </button>
+        <button
+          type="submit"
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+        >
+          Speichern
+        </button>
       </div>
     </form>
   );

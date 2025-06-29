@@ -33,17 +33,24 @@ type StatementCreateBody = {
 };
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(request, authOptions);
-  if (!session || !session.user?.email) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    console.error("GET /api/statement: Keine Sitzung gefunden");
     return NextResponse.json(
       { error: "Nicht authentifiziert" },
       { status: 401 },
     );
   }
+  if (!session.user?.email) {
+    console.error("GET /api/statement: Keine E-Mail in der Sitzung");
+    return NextResponse.json({ error: "Ungültige Sitzung" }, { status: 401 });
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
   if (!user) {
+    console.error("GET /api/statement: Benutzer nicht gefunden");
     return NextResponse.json(
       { error: "Benutzer nicht gefunden" },
       { status: 401 },
@@ -71,16 +78,23 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions); // request entfernt
-  if (!session || !session.user?.email) {
+  if (!session) {
+    console.error("POST /api/statement: Keine Sitzung gefunden");
     return NextResponse.json(
       { error: "Nicht authentifiziert" },
       { status: 401 },
     );
   }
+  if (!session.user?.email) {
+    console.error("POST /api/statement: Keine E-Mail in der Sitzung");
+    return NextResponse.json({ error: "Ungültige Sitzung" }, { status: 401 });
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
   if (!user) {
+    console.error("POST /api/statement: Benutzer nicht gefunden");
     return NextResponse.json(
       { error: "Benutzer nicht gefunden" },
       { status: 401 },

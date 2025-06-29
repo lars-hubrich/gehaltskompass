@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body>
+      <body className="min-h-screen bg-gradient-to-r from-gray-50 to-gray-200 text-gray-900">
         <AuthProvider>{children}</AuthProvider>
         <Analytics />
         <SpeedInsights />

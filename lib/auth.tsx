@@ -1,3 +1,14 @@
+import { DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+    } & DefaultSession["user"];
+  }
+}
+
 import { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -14,10 +25,22 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: { strategy: "jwt" },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
     async session({ session, token }) {
-      console.log("Session Callback:", { session, token });
-      session.user!.email = token.sub!;
+      session.user = {
+        id: token.id as string,
+        email: token.email ?? "",
+      };
       return session;
     },
   },

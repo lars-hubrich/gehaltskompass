@@ -3,6 +3,13 @@ import { authOptions } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+interface IncomeData {
+  id?: number;
+  name: string;
+  identifier: string;
+  value: number;
+}
+
 interface UpdateData {
   month?: number;
   year?: number;
@@ -23,11 +30,12 @@ interface UpdateData {
   payout_transfer?: number;
   payout_vwl?: number;
   payout_other?: number;
+  incomes?: IncomeData[];
 }
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: { id: string } },
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
@@ -46,7 +54,7 @@ export async function GET(
     );
   }
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const statement = await prisma.statement.findUnique({
       where: { id },
       include: { incomes: true },
@@ -69,7 +77,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: { id: string } },
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
@@ -88,7 +96,7 @@ export async function PUT(
     );
   }
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const statement = await prisma.statement.findUnique({ where: { id } });
     if (!statement || statement.user_id !== user.id) {
       return NextResponse.json(
@@ -97,10 +105,35 @@ export async function PUT(
       );
     }
     const data: UpdateData = await request.json();
+
+    // Separate incomes from the main data object
+    const { incomes, ...statementData } = data;
+
+    // Update the statement
     const updatedStatement = await prisma.statement.update({
       where: { id },
-      data,
+      data: {
+        ...statementData,
+        incomes: incomes
+          ? {
+              upsert: incomes.map((income: IncomeData) => ({
+                where: { id: income.id },
+                update: {
+                  name: income.name,
+                  identifier: income.identifier,
+                  value: income.value,
+                },
+                create: {
+                  name: income.name,
+                  identifier: income.identifier,
+                  value: income.value,
+                },
+              })),
+            }
+          : undefined,
+      },
     });
+
     return NextResponse.json(updatedStatement);
   } catch (error) {
     console.error("PUT /api/statements/[id] error:", error);
@@ -113,7 +146,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: { id: string } },
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
@@ -132,7 +165,7 @@ export async function DELETE(
     );
   }
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const statement = await prisma.statement.findUnique({ where: { id } });
     if (!statement || statement.user_id !== user.id) {
       return NextResponse.json(
