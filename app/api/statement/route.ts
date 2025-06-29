@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
 type IncomeCreateInput = {
   name: string;
@@ -30,10 +32,26 @@ type StatementCreateBody = {
   incomes?: IncomeCreateInput[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const session = await getServerSession(request, authOptions);
+  if (!session || !session.user?.email) {
+    return NextResponse.json(
+      { error: "Nicht authentifiziert" },
+      { status: 401 },
+    );
+  }
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) {
+    return NextResponse.json(
+      { error: "Benutzer nicht gefunden" },
+      { status: 401 },
+    );
+  }
   try {
     const statements = await prisma.statement.findMany({
+      where: { user_id: user.id },
       include: { incomes: true },
       // orderBy: { year: "desc", month: "desc" },
     });
@@ -52,11 +70,28 @@ export async function GET(_request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions); // request entfernt
+  if (!session || !session.user?.email) {
+    return NextResponse.json(
+      { error: "Nicht authentifiziert" },
+      { status: 401 },
+    );
+  }
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) {
+    return NextResponse.json(
+      { error: "Benutzer nicht gefunden" },
+      { status: 401 },
+    );
+  }
   try {
     const body: StatementCreateBody = await request.json();
 
     const newStatement = await prisma.statement.create({
       data: {
+        user_id: user.id,
         month: body.month,
         year: body.year,
         brutto_tax: body.brutto_tax,
