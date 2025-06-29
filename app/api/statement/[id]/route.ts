@@ -39,19 +39,13 @@ export async function GET(
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 },
-    );
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
   if (!user) {
-    return NextResponse.json(
-      { error: "Benutzer nicht gefunden" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
   const { id } = await context.params;
@@ -61,10 +55,7 @@ export async function GET(
   });
 
   if (!statement) {
-    return NextResponse.json(
-      { error: "Abrechnung nicht gefunden" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "Statement not found" }, { status: 404 });
   }
 
   return NextResponse.json(statement);
@@ -76,26 +67,20 @@ export async function PUT(
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 },
-    );
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
   if (!user) {
-    return NextResponse.json(
-      { error: "Benutzer nicht gefunden" },
-      { status: 401 },
-    );
+    return NextResponse.json({ error: "User not found" }, { status: 401 });
   }
   try {
     const { id } = await context.params;
     const statement = await prisma.statement.findUnique({ where: { id } });
     if (!statement || statement.user_id !== user.id) {
       return NextResponse.json(
-        { error: "Nicht gefunden oder kein Zugriff" },
+        { error: "Not found or access denied" },
         { status: 404 },
       );
     }
@@ -145,26 +130,20 @@ export async function DELETE(
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
-    return NextResponse.json(
-      { error: "Nicht authentifiziert" },
-      { status: 401 },
-    );
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
   if (!user) {
-    return NextResponse.json(
-      { error: "Benutzer nicht gefunden" },
-      { status: 401 },
-    );
+    return NextResponse.json({ error: "User not found" }, { status: 401 });
   }
   try {
     const { id } = await context.params;
     const statement = await prisma.statement.findUnique({ where: { id } });
     if (!statement || statement.user_id !== user.id) {
       return NextResponse.json(
-        { error: "Nicht gefunden oder kein Zugriff" },
+        { error: "Not found or access denied" },
         { status: 404 },
       );
     }
