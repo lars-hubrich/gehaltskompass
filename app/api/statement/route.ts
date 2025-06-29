@@ -8,7 +8,6 @@ type IncomeCreateInput = {
 };
 
 type StatementCreateBody = {
-  id: string;
   month: number;
   year: number;
   brutto_tax: number;
@@ -36,7 +35,7 @@ export async function GET(_request: NextRequest) {
   try {
     const statements = await prisma.statement.findMany({
       include: { incomes: true },
-      orderBy: { year: "desc", month: "desc" },
+      // orderBy: { year: "desc", month: "desc" },
     });
     return NextResponse.json(statements);
   } catch (error: unknown) {
@@ -58,7 +57,6 @@ export async function POST(request: NextRequest) {
 
     const newStatement = await prisma.statement.create({
       data: {
-        id: body.id,
         month: body.month,
         year: body.year,
         brutto_tax: body.brutto_tax,

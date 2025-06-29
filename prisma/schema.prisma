@@ -55,7 +55,7 @@ model Session {
 }
 
 model statement {
-  id    String @id
+  id    String   @id @default(cuid())
   month Int
   year  Int
 
@@ -88,16 +88,16 @@ model statement {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("salaries")
+  @@map("statement")
 }
 
 model income {
-  id         Int       @id @default(autoincrement())
-  salary_id  String
-  statement  statement @relation(fields: [salary_id], references: [id])
-  name       String
-  identifier String
-  value      Float
+  id           Int       @id @default(autoincrement())
+  statement_id String
+  statement    statement @relation(fields: [statement_id], references: [id], onDelete: Cascade)
+  name         String
+  identifier   String
+  value        Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
