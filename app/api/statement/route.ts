@@ -32,7 +32,7 @@ type StatementCreateBody = {
   incomes?: IncomeCreateInput[];
 };
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) {
     console.error("GET /api/statement: Keine Sitzung gefunden");
