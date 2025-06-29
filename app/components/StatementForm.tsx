@@ -201,7 +201,13 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         id={name}
         name={inputName || name} // Use specific inputName or fall back to name
         type={type}
-        value={value !== undefined ? value : statementData[name]}
+        value={
+          value !== undefined
+            ? value
+            : Array.isArray(statementData[name])
+              ? JSON.stringify(statementData[name]) // Convert array to string
+              : statementData[name]
+        }
         onChange={onChange || handleInputChange}
         step="0.01"
       />

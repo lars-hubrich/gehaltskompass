@@ -35,7 +35,7 @@ interface UpdateData {
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
@@ -50,34 +50,29 @@ export async function GET(
   if (!user) {
     return NextResponse.json(
       { error: "Benutzer nicht gefunden" },
-      { status: 401 },
+      { status: 404 },
     );
   }
-  try {
-    const { id } = await context.params;
-    const statement = await prisma.statement.findUnique({
-      where: { id },
-      include: { incomes: true },
-    });
-    if (!statement || statement.user_id !== user.id) {
-      return NextResponse.json(
-        { error: "Nicht gefunden oder kein Zugriff" },
-        { status: 404 },
-      );
-    }
-    return NextResponse.json(statement);
-  } catch (error) {
-    console.error("GET /api/statements/[id] error:", error);
+
+  const { id } = await context.params;
+  const statement = await prisma.statement.findUnique({
+    where: { id },
+    include: { incomes: true },
+  });
+
+  if (!statement) {
     return NextResponse.json(
-      { error: "Could not fetch statement." },
-      { status: 500 },
+      { error: "Abrechnung nicht gefunden" },
+      { status: 404 },
     );
   }
+
+  return NextResponse.json(statement);
 }
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
@@ -146,7 +141,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
