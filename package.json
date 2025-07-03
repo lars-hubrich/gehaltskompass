@@ -25,7 +25,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "lightningcss": "^1.29.3",
-    "next": "15.3.1",
+    "next": "15.3.4",
     "next-auth": "^4.24.11",
     "pg": "^8.15.6",
     "prisma": "^6.7.0",
