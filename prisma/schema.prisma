@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  // provider = "sqlite"
+  // provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -55,7 +55,7 @@ model Session {
 }
 
 model statement {
-  id    String   @id @default(cuid())
+  id    String @id @default(cuid())
   month Int
   year  Int
 

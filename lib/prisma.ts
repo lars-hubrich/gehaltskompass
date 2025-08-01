@@ -1,9 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
 declare global {
-  // noinspection JSUnusedGlobalSymbols
-  // noinspection ES6ConvertVarToLetConst
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
