@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI, Type } from "@google/genai";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const config = { api: { bodyParser: false } };
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json(
+      { error: "Nicht authentifiziert" },
+      { status: 401 },
+    );
+  }
+
   const formData = await req.formData();
   const file = formData.get("file") as Blob | null;
   if (!file) {
