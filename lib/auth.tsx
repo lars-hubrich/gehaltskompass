@@ -5,6 +5,7 @@ declare module "next-auth" {
     user: {
       id: string;
       email: string;
+      name: string;
     } & DefaultSession["user"];
   }
 }
@@ -28,16 +29,20 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
+      console.log("DEBUG: user ", user);
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
     async session({ session, token }) {
+      console.log("DEBUG: token ", token);
       session.user = {
         id: token.id as string,
         email: token.email ?? "",
+        name: token.name ?? "",
       };
       return session;
     },
