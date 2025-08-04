@@ -10,6 +10,7 @@ import SelectContent from "./SelectContent";
 import MenuContent from "./MenuContent";
 import CardAlert from "./CardAlert";
 import OptionsMenu from "./OptionsMenu";
+import { useSession } from "next-auth/react";
 
 const drawerWidth = 240;
 
@@ -25,6 +26,8 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+  const { session } = useSession();
+
   return (
     <Drawer
       variant="permanent"
@@ -68,8 +71,8 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
-          src="/static/images/avatar/7.jpg"
+          alt="Profile Picture"
+          src="/static/images/avatar/7.jpg" // TODO: replace with actual image uri -> change to auth.tsx needed
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: "auto" }}>
@@ -77,10 +80,10 @@ export default function SideMenu() {
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
           >
-            Riley Carter
+            {session?.user?.name}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            riley@email.com
+            {session?.user?.email}
           </Typography>
         </Box>
         <OptionsMenu />
