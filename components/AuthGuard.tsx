@@ -4,9 +4,9 @@ import { useSession } from "next-auth/react";
 import React, { ReactNode } from "react";
 import AppTheme from "@/shared-theme/AppTheme";
 import CssBaseline from "@mui/material/CssBaseline";
-import AppAppBar from "@/components/AppAppBar";
-import Hero from "@/components/Hero";
-import Features from "@/components/Features";
+import AppAppBar from "@/components/login/AppAppBar";
+import Hero from "@/components/login/Hero";
+import Features from "@/components/login/Features";
 import Divider from "@mui/material/Divider";
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
