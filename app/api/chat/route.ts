@@ -77,10 +77,10 @@ export async function POST(req: NextRequest) {
     const res = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents,
-      config: {
-        temperature: 0.2,
-        maxOutputTokens: 512,
-      },
+      // config: {
+      //   temperature: 0.2,
+      //   maxOutputTokens: 512,
+      // },
     });
     console.log("DEBUG Lars AI Response: ", res);
     if (!res || !res.text) {
