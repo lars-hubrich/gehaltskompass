@@ -5,7 +5,8 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import { GithubIcon, GoogleIcon } from "@/app/components/CustomIcons";
+import { GithubIcon } from "@/components/CustomIcons";
+import { signIn } from "next-auth/react";
 
 const StyledBox = styled("div")(({ theme }) => ({
   alignSelf: "center",
@@ -100,15 +101,7 @@ export default function Hero() {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert("Sign in with Google")}
-              startIcon={<GoogleIcon />}
-            >
-              Mit Google Anmelden
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert("Sign in with Github")}
+              onClick={() => signIn("github")}
               startIcon={<GithubIcon />}
             >
               Mit Github Anmelden
