@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI, Type } from "@google/genai";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export const config = { api: { bodyParser: false } };
 
@@ -13,6 +14,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: "Nicht authentifiziert" },
       { status: 401 },
+    );
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email! },
+  });
+  if (!user) {
+    return NextResponse.json(
+      { error: "Benutzer nicht gefunden" },
+      { status: 404 },
     );
   }
 

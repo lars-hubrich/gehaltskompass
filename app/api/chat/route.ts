@@ -58,6 +58,8 @@ export async function POST(req: NextRequest) {
     })
     .join("\n\n");
 
+  console.log("DEBUG Lars Context: ", contextText);
+
   const contents = [
     {
       text: "Du bist ein intelligenter Assistent, der Fragen zu Lohnabrechnungsdaten beantwortet.",
@@ -67,6 +69,8 @@ export async function POST(req: NextRequest) {
     },
     { text: "Frage: " + question },
   ];
+
+  console.log("DEBUG Lars Contents: ", contents);
 
   let aiResponse;
   try {
@@ -78,6 +82,13 @@ export async function POST(req: NextRequest) {
         maxOutputTokens: 512,
       },
     });
+    console.log("DEBUG Lars AI Response: ", res);
+    if (!res || !res.text) {
+      return NextResponse.json(
+        { error: "Keine Antwort von der KI erhalten" },
+        { status: 500 },
+      );
+    }
     aiResponse = res.text;
   } catch (err) {
     console.error("LLM-Fehler:", err);
