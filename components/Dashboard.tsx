@@ -34,7 +34,7 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <h1 className="text-4xl font-extrabold text-gray-900 drop-shadow-sm text-center sm:text-left">
             Willkommen,{" "}
-            <span className="text-green-700">{session?.user?.name}</span>
+            <span className="text-green-700">{session?.user?.id}</span>
           </h1>
           <div className="flex gap-2">
             <button
