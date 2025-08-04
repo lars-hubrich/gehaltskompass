@@ -71,8 +71,8 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt="Profile Picture"
-          src="/static/images/avatar/7.jpg" // TODO: replace with actual image uri -> change to auth.tsx needed
+          alt={session?.user?.name || "Unbekannt"}
+          src={session?.user?.picture}
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: "auto" }}>
