@@ -26,7 +26,7 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
-  const { session } = useSession();
+  const { data: session } = useSession();
 
   return (
     <Drawer
