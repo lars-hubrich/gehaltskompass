@@ -24,6 +24,9 @@ export default function OptionsMenu() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleSignOut = () => {
+    setAnchorEl(null);
     signOut();
   };
   return (
@@ -56,7 +59,7 @@ export default function OptionsMenu() {
         }}
       >
         <MenuItem
-          onClick={handleClose}
+          onClick={handleSignOut}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
               ml: "auto",
