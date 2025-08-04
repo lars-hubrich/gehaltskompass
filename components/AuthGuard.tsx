@@ -1,7 +1,13 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import React, { ReactNode } from "react";
+import AppTheme from "@/shared-theme/AppTheme";
+import CssBaseline from "@mui/material/CssBaseline";
+import AppAppBar from "@/components/AppAppBar";
+import Hero from "@/components/Hero";
+import Features from "@/components/Features";
+import Divider from "@mui/material/Divider";
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
   const { status } = useSession();
@@ -12,20 +18,18 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
 
   if (status === "unauthenticated") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-4xl mb-6">Willkommen</h1>
-        <p className="mb-4">
-          Bitte authentifizieren Sie sich, um fortzufahren.
-        </p>
-        <div className="space-x-4">
-          <button
-            onClick={() => signIn("github")}
-            className="px-4 py-2 bg-gray-800 text-white rounded"
-          >
-            Mit GitHub einloggen
-          </button>
+      <AppTheme>
+        <CssBaseline enableColorScheme />
+        <div id="top" />
+        <AppAppBar />
+        <Hero />
+        <div>
+          <div id="features">
+            <Features />
+          </div>
+          <Divider />
         </div>
-      </div>
+      </AppTheme>
     );
   }
 

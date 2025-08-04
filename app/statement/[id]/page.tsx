@@ -1,6 +1,6 @@
 "use client";
 
-import StatementForm from "@/app/components/StatementForm";
+import StatementForm from "@/components/StatementForm";
 import { useParams } from "next/navigation";
 
 export default function StatementPage() {
