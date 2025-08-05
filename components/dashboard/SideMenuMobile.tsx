@@ -10,6 +10,7 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import MenuButton from "./MenuButton";
 import MenuContent from "./MenuContent";
 import CardAlert from "./CardAlert";
+import { useSession, signOut } from "next-auth/react";
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
@@ -20,6 +21,8 @@ export default function SideMenuMobile({
   open,
   toggleDrawer,
 }: SideMenuMobileProps) {
+  const { data: session } = useSession();
+
   return (
     <Drawer
       anchor="right"
@@ -46,12 +49,12 @@ export default function SideMenuMobile({
           >
             <Avatar
               sizes="small"
-              alt="Riley Carter"
-              src="/static/images/avatar/7.jpg"
+              alt={session?.user?.name || "Unbekannt"}
+              src={session?.user?.picture}
               sx={{ width: 24, height: 24 }}
             />
             <Typography component="p" variant="h6">
-              Riley Carter
+              {session?.user?.name}
             </Typography>
           </Stack>
           <MenuButton showBadge>
@@ -69,6 +72,10 @@ export default function SideMenuMobile({
             variant="outlined"
             fullWidth
             startIcon={<LogoutRoundedIcon />}
+            onClick={() => {
+              toggleDrawer(false);
+              signOut();
+            }}
           >
             Logout
           </Button>
