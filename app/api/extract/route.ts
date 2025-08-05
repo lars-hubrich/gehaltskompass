@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   const encoded = buffer.toString("base64");
   const contents = [
     {
-      text: "Extrahiere Lohnabrechnungsdaten aus dem angehängten PDF:",
+      text: "Extrahiere Lohnabrechnungsdaten aus dem angehängten PDF. Nutze ausschließlich die Daten aus der PDF. Falls du einen Wert nicht findest, setzte diesen auf 0.",
     },
     { inlineData: { mimeType: "application/pdf", data: encoded } },
   ];
