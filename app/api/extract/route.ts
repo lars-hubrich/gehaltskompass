@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
   const encoded = buffer.toString("base64");
   const contents = [
     {
+      role: "system",
       text: "Extrahiere Lohnabrechnungsdaten aus dem angehängten PDF. Nutze ausschließlich die Daten aus der PDF. Falls du einen Wert nicht findest, setzte diesen auf 0.",
     },
     { inlineData: { mimeType: "application/pdf", data: encoded } },
@@ -97,7 +98,7 @@ export async function POST(req: NextRequest) {
   };
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.5-flash-lite",
     contents,
     config: {
       responseMimeType: "application/json",

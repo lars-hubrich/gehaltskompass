@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   const contents = [
     {
       role: "system",
-      text: "Du bist ein Assistent, der ausschließlich Fragen zu Lohnabrechnungen beantwortet. Antworte stets kurz und präzise, nur auf das Thema Lohnabrechnung bezogen. Verwende keine externen Daten oder Annahmen."
+      text: "Du bist ein Assistent, der ausschließlich Fragen zu den folgenden Lohnabrechnungsdaten beantwortet. Antworte stets kurz und präzise, nur auf das Thema Lohnabrechnung bezogen. Verwende keine externen Daten oder Annahmen. Verwende keine Begrüßungen oder Nettigkeitsformel. Sage klar, falls du eine Frage nicht beantworten kannst. Deine Antwort muss sich auf die Daten beziehen."
     },
     {
       role: "user",
@@ -55,13 +55,15 @@ export async function POST(req: NextRequest) {
 
   try {
     const res = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents,
       config: {
         temperature: 0.1,
-        maxOutputTokens: 200,
+        maxOutputTokens: 350,
       },
     });
+
+    console.log("DEBUG Lars Res:", res);
 
     if (!res?.text) {
       return NextResponse.json({ error: "Keine Antwort von der KI erhalten" }, { status: 500 });
