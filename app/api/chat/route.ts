@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   const contents = [
     {
       role: "system",
-      text: "Du bist ein Assistent, der ausschließlich Fragen zu den folgenden Lohnabrechnungsdaten beantwortet. Antworte stets kurz und präzise, nur auf das Thema Lohnabrechnung bezogen. Verwende keine externen Daten oder Annahmen. Verwende keine Begrüßungen oder Nettigkeitsformel. Sage klar, falls du eine Frage nicht beantworten kannst. Deine Antwort muss sich auf die Daten beziehen."
+      text: "Du bist ein Assistent, der ausschließlich Fragen zu den folgenden Lohnabrechnungsdaten beantwortet. Antworte stets kurz und präzise, nur auf das Thema Lohnabrechnung bezogen. Verwende keine externen Daten oder Annahmen. Verwende keine Begrüßungen oder Nettigkeitsformel. Sage klar, falls du eine Frage nicht beantworten kannst. Deine Antwort muss sich auf die Daten beziehen. Du darfst die Daten kombinieren und simple Berechnungen auf diesen ausführen. Antworte stets in klaren deutschen Sätzen. Schreibe kein Code oder ähnliches. Schreibe kein JSON oder ähnliches."
     },
     {
       role: "user",
