@@ -9,11 +9,11 @@ import AppNavbar from "@/components/dashboard/AppNavbar";
 import Header from "@/components/dashboard/Header";
 import MainGrid from "@/components/dashboard/MainGrid";
 import SideMenu from "@/components/dashboard/SideMenu";
-import AppTheme from "@/shared-theme/AppTheme";
+import AppTheme from "@/theme/AppTheme";
 import {
   chartsCustomizations,
   dataGridCustomizations,
-} from "@/shared-theme/customizations";
+} from "@/theme/customizations";
 
 const xThemeComponents = {
   ...chartsCustomizations,

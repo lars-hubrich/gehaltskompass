@@ -7,7 +7,7 @@ import {
   feedbackCustomizations,
   navigationCustomizations,
   surfacesCustomizations,
-} from "@/shared-theme/customizations";
+} from "@/theme/customizations";
 import { colorSchemes, typography, shadows, shape } from "./themePrimitives";
 
 interface AppThemeProps {
