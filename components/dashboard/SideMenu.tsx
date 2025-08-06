@@ -40,6 +40,7 @@ export default function SideMenu() {
       <Box
         sx={{
           display: "flex",
+          justifyContent: "center",
           mt: "calc(var(--template-frame-height, 0px) + 4px)",
           p: 1.5,
         }}

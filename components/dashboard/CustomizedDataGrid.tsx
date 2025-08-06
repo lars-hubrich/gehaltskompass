@@ -63,11 +63,6 @@ export default function CustomizedDataGrid({
       getRowClassName={(params) =>
         params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
       }
-      sx={{
-        "& .even": { backgroundColor: "#f9fafb" },
-        "& .odd": { backgroundColor: "#ffffff" },
-        "& .MuiDataGrid-row:hover": { backgroundColor: "#ecfdf5" },
-      }}
       disableColumnResize
       density="compact"
     />

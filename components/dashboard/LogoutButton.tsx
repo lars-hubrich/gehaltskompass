@@ -7,10 +7,11 @@ export default function LogoutButton() {
   return (
     <Button
       variant="outlined"
-      startIcon={<LogoutRoundedIcon />}
       onClick={() => {
         signOut();
       }}
-    ></Button>
+    >
+      <LogoutRoundedIcon />
+    </Button>
   );
 }
