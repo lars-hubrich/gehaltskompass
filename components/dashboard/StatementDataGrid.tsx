@@ -57,7 +57,7 @@ export default function StatementDataGrid({
   // Custom Toolbar slot
   const CustomToolbar = () => (
     <Toolbar>
-      <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
+      <Typography component="h2" variant="h6" sx={{ flex: 1, mx: 0.5 }}>
         Gehaltsabrechnungen
       </Typography>
       <Button
