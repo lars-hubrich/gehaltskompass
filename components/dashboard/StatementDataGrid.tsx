@@ -6,6 +6,7 @@ import { Statement } from "@/constants/Interfaces";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import Typography from "@mui/material/Typography";
 
 interface CustomizedDataGridProps {
   statements: Statement[];
@@ -56,6 +57,9 @@ export default function StatementDataGrid({
   // Custom Toolbar slot
   const CustomToolbar = () => (
     <Toolbar>
+      <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
+        Gehaltsabrechnungen
+      </Typography>
       <Button
         startIcon={<AddIcon />}
         variant="contained"
@@ -63,7 +67,6 @@ export default function StatementDataGrid({
       >
         Neue Abrechnung
       </Button>
-      <ToolbarButton />
     </Toolbar>
   );
 
