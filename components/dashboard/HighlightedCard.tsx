@@ -25,7 +25,7 @@ export default function HighlightedCard() {
           Explore your data
         </Typography>
         <Typography sx={{ color: "text.secondary", mb: "8px" }}>
-          Uncover performance and visitor insights with our data wizardry.
+          Use AI Insights to learn more about your salary data.
         </Typography>
         <Button
           variant="contained"

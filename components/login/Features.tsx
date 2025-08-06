@@ -26,7 +26,7 @@ const items = [
   },
   {
     icon: <InsightsIcon />,
-    title: "KI Insights",
+    title: "AI Insights",
     description:
       "Stelle Fragen zu deiner Gehaltsabrechung und erhalte KI-gestützte Einblicke.",
     imageLight: `url("${

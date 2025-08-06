@@ -6,10 +6,10 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import SelectContent from "./SelectContent";
 import MenuContent from "./MenuContent";
 import OptionsMenu from "./OptionsMenu";
 import { useSession } from "next-auth/react";
+import GehaltskompassIcon from "@/components/GehaltskompassIcon";
 
 const drawerWidth = 240;
 
@@ -44,7 +44,7 @@ export default function SideMenu() {
           p: 1.5,
         }}
       >
-        <SelectContent />
+        <GehaltskompassIcon />
       </Box>
       <Divider />
       <Box
