@@ -11,19 +11,28 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Nicht authentifiziert" },
+      { status: 401 },
+    );
   }
 
   const { question } = (await req.json()) as { question?: string };
   if (!question?.trim()) {
-    return NextResponse.json({ error: "Keine Frage angegeben" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Keine Frage angegeben" },
+      { status: 400 },
+    );
   }
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email! },
   });
   if (!user) {
-    return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Benutzer nicht gefunden" },
+      { status: 404 },
+    );
   }
 
   const statements = await prisma.statement.findMany({
@@ -39,7 +48,7 @@ export async function POST(req: NextRequest) {
   const contents = [
     {
       role: "system",
-      text: "Du bist ein Assistent, der ausschließlich Fragen zu den folgenden Lohnabrechnungsdaten beantwortet. Antworte stets kurz und präzise, nur auf das Thema Lohnabrechnung bezogen. Verwende keine externen Daten oder Annahmen. Verwende keine Begrüßungen oder Nettigkeitsformel. Sage klar, falls du eine Frage nicht beantworten kannst. Deine Antwort muss sich auf die Daten beziehen. Du darfst die Daten kombinieren und simple Berechnungen auf diesen ausführen. Antworte stets in klaren deutschen Sätzen. Schreibe kein Code oder ähnliches. Schreibe kein JSON oder ähnliches."
+      text: "Du bist ein Assistent, der ausschließlich Fragen zu den folgenden Lohnabrechnungsdaten beantwortet. Antworte stets kurz und präzise, nur auf das Thema Lohnabrechnung bezogen. Verwende keine externen Daten oder Annahmen. Verwende keine Begrüßungen oder Nettigkeitsformel. Sage klar, falls du eine Frage nicht beantworten kannst. Deine Antwort muss sich auf die Daten beziehen. Du darfst die Daten kombinieren und simple Berechnungen auf diesen ausführen. Antworte stets in klaren deutschen Sätzen. Schreibe kein Code oder ähnliches. Schreibe kein JSON oder ähnliches.",
     },
     {
       role: "user",
@@ -66,12 +75,18 @@ export async function POST(req: NextRequest) {
     console.log("DEBUG Lars Res:", res);
 
     if (!res?.text) {
-      return NextResponse.json({ error: "Keine Antwort von der KI erhalten" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Keine Antwort von der KI erhalten" },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({ answer: res.text });
   } catch (err) {
     console.error("LLM-Fehler:", err);
-    return NextResponse.json({ error: "Fehler bei der KI-Anfrage" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Fehler bei der KI-Anfrage" },
+      { status: 500 },
+    );
   }
 }

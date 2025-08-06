@@ -2,12 +2,13 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Copyright from "../internals/components/Copyright";
 import CustomizedDataGrid from "./CustomizedDataGrid";
 import HighlightedCard from "./HighlightedCard";
 import PageViewsBarChart from "./PageViewsBarChart";
 import SessionsChart from "./SessionsChart";
 import StatCard, { StatCardProps } from "./StatCard";
+import { useState, useEffect } from "react";
+import { Statement } from "@/constants/Interfaces";
 
 const data: StatCardProps[] = [
   {
@@ -44,6 +45,19 @@ const data: StatCardProps[] = [
 ];
 
 export default function MainGrid() {
+  const [statements, setStatements] = useState<Statement[]>([]);
+
+  useEffect(() => {
+    const fetchStatements = async () => {
+      const res = await fetch("/api/statement");
+      if (res.ok) {
+        const data = await res.json();
+        setStatements(data);
+      }
+    };
+    fetchStatements();
+  }, []);
+
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
       {/* cards */}
@@ -76,10 +90,9 @@ export default function MainGrid() {
       </Typography>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 9 }}>
-          <CustomizedDataGrid />
+          <CustomizedDataGrid statements={statements} />
         </Grid>
       </Grid>
-      <Copyright sx={{ my: 4 }} />
     </Box>
   );
 }
