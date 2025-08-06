@@ -86,10 +86,10 @@ export default function MainGrid() {
         </Grid>
       </Grid>
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Details
+        Gehaltsabrechnungen
       </Typography>
       <Grid container spacing={2} columns={12}>
-        <Grid size={{ xs: 12, lg: 9 }}>
+        <Grid size={{ xs: 12, lg: 12 }}>
           <CustomizedDataGrid statements={statements} />
         </Grid>
       </Grid>
