@@ -12,14 +12,14 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import AssistantIcon from "@mui/icons-material/Assistant";
 
 const mainListItems = [
-  { text: "Home", icon: <HomeRoundedIcon /> },
+  { text: "Dashboard", icon: <HomeRoundedIcon /> },
   { text: "Analytics", icon: <AnalyticsRoundedIcon /> },
   { text: "AI Insights", icon: <AssistantIcon /> },
 ];
 
 const secondaryListItems = [
-  { text: "Settings", icon: <SettingsRoundedIcon /> },
-  { text: "About", icon: <InfoRoundedIcon /> },
+  { text: "Einstellungen", icon: <SettingsRoundedIcon /> },
+  { text: "Über uns", icon: <InfoRoundedIcon /> },
 ];
 
 export default function MenuContent() {

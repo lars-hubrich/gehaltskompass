@@ -22,10 +22,11 @@ export default function HighlightedCard() {
           gutterBottom
           sx={{ fontWeight: "600" }}
         >
-          Explore your data
+          AI Insights
         </Typography>
         <Typography sx={{ color: "text.secondary", mb: "8px" }}>
-          Use AI Insights to learn more about your salary data.
+          Stelle Fragen zu deinen Gehaltsabrechnungen und erhalte KI-gestützte
+          Einblicke.
         </Typography>
         <Button
           variant="contained"
@@ -34,7 +35,7 @@ export default function HighlightedCard() {
           endIcon={<ChevronRightRoundedIcon />}
           fullWidth={isSmallScreen}
         >
-          Get insights
+          Erhalte Einblick
         </Button>
       </CardContent>
     </Card>
