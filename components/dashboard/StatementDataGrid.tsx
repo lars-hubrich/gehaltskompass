@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, Toolbar, ToolbarButton } from "@mui/x-data-grid";
 import { Statement } from "@/constants/Interfaces";
 import { useRouter } from "next/navigation";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 interface CustomizedDataGridProps {
   statements: Statement[];
@@ -51,15 +53,29 @@ export default function StatementDataGrid({
     },
   ];
 
+  // Custom Toolbar slot
+  const CustomToolbar = () => (
+    <Toolbar>
+      <Button
+        startIcon={<AddIcon />}
+        variant="contained"
+        onClick={() => router.push("/statement/new")}
+      >
+        Neue Abrechnung
+      </Button>
+      <ToolbarButton />
+    </Toolbar>
+  );
+
   return (
     <DataGrid
       rows={rows}
       columns={columns}
-      onRowClick={(params) => router.push(`/statement/${params.id}`)}
+      showToolbar
+      slots={{ toolbar: CustomToolbar }}
       pageSizeOptions={[5, 10, 20]}
-      initialState={{
-        pagination: { paginationModel: { pageSize } },
-      }}
+      initialState={{ pagination: { paginationModel: { pageSize } } }}
+      onRowClick={(params) => router.push(`/statement/${params.id}`)}
       getRowClassName={(params) =>
         params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
       }
