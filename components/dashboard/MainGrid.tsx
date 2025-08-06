@@ -2,7 +2,7 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import CustomizedDataGrid from "./CustomizedDataGrid";
+import StatementDataGrid from "./StatementDataGrid";
 import HighlightedCard from "./HighlightedCard";
 import PageViewsBarChart from "./PageViewsBarChart";
 import SessionsChart from "./SessionsChart";
@@ -90,7 +90,7 @@ export default function MainGrid() {
       </Typography>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          <CustomizedDataGrid statements={statements} />
+          <StatementDataGrid statements={statements} />
         </Grid>
       </Grid>
     </Box>

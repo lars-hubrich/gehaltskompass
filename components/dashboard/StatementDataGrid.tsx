@@ -10,7 +10,7 @@ interface CustomizedDataGridProps {
   pageSize?: number;
 }
 
-export default function CustomizedDataGrid({
+export default function StatementDataGrid({
   statements,
   pageSize = 10,
 }: CustomizedDataGridProps) {

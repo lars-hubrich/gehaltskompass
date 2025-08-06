@@ -13,20 +13,16 @@ import AppTheme from "@/shared-theme/AppTheme";
 import {
   chartsCustomizations,
   dataGridCustomizations,
-  datePickersCustomizations,
-  treeViewCustomizations,
-} from "@/components/theme/customizations";
+} from "@/shared-theme/customizations";
 
 const xThemeComponents = {
   ...chartsCustomizations,
   ...dataGridCustomizations,
-  ...datePickersCustomizations,
-  ...treeViewCustomizations,
 };
 
-export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+export default function Dashboard() {
   return (
-    <AppTheme {...props} themeComponents={xThemeComponents}>
+    <AppTheme themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
         <SideMenu />

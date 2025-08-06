@@ -10,8 +10,7 @@ import { gridClasses } from "@mui/x-data-grid";
 import { tablePaginationClasses } from "@mui/material/TablePagination";
 import { gray } from "@/shared-theme/themePrimitives";
 
-export const dataGridCustomizations: DataGridProComponents<Theme> &
-  DataGridProComponents<Theme> = {
+export const dataGridCustomizations: DataGridProComponents<Theme> = {
   MuiDataGrid: {
     styleOverrides: {
       root: ({ theme }) => ({
