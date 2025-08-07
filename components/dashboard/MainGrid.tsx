@@ -21,8 +21,9 @@ export default function MainGrid() {
   const fetchStatements = useCallback(async () => {
     const res = await fetch("/api/statement");
     if (res.ok) {
-      setStatements(await res.json());
-      setFilteredStatements(await res.json());
+      const data = await res.json();
+      setStatements(data);
+      setFilteredStatements(data);
     }
   }, []);
 
