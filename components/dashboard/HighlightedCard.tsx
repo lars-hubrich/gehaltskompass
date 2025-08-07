@@ -37,7 +37,7 @@ export default function HighlightedCard() {
           endIcon={<ChevronRightRoundedIcon />}
           fullWidth={isSmallScreen}
           onClick={() => {
-            router.push("/dashboard/insights");
+            router.push("/insights");
           }}
         >
           Erhalte Einblick
