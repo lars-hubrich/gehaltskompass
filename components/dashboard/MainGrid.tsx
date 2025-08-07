@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import StatementDataGrid from "./StatementDataGrid";
 import HighlightedCard from "./HighlightedCard";
 import StatementBarChart from "./StatementBarChart";
-import SessionsChart from "./SessionsChart";
+import SessionsChart from "./StatementLineChart";
 import StatCard, { StatCardProps } from "./StatCard";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { filteredStatement, StatementData } from "@/constants/Interfaces";

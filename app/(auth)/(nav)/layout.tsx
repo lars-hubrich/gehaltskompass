@@ -4,9 +4,9 @@ import * as React from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Header from "@/components/dashboard/Header";
-import AppNavbar from "@/components/dashboard/AppNavbar";
-import SideMenu from "@/components/dashboard/SideMenu";
+import Header from "@/components/navigation/Header";
+import AppNavbar from "@/components/navigation/AppNavbar";
+import SideMenu from "@/components/navigation/SideMenu";
 
 export default function DashboardLayout({
   children,
