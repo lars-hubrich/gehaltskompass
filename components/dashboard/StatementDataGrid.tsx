@@ -66,15 +66,31 @@ export default function StatementDataGrid({
   ];
 
   // Bulk-delete handler
-  const handleDelete = () => {
+  const handleDelete = async () => {
     console.log("Delete: ", selectionModel.ids);
-    // TODO implement bulk delete via api
 
-    setSelectionModel({
-      type: "include",
-      ids: new Set(),
-    }); // clear checkboxes
-    router.refresh();
+    if (selectionModel.ids.size === 0) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/statements", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: selectionModel.ids }),
+      });
+      if (!response.ok) {
+        console.error("Bulk delete failed");
+      }
+    } catch (error) {
+      console.error("Error deleting statements:", error);
+    } finally {
+      setSelectionModel({
+        type: "include",
+        ids: new Set(),
+      }); // clear checkboxes
+      router.refresh();
+    }
   };
 
   // Custom toolbar
