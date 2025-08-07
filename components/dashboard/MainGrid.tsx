@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import StatementDataGrid from "./StatementDataGrid";
 import HighlightedCard from "./HighlightedCard";
-import PageViewsBarChart from "./PageViewsBarChart";
+import StatementBarChart from "./StatementBarChart";
 import SessionsChart from "./SessionsChart";
 import StatCard, { StatCardProps } from "./StatCard";
 import { useState, useEffect, useCallback } from "react";
@@ -82,7 +82,7 @@ export default function MainGrid() {
           <SessionsChart />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <PageViewsBarChart />
+          <StatementBarChart />
         </Grid>
       </Grid>
       <Grid container spacing={2} columns={12}>
