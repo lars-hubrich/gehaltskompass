@@ -17,19 +17,20 @@ export type StatCardProps = {
   data: number[];
 };
 
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString("en-US", {
-    month: "short",
-  });
-  const daysInMonth = date.getDate();
-  const days = [];
-  let i = 1;
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`);
-    i += 1;
+function getMonthsInYear(month: number, year: number): string[] {
+  const months: string[] = [];
+  const current = new Date(year, month - 1);
+
+  for (let offset = 5; offset >= 0; offset--) {
+    const d = new Date(current.getFullYear(), current.getMonth() - offset);
+    const name = d.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+    months.push(name);
   }
-  return days;
+
+  return months;
 }
 
 function AreaGradient({ color, id }: { color: string; id: string }) {
@@ -51,7 +52,13 @@ export default function StatCard({
   data,
 }: StatCardProps) {
   const theme = useTheme();
-  const daysInWeek = getDaysInMonth(4, 2024);
+
+  // Ermitteln von Monat und Jahr am aktuellen Datum:
+  const today = new Date();
+  const currentMonth = today.getMonth() + 1; // JS-Monate: 0–11 → +1 → 1–12
+  const currentYear = today.getFullYear();
+
+  const monthsInYear = getMonthsInYear(currentMonth, currentYear);
 
   const trendColors = {
     up:
@@ -86,7 +93,7 @@ export default function StatCard({
         </Typography>
         <Stack
           direction="column"
-          sx={{ justifyContent: "space-between", flexGrow: "1", gap: 1 }}
+          sx={{ justifyContent: "space-between", flexGrow: 1, gap: 1 }}
         >
           <Stack sx={{ justifyContent: "space-between" }}>
             <Stack
@@ -111,7 +118,7 @@ export default function StatCard({
               showTooltip
               xAxis={{
                 scaleType: "band",
-                data: daysInWeek, // Use the correct property 'data' for xAxis
+                data: monthsInYear,
               }}
               sx={{
                 [`& .${areaElementClasses.root}`]: {
