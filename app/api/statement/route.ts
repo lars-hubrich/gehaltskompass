@@ -42,7 +42,7 @@ export async function GET() {
     const statements = await prisma.statement.findMany({
       where: { user_id: userOrRes.id },
       include: { incomes: true },
-      orderBy: { year: "desc", month: "desc" },
+      orderBy: [{ year: "desc" }, { month: "desc" }],
     });
     return NextResponse.json(statements);
   } catch (error) {
