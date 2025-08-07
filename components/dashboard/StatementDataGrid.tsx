@@ -77,11 +77,8 @@ export default function StatementDataGrid({
       const response = await fetch("/api/statement", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: selectionModel.ids.keys() }),
+        body: JSON.stringify({ ids: Array.from(selectionModel.ids.values()) }),
       });
-      console.log("Bulk delete request sent a", selectionModel.ids.keys());
-      console.log("Bulk delete request sent b", selectionModel.ids);
-      console.log("Bulk delete request sent c", selectionModel.ids.values());
       console.log("Bulk delete response:", response);
       if (!response.ok) {
         console.error("Bulk delete failed");
