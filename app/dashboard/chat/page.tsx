@@ -1,6 +1,16 @@
 "use client";
 
+import * as React from "react";
 import { useState } from "react";
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 
 export default function ChatTestPage() {
   const [question, setQuestion] = useState("");
@@ -8,7 +18,7 @@ export default function ChatTestPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAnswer(null);
     setError(null);
@@ -17,9 +27,7 @@ export default function ChatTestPage() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question }),
       });
 
@@ -35,39 +43,56 @@ export default function ChatTestPage() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-semibold mb-4 text-center">
-          Lohnabrechnungs-Chat
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <textarea
-            className="w-full border rounded p-2 h-24 resize-none"
-            placeholder="Stelle hier deine Frage zu deinen Abrechnungsdaten..."
+    <Box sx={{ width: "100%", maxWidth: 600, mt: 2, mb: 4 }}>
+      <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+        <Typography variant="h5" align="center" gutterBottom>
+          Gehaltsabrechnungs-Chat
+        </Typography>
+
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          noValidate
+        >
+          <TextField
+            label="Stelle hier deine Frage zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
+            multiline
+            rows={4}
+            fullWidth
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            disabled={loading}
           />
-          <button
+          <Button
             type="submit"
-            className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            variant="contained"
             disabled={loading || question.trim() === ""}
+            sx={{ alignSelf: "center", minWidth: 150 }}
           >
-            {loading ? "Lädt..." : "Frage stellen"}
-          </button>
-        </form>
+            {loading ? <CircularProgress size={24} /> : "Frage stellen"}
+          </Button>
+        </Box>
+
         {error && (
-          <p className="mt-4 text-red-600 text-center">Fehler: {error}</p>
+          <Alert severity="error" sx={{ mt: 2 }}>
+            Fehler: {error}
+          </Alert>
         )}
         {answer && (
-          <div className="mt-6 p-4 bg-gray-100 rounded">
-            <h2 className="font-medium mb-2">Antwort:</h2>
-            <p className="whitespace-pre-wrap">{answer}</p>
-          </div>
+          <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 1 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Antwort:
+            </Typography>
+            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+              {answer}
+            </Typography>
+          </Paper>
         )}
-      </div>
-    </div>
+      </Paper>
+    </Box>
   );
 }
