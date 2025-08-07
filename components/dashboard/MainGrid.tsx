@@ -11,6 +11,7 @@ import SessionsChart from "./SessionsChart";
 import StatCard, { StatCardProps } from "./StatCard";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { filteredStatement, StatementData } from "@/constants/Interfaces";
+import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
 
 export default function MainGrid() {
   const [filteredStatements, setFilteredStatements] = useState<
@@ -127,6 +128,9 @@ export default function MainGrid() {
         ))}
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <HighlightedCard />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <SocialPieChart statements={statements} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart statements={statements} />
