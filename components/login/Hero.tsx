@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { GithubIcon } from "@/components/icons/CustomIcons";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 const StyledBox = styled("div")(({ theme }) => ({
   alignSelf: "center",
@@ -35,8 +34,6 @@ const StyledBox = styled("div")(({ theme }) => ({
 }));
 
 export default function Hero() {
-  const router = useRouter();
-
   return (
     <Box
       id="hero"
@@ -105,9 +102,7 @@ export default function Hero() {
               fullWidth
               variant="outlined"
               onClick={() => {
-                signIn("github").then(() => {
-                  router.push("/");
-                });
+                signIn("github", { callbackUrl: "/" });
               }}
               startIcon={<GithubIcon />}
             >
