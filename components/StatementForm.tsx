@@ -306,7 +306,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
       <Box display="flex" justifyContent="flex-end" gap={2}>
         <Button variant="contained" color="error" onClick={handleDelete}>
-          Löschen
+          Abbrechen
         </Button>
         <Button type="submit" variant="contained" color="success">
           Speichern
