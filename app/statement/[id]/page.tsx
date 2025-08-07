@@ -15,7 +15,6 @@ export default function StatementPage() {
           display: "flex",
           justifyContent: "center",
           py: 6,
-          background: "linear-gradient(90deg, #E3F2FD 0%, #E1F5FE 100%)",
         }}
       >
         <Container maxWidth="md">
