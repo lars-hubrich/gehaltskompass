@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { GithubIcon } from "@/components/icons/CustomIcons";
 import { signIn } from "next-auth/react";
-import { router } from "next/client";
+import { useRouter } from "next/navigation";
 
 const StyledBox = styled("div")(({ theme }) => ({
   alignSelf: "center",
@@ -35,6 +35,8 @@ const StyledBox = styled("div")(({ theme }) => ({
 }));
 
 export default function Hero() {
+  const router = useRouter();
+
   return (
     <Box
       id="hero"
