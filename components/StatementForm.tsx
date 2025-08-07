@@ -75,28 +75,29 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [bulkResult, setBulkResult] = useState<{
+    success: number;
+    failed: number;
+  } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (statementId === "new") {
       setData(getInitialState());
     } else if (statementId) {
-      const fetchStatement = async () => {
+      (async () => {
         const res = await fetch(`/api/statement/${statementId}`);
         if (res.ok) {
           const loaded = await res.json();
           setData({ ...loaded, incomes: loaded.incomes || [] });
         }
-      };
-      // noinspection JSIgnoredPromiseFromCall
-      fetchStatement();
+      })();
     }
   }, [statementId]);
 
-  // Handle file drop
   const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    await handleFile(e.dataTransfer.files);
+    await handleFiles(e.dataTransfer.files);
   }, []);
 
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -105,58 +106,101 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    await handleFile(e.target.files);
+    await handleFiles(e.target.files);
   };
 
-  const handleFile = async (files: FileList) => {
+  const handleFiles = async (files: FileList) => {
     if (files.length === 0) return;
-    const file = files[0];
     setError(null);
-    if (file.type !== "application/pdf") {
-      setError("Bitte eine PDF-Datei hochladen.");
+    setBulkResult(null);
+
+    if (files.length === 1) {
+      const file = files[0];
+      if (file.type !== "application/pdf") {
+        setError("Bitte eine PDF-Datei hochladen.");
+        return;
+      }
+      setLoading(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/extract", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(err.error || "Upload fehlgeschlagen");
+        }
+        const json: StatementData = await res.json();
+        setData({ ...json, incomes: json.incomes || [] });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
       return;
     }
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/extract", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        // noinspection ExceptionCaughtLocallyJS
-        throw new Error(err.error || "Upload fehlgeschlagen");
-      }
-      const json: StatementData = await res.json();
-      setData({ ...json, incomes: json.incomes || [] });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+
+    const count = files.length;
+    if (
+      !window.confirm(
+        `Sind Sie sicher, dass Sie ${count} Gehaltsabrechnungen hochladen möchten?`,
+      )
+    ) {
+      return;
     }
+
+    setLoading(true);
+    let success = 0;
+    let failed = 0;
+
+    for (const file of Array.from(files)) {
+      if (file.type !== "application/pdf") {
+        failed++;
+        continue;
+      }
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/extract", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        if (res.ok) {
+          success++;
+        } else {
+          failed++;
+        }
+      } catch {
+        failed++;
+      }
+    }
+    setLoading(false);
+    setBulkResult({ success, failed });
   };
 
   const handleField =
     (field: keyof StatementData) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val =
+      const value =
         field === "month" || field === "year"
           ? parseInt(e.target.value, 10)
           : parseFloat(e.target.value);
-      setData((prev) => ({ ...prev, [field]: isNaN(val) ? 0 : val }));
+      setData((prev) => ({ ...prev, [field]: isNaN(value) ? 0 : value }));
     };
 
   const handleIncomeChange =
-    (i: number, key: keyof (typeof data.incomes)[0]) =>
+    (index: number, key: keyof StatementData["incomes"][0]) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setData((prev) => {
         const incomes = [...prev.incomes];
-        incomes[i] = {
-          ...incomes[i],
+        incomes[index] = {
+          ...incomes[index],
           [key]:
             key === "value" ? parseFloat(e.target.value) || 0 : e.target.value,
         };
@@ -164,17 +208,17 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       });
     };
 
-  const addIncome = () => {
-    setData({
-      ...data,
-      incomes: [...data.incomes, { name: "", identifier: "", value: 0 }],
-    });
-  };
+  const addIncome = () =>
+    setData((prev) => ({
+      ...prev,
+      incomes: [...prev.incomes, { name: "", identifier: "", value: 0 }],
+    }));
 
-  const removeIncome = (index: number) => {
-    const newIncomes = data.incomes.filter((_, i) => i !== index);
-    setData({ ...data, incomes: newIncomes });
-  };
+  const removeIncome = (index: number) =>
+    setData((prev) => ({
+      ...prev,
+      incomes: prev.incomes.filter((_, i) => i !== index),
+    }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,33 +227,27 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         ? "/api/statement"
         : `/api/statement/${statementId}`;
     const method = statementId === "new" ? "POST" : "PUT";
-
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
       credentials: "include",
     });
-
     if (res.ok) {
-      router.push("/");
-      router.refresh();
+      router.replace("/");
     }
   };
 
   const handleDelete = async () => {
     if (!statementId || statementId === "new") {
-      router.push("/");
+      router.replace("/");
       return;
     }
-
     const res = await fetch(`/api/statement/${statementId}`, {
       method: "DELETE",
     });
-
     if (res.ok) {
-      router.push("/");
-      router.refresh();
+      router.replace("/");
     }
   };
 
@@ -229,7 +267,8 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         ref={fileInputRef}
         type="file"
         accept="application/pdf"
-        style={{ display: "none" }}
+        multiple
+        hidden
         onChange={onFileChange}
       />
 
@@ -245,9 +284,9 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         onDragOver={onDragOver}
         onClick={() => fileInputRef.current?.click()}
       >
-        <UploadFileIcon sx={{ fontSize: 40, mb: 1 }} />
-        <Typography>
-          Klicke hier oder ziehe dein PDF-Dokument hinein, um die Felder
+        <UploadFileIcon fontSize="large" />
+        <Typography sx={{ mt: 1 }}>
+          Klicke hier oder ziehe dein PDF-Dokument(e) hinein, um die Felder
           automatisch zu befüllen.
         </Typography>
         {loading && <CircularProgress sx={{ mt: 1 }} />}
@@ -256,9 +295,14 @@ export default function StatementForm({ statementId }: StatementFormProps) {
             {error}
           </Typography>
         )}
+        {bulkResult && (
+          <Typography sx={{ mt: 1 }}>
+            Upload abgeschlossen: {bulkResult.success} erfolgreich,{" "}
+            {bulkResult.failed} fehlgeschlagen.
+          </Typography>
+        )}
       </Paper>
 
-      {/* Zeitraum */}
       <Paper variant="outlined" sx={{ p: 2 }}>
         <Typography variant="h6">Abrechnungszeitraum</Typography>
         <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -283,24 +327,29 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         </Grid>
       </Paper>
 
-      {/* Einkommensarten */}
       <Paper variant="outlined" sx={{ p: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Typography variant="h6">Einkommensarten</Typography>
-          <IconButton onClick={addIncome}>
+          <IconButton onClick={addIncome} color="primary">
             <AddIcon />
           </IconButton>
         </Box>
-        <Divider sx={{ my: 1 }} />
-        {data.incomes.map((inc, i) => (
-          <Paper key={i} variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Divider sx={{ my: 2 }} />
+        {data.incomes.map((inc, idx) => (
+          <Paper key={idx} variant="outlined" sx={{ p: 2, mb: 2 }}>
             <Grid container spacing={2}>
               <Grid size={{ xs: 5 }}>
                 <TextField
                   fullWidth
                   label="Name"
                   value={inc.name}
-                  onChange={handleIncomeChange(i, "name")}
+                  onChange={handleIncomeChange(idx, "name")}
                 />
               </Grid>
               <Grid size={{ xs: 5 }}>
@@ -308,7 +357,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                   fullWidth
                   label="Identifier"
                   value={inc.identifier}
-                  onChange={handleIncomeChange(i, "identifier")}
+                  onChange={handleIncomeChange(idx, "identifier")}
                 />
               </Grid>
               <Grid size={{ xs: 2 }}>
@@ -317,11 +366,11 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                   label="Wert"
                   type="number"
                   value={inc.value}
-                  onChange={handleIncomeChange(i, "value")}
+                  onChange={handleIncomeChange(idx, "value")}
                 />
               </Grid>
               <Grid size={{ xs: 12 }} textAlign="right">
-                <IconButton onClick={() => removeIncome(i)} color="error">
+                <IconButton onClick={() => removeIncome(idx)} color="error">
                   <DeleteIcon />
                 </IconButton>
               </Grid>
@@ -330,7 +379,6 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         ))}
       </Paper>
 
-      {/* Weitere Sektionen: Brutto, Abzüge, Sozialabgaben, Auszahlung */}
       <Grid container spacing={2}>
         {[
           {
@@ -372,15 +420,14 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                 {section.title}
               </Typography>
               <Grid container spacing={1}>
-                {section.fields.map((f) => (
-                  <Grid size={{ xs: 6 }} key={f}>
+                {section.fields.map((field) => (
+                  <Grid size={{ xs: 6 }} key={field}>
                     <TextField
                       fullWidth
-                      label={f.replace(/_/g, " ")}
+                      label={field.replace(/_/g, " ")}
                       type="number"
-                      value={data[f as keyof StatementData] as number}
-                      onChange={handleField(f as keyof StatementData)}
-                      slotProps={{ htmlInput: { step: 0.01 } }}
+                      value={data[field as keyof StatementData] as number}
+                      onChange={handleField(field as keyof StatementData)}
                     />
                   </Grid>
                 ))}
@@ -390,7 +437,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         ))}
       </Grid>
 
-      <Box display="flex" justifyContent="flex-end" gap={2}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
         <Button variant="contained" color="error" onClick={handleDelete}>
           {statementId === "new" ? "Abbrechen" : "Löschen"}
         </Button>
