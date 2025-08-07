@@ -7,7 +7,7 @@ export interface Statement {
 }
 
 interface Income {
-  id?: number;
+  id?: string;
   name: string;
   identifier: string;
   value: number;

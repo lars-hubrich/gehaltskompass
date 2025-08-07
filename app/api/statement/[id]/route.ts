@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 
 interface IncomeData {
-  id?: number;
+  id?: string;
   name: string;
   identifier: string;
   value: number;
@@ -87,7 +87,7 @@ export async function PUT(
         ...statementData,
         incomes: incomes
           ? {
-              upsert: incomes.map((income) => ({
+              upsert: incomes.map((income: IncomeData) => ({
                 where: { id: income.id },
                 update: {
                   name: income.name,
