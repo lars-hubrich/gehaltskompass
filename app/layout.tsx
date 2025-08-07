@@ -2,19 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { SessionProvider } from "next-auth/react";
-import AppTheme from "@/theme/AppTheme";
-import {
-  chartsCustomizations,
-  dataGridCustomizations,
-} from "@/theme/customizations";
-import CssBaseline from "@mui/material/CssBaseline";
-import * as React from "react";
 
-const xThemeComponents = {
-  ...chartsCustomizations,
-  ...dataGridCustomizations,
-};
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "GehaltsKompass",
@@ -30,12 +19,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className="min-h-screen bg-gradient-to-r from-gray-50 to-gray-200 text-gray-900">
-        <SessionProvider>
-          <AppTheme themeComponents={xThemeComponents}>
-            <CssBaseline enableColorScheme />
-            {children}
-          </AppTheme>
-        </SessionProvider>
+        <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />
       </body>
