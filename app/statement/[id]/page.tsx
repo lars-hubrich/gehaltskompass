@@ -1,21 +1,29 @@
 "use client";
-
-import StatementForm from "@/components/StatementForm";
+import * as React from "react";
 import { useParams } from "next/navigation";
+import { Box, Container, Paper } from "@mui/material";
+import StatementForm from "@/components/StatementForm";
+import AppTheme from "@/theme/AppTheme";
 
 export default function StatementPage() {
   const params = useParams<{ id: string }>();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-blue-100">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-10 border border-gray-200">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-10 text-center drop-shadow-md">
-          {params.id === "new"
-            ? "Neue Abrechnung erstellen"
-            : "Abrechnung bearbeiten"}
-        </h1>
-        <StatementForm statementId={params.id} />
-      </div>
-    </div>
+    <AppTheme>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          py: 6,
+          background: "linear-gradient(90deg, #E3F2FD 0%, #E1F5FE 100%)",
+        }}
+      >
+        <Container maxWidth="md">
+          <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+            <StatementForm statementId={params.id} />
+          </Paper>
+        </Container>
+      </Box>
+    </AppTheme>
   );
 }

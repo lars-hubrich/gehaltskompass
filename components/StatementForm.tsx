@@ -1,38 +1,20 @@
 "use client";
-
+import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-
-interface Income {
-  id?: number;
-  name: string;
-  identifier: string;
-  value: number;
-}
-
-interface StatementData {
-  month: number;
-  year: number;
-  incomes: Income[];
-  brutto_tax: number;
-  brutto_av: number;
-  brutto_pv: number;
-  brutto_rv: number;
-  brutto_kv: number;
-  deduction_tax_income: number;
-  deduction_tax_church: number;
-  deduction_tax_solidarity: number;
-  deduction_tax_other: number;
-  social_av: number;
-  social_pv: number;
-  social_rv: number;
-  social_kv: number;
-  payout_netto: number;
-  payout_transfer: number;
-  payout_vwl: number;
-  payout_other: number;
-  [key: string]: string | number | Income[];
-}
+import {
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  IconButton,
+  Box,
+  Divider,
+  Paper,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { StatementData } from "@/constants/Interfaces";
 
 interface StatementFormProps {
   statementId?: string;
@@ -41,7 +23,7 @@ interface StatementFormProps {
 export default function StatementForm({ statementId }: StatementFormProps) {
   const router = useRouter();
 
-  const getInitialState = () => ({
+  const getInitialState = (): StatementData => ({
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
     incomes: [
@@ -67,7 +49,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     payout_other: 0.0,
   });
 
-  const [statementData, setStatementData] = useState<StatementData>({
+  const [data, setData] = useState<StatementData>({
     month: 0,
     year: 0,
     incomes: [],
@@ -92,59 +74,54 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   useEffect(() => {
     if (statementId === "new") {
-      setStatementData(getInitialState());
+      setData(getInitialState());
     } else if (statementId) {
       const fetchStatement = async () => {
         const res = await fetch(`/api/statement/${statementId}`);
         if (res.ok) {
           const data = await res.json();
           // Ensure incomes is always an array
-          setStatementData({ ...data, incomes: data.incomes || [] });
+          setData({ ...data, incomes: data.incomes || [] });
         }
       };
       fetchStatement();
     }
   }, [statementId]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const parsedValue =
-      name === "month" || name === "year"
-        ? parseInt(value, 10)
-        : parseFloat(value);
-
-    setStatementData({
-      ...statementData,
-      [name]: isNaN(parsedValue) ? 0 : parsedValue,
-    });
-  };
-
-  const handleIncomeChange = (
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    const newIncomes = [...statementData.incomes];
-    newIncomes[index] = {
-      ...newIncomes[index],
-      [name]: name === "value" ? parseFloat(value) || 0 : value,
+  const handleField =
+    (field: keyof StatementData) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val =
+        field === "month" || field === "year"
+          ? parseInt(e.target.value, 10)
+          : parseFloat(e.target.value);
+      setData((prev) => ({ ...prev, [field]: isNaN(val) ? 0 : val }));
     };
-    setStatementData({ ...statementData, incomes: newIncomes });
-  };
+
+  const handleIncomeChange =
+    (i: number, key: keyof (typeof data.incomes)[0]) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setData((prev) => {
+        const incomes = [...prev.incomes];
+        incomes[i] = {
+          ...incomes[i],
+          [key]:
+            key === "value" ? parseFloat(e.target.value) || 0 : e.target.value,
+        };
+        return { ...prev, incomes };
+      });
+    };
 
   const addIncome = () => {
-    setStatementData({
-      ...statementData,
-      incomes: [
-        ...statementData.incomes,
-        { name: "", identifier: "", value: 0 },
-      ],
+    setData({
+      ...data,
+      incomes: [...data.incomes, { name: "", identifier: "", value: 0 }],
     });
   };
 
   const removeIncome = (index: number) => {
-    const newIncomes = statementData.incomes.filter((_, i) => i !== index);
-    setStatementData({ ...statementData, incomes: newIncomes });
+    const newIncomes = data.incomes.filter((_, i) => i !== index);
+    setData({ ...data, incomes: newIncomes });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -158,7 +135,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(statementData),
+      body: JSON.stringify(data),
       credentials: "include", // Session-Cookies mitsenden
     });
 
@@ -181,155 +158,160 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     }
   };
 
-  const renderInputField = (
-    label: string,
-    name: string,
-    type: string = "number",
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    value?: string | number,
-    inputName?: string, // Use a specific name for the input element if provided
-  ) => (
-    <div className="mb-4">
-      <label
-        className="block text-gray-700 text-sm font-bold mb-2"
-        htmlFor={name}
-      >
-        {label}
-      </label>
-      <input
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id={name}
-        name={inputName || name} // Use specific inputName or fall back to name
-        type={type}
-        value={
-          value !== undefined
-            ? value
-            : Array.isArray(statementData[name])
-              ? JSON.stringify(statementData[name]) // Convert array to string
-              : statementData[name]
-        }
-        onChange={onChange || handleInputChange}
-        step="0.01"
-      />
-    </div>
-  );
-
   return (
-    <form
+    <Box
+      component="form"
       onSubmit={handleSubmit}
-      className="w-full max-w-4xl mb-8 bg-gradient-to-b from-white to-gray-50 p-10 rounded-2xl shadow-2xl border border-gray-200"
+      sx={{ display: "flex", flexDirection: "column", gap: 4 }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-        <div>
-          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
-            Abrechnungszeitraum
-          </h2>
-          {renderInputField("Monat", "month")}
-          {renderInputField("Jahr", "year")}
-        </div>
-        <div>
-          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
-            Einkommensarten
-          </h2>
-          {statementData.incomes.map((income, index) => (
-            <div
-              key={index}
-              className="p-6 border rounded-lg mb-6 bg-gray-100 shadow-sm"
-            >
-              <div className="grid grid-cols-2 gap-6">
-                {renderInputField(
-                  `Bezeichnung`,
-                  `incomes[${index}].name`,
-                  "text",
-                  (e) => handleIncomeChange(index, e),
-                  income.name,
-                  "name",
-                )}
-                {renderInputField(
-                  `Kennung`,
-                  `incomes[${index}].identifier`,
-                  "text",
-                  (e) => handleIncomeChange(index, e),
-                  income.identifier,
-                  "identifier",
-                )}
-              </div>
-              {renderInputField(
-                `Wert`,
-                `incomes[${index}].value`,
-                "number",
-                (e) => handleIncomeChange(index, e),
-                income.value,
-                "value",
-              )}
-              <button
-                type="button"
-                onClick={() => removeIncome(index)}
-                className="mt-4 text-red-600 hover:underline"
-              >
-                Entfernen
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addIncome}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
-          >
-            Einkommensart hinzufügen
-          </button>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-        <div>
-          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">Brutto</h2>
-          {renderInputField("Steuer", "brutto_tax")}
-          {renderInputField("AV", "brutto_av")}
-          {renderInputField("PV", "brutto_pv")}
-          {renderInputField("RV", "brutto_rv")}
-          {renderInputField("KV", "brutto_kv")}
-        </div>
-        <div>
-          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">Abzüge</h2>
-          {renderInputField("Einkommensteuer", "deduction_tax_income")}
-          {renderInputField("Kirchensteuer", "deduction_tax_church")}
-          {renderInputField("Solidaritätszuschlag", "deduction_tax_solidarity")}
-          {renderInputField("Sonstige Abzüge", "deduction_tax_other")}
-        </div>
-        <div>
-          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
-            Sozialabgaben
-          </h2>
-          {renderInputField("Arbeitslosenversicherung", "social_av")}
-          {renderInputField("Pflegeversicherung", "social_pv")}
-          {renderInputField("Rentenversicherung", "social_rv")}
-          {renderInputField("Krankenversicherung", "social_kv")}
-        </div>
-        <div>
-          <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
-            Auszahlung
-          </h2>
-          {renderInputField("Nettoauszahlung", "payout_netto")}
-          {renderInputField("Überweisung", "payout_transfer")}
-          {renderInputField("VWL", "payout_vwl")}
-          {renderInputField("Sonstige Auszahlungen", "payout_other")}
-        </div>
-      </div>
-      <div className="mt-10 flex justify-end gap-4">
-        <button
-          type="button"
-          onClick={handleDelete}
-          className="px-6 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
-        >
+      <Typography variant="h4" align="center">
+        {statementId === "new"
+          ? "Neue Abrechnung erstellen"
+          : "Abrechnung ansehen und bearbeiten"}
+      </Typography>
+
+      {/* Zeitraum */}
+      <Paper variant="outlined" sx={{ p: 2 }}>
+        <Typography variant="h6">Abrechnungszeitraum</Typography>
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid size={{ xs: 6 }}>
+            <TextField
+              fullWidth
+              label="Monat"
+              type="number"
+              value={data.month}
+              onChange={handleField("month")}
+            />
+          </Grid>
+          <Grid size={{ xs: 6 }}>
+            <TextField
+              fullWidth
+              label="Jahr"
+              type="number"
+              value={data.year}
+              onChange={handleField("year")}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {/* Einkommensarten */}
+      <Paper variant="outlined" sx={{ p: 2 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6">Einkommensarten</Typography>
+          <IconButton onClick={addIncome}>
+            <AddIcon />
+          </IconButton>
+        </Box>
+        <Divider sx={{ my: 1 }} />
+        {data.incomes.map((inc, i) => (
+          <Paper key={i} variant="outlined" sx={{ p: 2, mb: 2 }}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 5 }}>
+                <TextField
+                  fullWidth
+                  label="Name"
+                  value={inc.name}
+                  onChange={handleIncomeChange(i, "name")}
+                />
+              </Grid>
+              <Grid size={{ xs: 5 }}>
+                <TextField
+                  fullWidth
+                  label="Identifier"
+                  value={inc.identifier}
+                  onChange={handleIncomeChange(i, "identifier")}
+                />
+              </Grid>
+              <Grid size={{ xs: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Wert"
+                  type="number"
+                  value={inc.value}
+                  onChange={handleIncomeChange(i, "value")}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }} textAlign="right">
+                <IconButton onClick={() => removeIncome(i)} color="error">
+                  <DeleteIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </Paper>
+        ))}
+      </Paper>
+
+      {/* Weitere Sektionen: Brutto, Abzüge, Sozialabgaben, Auszahlung */}
+      <Grid container spacing={2}>
+        {[
+          {
+            title: "Brutto",
+            fields: [
+              "brutto_tax",
+              "brutto_av",
+              "brutto_pv",
+              "brutto_rv",
+              "brutto_kv",
+            ],
+          },
+          {
+            title: "Abzüge",
+            fields: [
+              "deduction_tax_income",
+              "deduction_tax_church",
+              "deduction_tax_solidarity",
+              "deduction_tax_other",
+            ],
+          },
+          {
+            title: "Sozialabgaben",
+            fields: ["social_av", "social_pv", "social_rv", "social_kv"],
+          },
+          {
+            title: "Auszahlung",
+            fields: [
+              "payout_netto",
+              "payout_transfer",
+              "payout_vwl",
+              "payout_other",
+            ],
+          },
+        ].map((section, idx) => (
+          <Grid size={{ xs: 12, md: 6 }} key={idx}>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                {section.title}
+              </Typography>
+              <Grid container spacing={1}>
+                {section.fields.map((f) => (
+                  <Grid size={{ xs: 6 }} key={f}>
+                    <TextField
+                      fullWidth
+                      label={f.replace(/_/g, " ")}
+                      type="number"
+                      value={data[f as keyof StatementData] as number}
+                      onChange={handleField(f as keyof StatementData)}
+                      slotProps={{
+                        htmlInput: { step: 0.01 },
+                      }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Box display="flex" justifyContent="flex-end" gap={2}>
+        <Button variant="contained" color="error" onClick={handleDelete}>
           Löschen
-        </button>
-        <button
-          type="submit"
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
-        >
+        </Button>
+        <Button type="submit" variant="contained" color="success">
           Speichern
-        </button>
-      </div>
-    </form>
+        </Button>
+      </Box>
+    </Box>
   );
 }
