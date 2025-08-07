@@ -1,11 +1,17 @@
-import * as React from "react";
+"use client";
+
+import React from "react";
 import { useTheme } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { StatementData } from "@/constants/Interfaces";
+
+interface StatementLineChartProps {
+  statements: StatementData[];
+}
 
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (
@@ -18,24 +24,37 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString("en-US", {
-    month: "short",
-  });
-  const daysInMonth = date.getDate();
-  const days = [];
-  let i = 1;
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`);
-    i += 1;
-  }
-  return days;
-}
-
-export default function SessionsChart() {
+export default function StatementLineChart({
+  statements = [],
+}: StatementLineChartProps) {
   const theme = useTheme();
-  const data = getDaysInMonth(4, 2024);
+
+  const sorted = [...statements].sort((a, b) =>
+    a.year !== b.year ? a.year - b.year : a.month - b.month,
+  );
+
+  const categories = sorted.map(
+    (s) => `${String(s.month).padStart(2, "0")}.${s.year}`,
+  );
+
+  const bruttoData = sorted.map((s) => s.brutto_tax);
+  const payoutNetto = sorted.map((s) => s.payout_netto);
+
+  const taxData = sorted.map(
+    (s) =>
+      s.deduction_tax_income +
+      s.deduction_tax_church +
+      s.deduction_tax_solidarity +
+      s.deduction_tax_other,
+  );
+
+  const socialData = sorted.map(
+    (s) => s.social_av + s.social_pv + s.social_rv + s.social_kv,
+  );
+
+  const payoutData = sorted.map(
+    (s) => s.payout_netto + s.payout_transfer + s.payout_vwl + s.payout_other,
+  );
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -43,104 +62,86 @@ export default function SessionsChart() {
     theme.palette.primary.dark,
   ];
 
+  const totalBrutto = bruttoData.reduce((sum, v) => sum + v, 0);
+  const totalNetto = payoutNetto.reduce((sum, v) => sum + v, 0);
+
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Sessions
+          Gehaltsabrechnungen Verlauf
         </Typography>
-        <Stack sx={{ justifyContent: "space-between" }}>
-          <Stack
-            direction="row"
-            sx={{
-              alignContent: { xs: "center", sm: "flex-start" },
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <Typography variant="h4" component="p">
-              13,277
+        <Stack sx={{ justifyContent: "space-between", mb: 2 }}>
+          <Stack direction="row" sx={{ alignItems: "center", gap: 2 }}>
+            <Typography variant="h5" component="p">
+              {`Brutto gesamt: ${totalBrutto.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })} €`}
             </Typography>
-            <Chip size="small" color="success" label="+35%" />
+            <Typography variant="h5" component="p">
+              {`Netto gesamt: ${totalNetto.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })} €`}
+            </Typography>
           </Stack>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Sessions per day for the last 30 days
+            Verteilung von Steuern, Sozialabgaben und Auszahlungen über die
+            letzten {categories.length} Monate
           </Typography>
         </Stack>
+
         <LineChart
           colors={colorPalette}
           xAxis={[
             {
-              scaleType: "point",
-              data,
-              tickInterval: (index, i) => (i + 1) % 5 === 0,
+              scaleType: "band",
+              data: categories,
+              categoryGapRatio: 0.5,
               height: 24,
             },
           ]}
           yAxis={[{ width: 50 }]}
           series={[
             {
-              id: "direct",
-              label: "Direct",
+              id: "tax",
+              label: "Steuern",
               showMark: false,
               curve: "linear",
-              stack: "total",
               area: true,
-              stackOrder: "ascending",
-              data: [
-                300, 900, 600, 1200, 1500, 1800, 2400, 2100, 2700, 3000, 1800,
-                3300, 3600, 3900, 4200, 4500, 3900, 4800, 5100, 5400, 4800,
-                5700, 6000, 6300, 6600, 6900, 7200, 7500, 7800, 8100,
-              ],
+              data: taxData,
             },
             {
-              id: "referral",
-              label: "Referral",
+              id: "social",
+              label: "Sozialabgaben",
               showMark: false,
               curve: "linear",
-              stack: "total",
               area: true,
-              stackOrder: "ascending",
-              data: [
-                500, 900, 700, 1400, 1100, 1700, 2300, 2000, 2600, 2900, 2300,
-                3200, 3500, 3800, 4100, 4400, 2900, 4700, 5000, 5300, 5600,
-                5900, 6200, 6500, 5600, 6800, 7100, 7400, 7700, 8000,
-              ],
+              data: socialData,
             },
             {
-              id: "organic",
-              label: "Organic",
+              id: "payout",
+              label: "Auszahlungen",
               showMark: false,
               curve: "linear",
-              stack: "total",
-              stackOrder: "ascending",
-              data: [
-                1000, 1500, 1200, 1700, 1300, 2000, 2400, 2200, 2600, 2800,
-                2500, 3000, 3400, 3700, 3200, 3900, 4100, 3500, 4300, 4500,
-                4000, 4700, 5000, 5200, 4800, 5400, 5600, 5900, 6100, 6300,
-              ],
               area: true,
+              data: payoutData,
             },
           ]}
-          height={250}
+          height={300}
           margin={{ left: 0, right: 20, top: 20, bottom: 0 }}
           grid={{ horizontal: true }}
+          hideLegend={false}
           sx={{
-            "& .MuiAreaElement-series-organic": {
-              fill: "url('#organic')",
-            },
-            "& .MuiAreaElement-series-referral": {
-              fill: "url('#referral')",
-            },
-            "& .MuiAreaElement-series-direct": {
-              fill: "url('#direct')",
-            },
+            "& .MuiAreaElement-series-tax": { fill: "url('#tax')" },
+            "& .MuiAreaElement-series-social": { fill: "url('#social')" },
+            "& .MuiAreaElement-series-payout": { fill: "url('#payout')" },
           }}
-          hideLegend
         >
-          <AreaGradient color={theme.palette.primary.dark} id="organic" />
-          <AreaGradient color={theme.palette.primary.main} id="referral" />
-          <AreaGradient color={theme.palette.primary.light} id="direct" />
+          <AreaGradient color={theme.palette.primary.dark} id="tax" />
+          <AreaGradient color={theme.palette.primary.main} id="social" />
+          <AreaGradient color={theme.palette.primary.light} id="payout" />
         </LineChart>
       </CardContent>
     </Card>
