@@ -7,9 +7,11 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { useRouter } from "next/navigation";
 
 export default function HighlightedCard() {
   const theme = useTheme();
+  const router = useRouter();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
@@ -34,6 +36,9 @@ export default function HighlightedCard() {
           color="primary"
           endIcon={<ChevronRightRoundedIcon />}
           fullWidth={isSmallScreen}
+          onClick={() => {
+            router.push("/dashboard/insights");
+          }}
         >
           Erhalte Einblick
         </Button>

@@ -12,7 +12,7 @@ import {
   Alert,
 } from "@mui/material";
 
-export default function ChatTestPage() {
+export default function ChatPage() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ export default function ChatTestPage() {
           noValidate
         >
           <TextField
-            label="Stelle hier deine Frage zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
+            label="Stelle hier Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
             multiline
             rows={4}
             fullWidth
