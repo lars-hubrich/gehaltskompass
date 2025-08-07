@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { DataGrid, GridColDef, Toolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  Toolbar,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
 import { Statement } from "@/constants/Interfaces";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
@@ -19,6 +24,11 @@ export default function StatementDataGrid({
   pageSize = 10,
 }: CustomizedDataGridProps) {
   const router = useRouter();
+  const [selectionModel, setSelectionModel] =
+    React.useState<GridRowSelectionModel>({
+      type: "include",
+      ids: new Set(),
+    });
 
   const euroFormatter = (value: number) => `${value.toFixed(2)} €`;
 
@@ -55,7 +65,16 @@ export default function StatementDataGrid({
     },
   ];
 
-  // Custom Toolbar slot
+  // Bulk-delete handler
+  const handleDelete = () => {
+    console.log("Delete: ", selectionModel.ids);
+    setSelectionModel({
+      type: "include",
+      ids: new Set(),
+    }); // clear checkboxes
+  };
+
+  // Custom toolbar
   const CustomToolbar = () => (
     <Toolbar>
       <Typography component="h2" variant="h6" sx={{ flex: 1, mx: 0.5 }}>
@@ -64,7 +83,9 @@ export default function StatementDataGrid({
       <Button
         startIcon={<DeleteIcon />}
         variant="outlined"
-        // disabled={selectionModel.length === 0}
+        disabled={selectionModel.ids.size === 0}
+        onClick={handleDelete}
+        sx={{ mr: 1 }}
       >
         Löschen
       </Button>
@@ -84,6 +105,8 @@ export default function StatementDataGrid({
       disableRowSelectionOnClick
       rows={rows}
       columns={columns}
+      rowSelectionModel={selectionModel}
+      onRowSelectionModelChange={(newSel) => setSelectionModel(newSel)}
       showToolbar
       slots={{ toolbar: CustomToolbar }}
       pageSizeOptions={[5, 10, 20]}
