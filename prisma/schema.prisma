@@ -93,7 +93,7 @@ model statement {
 }
 
 model income {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   statement_id String
   statement    statement @relation(fields: [statement_id], references: [id], onDelete: Cascade)
   name         String

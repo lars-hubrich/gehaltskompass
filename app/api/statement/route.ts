@@ -32,6 +32,10 @@ type StatementCreateBody = {
   incomes?: IncomeCreateInput[];
 };
 
+type BulkDeleteBody = {
+  ids: string[];
+};
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -54,7 +58,7 @@ export async function GET() {
     const statements = await prisma.statement.findMany({
       where: { user_id: user.id },
       include: { incomes: true },
-      // orderBy: { year: "desc", month: "desc" },
+      orderBy: { year: "desc", month: "desc" },
     });
     return NextResponse.json(statements);
   } catch (error: unknown) {
@@ -142,6 +146,67 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(
       { error: "Could not create statement." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    console.error("DELETE /api/statement: No session found");
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+  if (!session.user?.email) {
+    console.error("DELETE /api/statement: No email in session");
+    return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) {
+    console.error("DELETE /api/statement: User not found");
+    return NextResponse.json({ error: "User not found" }, { status: 401 });
+  }
+
+  let ids: string[];
+  try {
+    const body: BulkDeleteBody = await request.json();
+    ids = body.ids;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return NextResponse.json(
+        { error: "No statement IDs provided for deletion." },
+        { status: 400 },
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid request body." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const deleteResult = await prisma.statement.deleteMany({
+      where: {
+        id: { in: ids },
+        user_id: user.id,
+      },
+    });
+
+    return NextResponse.json(
+      { deletedCount: deleteResult.count },
+      { status: 200 },
+    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("DELETE /api/statement error:", error.message);
+    } else {
+      console.error("DELETE /api/statement error (unknown):", error);
+    }
+    return NextResponse.json(
+      { error: "Could not delete statements." },
       { status: 500 },
     );
   }

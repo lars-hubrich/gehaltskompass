@@ -33,10 +33,7 @@ interface UpdateData {
   incomes?: IncomeData[];
 }
 
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) {
+export async function GET(context: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -86,10 +83,8 @@ export async function PUT(
     }
     const data: UpdateData = await request.json();
 
-    // Separate incomes from the main data object
     const { incomes, ...statementData } = data;
 
-    // Update the statement
     const updatedStatement = await prisma.statement.update({
       where: { id },
       data: {
@@ -124,10 +119,7 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(context: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
