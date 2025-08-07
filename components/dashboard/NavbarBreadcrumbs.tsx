@@ -22,9 +22,9 @@ export default function NavbarBreadcrumbs() {
   const title = React.useMemo(() => {
     if (pathname === "/dashboard") {
       return "Dashboard";
-    } else if (pathname === "/dashboard/analytics") {
+    } else if (pathname === "/analytics") {
       return "Analytics";
-    } else if (pathname === "/dashboard/insights") {
+    } else if (pathname === "/insights") {
       return "AI Insights";
     }
     return undefined;

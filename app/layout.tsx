@@ -2,8 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import AuthProvider from "./providers/AuthProvider";
-import AuthGuard from "@/components/AuthGuard";
+import { SessionProvider } from "next-auth/react";
+import AppTheme from "@/theme/AppTheme";
+import {
+  chartsCustomizations,
+  dataGridCustomizations,
+} from "@/theme/customizations";
+import CssBaseline from "@mui/material/CssBaseline";
+import * as React from "react";
+
+const xThemeComponents = {
+  ...chartsCustomizations,
+  ...dataGridCustomizations,
+};
 
 export const metadata: Metadata = {
   title: "GehaltsKompass",
@@ -11,7 +22,6 @@ export const metadata: Metadata = {
     "Unsere Website ermöglicht es dir, deine Gehaltsabrechnungen hochzuladen und zu speichern, um dir aufbereitete Graphen und Statistiken zu bieten. Mit KI-gestützten Antworten erhältst du wertvolle Informationen zu all deinen Gehaltsfragen, und unsere benutzerfreundliche Oberfläche sorgt für eine nahtlose Erfahrung auf allen Geräten.",
 };
 
-// TODO move AppTheme and CssBaseline to layout.tsx?
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,9 +30,12 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className="min-h-screen bg-gradient-to-r from-gray-50 to-gray-200 text-gray-900">
-        <AuthProvider>
-          <AuthGuard>{children}</AuthGuard>
-        </AuthProvider>
+        <SessionProvider>
+          <AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme />
+            {children}
+          </AppTheme>
+        </SessionProvider>
         <Analytics />
         <SpeedInsights />
       </body>

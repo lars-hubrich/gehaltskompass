@@ -17,9 +17,9 @@ const mainListItems = [
   {
     text: "Analytics",
     icon: <AnalyticsRoundedIcon />,
-    path: "/dashboard/analytics",
+    path: "/analytics",
   },
-  { text: "AI Insights", icon: <AssistantIcon />, path: "/dashboard/insights" },
+  { text: "AI Insights", icon: <AssistantIcon />, path: "/insights" },
 ];
 
 const secondaryListItems = [
@@ -34,9 +34,9 @@ export default function MenuContent() {
   const title = React.useMemo(() => {
     if (pathname === "/dashboard") {
       return "Dashboard";
-    } else if (pathname === "/dashboard/analytics") {
+    } else if (pathname === "/analytics") {
       return "Analytics";
-    } else if (pathname === "/dashboard/insights") {
+    } else if (pathname === "/insights") {
       return "AI Insights";
     }
     return undefined;

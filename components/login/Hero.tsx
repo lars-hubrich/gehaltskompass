@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import { GithubIcon } from "@/components/CustomIcons";
+import { GithubIcon } from "@/components/icons/CustomIcons";
 import { signIn } from "next-auth/react";
 
 const StyledBox = styled("div")(({ theme }) => ({

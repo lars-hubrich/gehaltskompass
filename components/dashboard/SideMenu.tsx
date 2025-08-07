@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import MenuContent from "./MenuContent";
 import LogoutButton from "./LogoutButton";
 import { useSession } from "next-auth/react";
-import GehaltskompassIcon from "@/components/GehaltskompassIcon";
+import GehaltskompassIcon from "@/components/icons/GehaltskompassIcon";
 
 const drawerWidth = 240;
 
