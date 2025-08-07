@@ -46,7 +46,14 @@ export default function ChatTestPage() {
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 600, mt: 2, mb: 4 }}>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: { xs: "100%", md: 800 },
+        mt: 2,
+        mb: 4,
+      }}
+    >
       <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
         <Typography variant="h5" align="center" gutterBottom>
           Gehaltsabrechnungs-Chat
@@ -84,10 +91,13 @@ export default function ChatTestPage() {
         )}
         {answer && (
           <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 1 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Antwort:
-            </Typography>
-            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+            <Typography
+              variant="body1"
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
               {answer}
             </Typography>
           </Paper>

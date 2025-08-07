@@ -10,6 +10,7 @@ import AuthGuard from "@/components/AuthGuard";
 import AppNavbar from "@/components/dashboard/AppNavbar";
 import SideMenu from "@/components/dashboard/SideMenu";
 import AppTheme from "@/theme/AppTheme";
+import { usePathname } from "next/navigation";
 import {
   chartsCustomizations,
   dataGridCustomizations,
@@ -25,6 +26,18 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const title = React.useMemo(() => {
+    if (pathname === "/dashboard") {
+      return "Dashboard";
+    }
+    if (pathname.includes("/dashboard/chat")) {
+      return "AI Insights";
+    }
+    return undefined;
+  }, [pathname]);
+
   return (
     <AuthGuard>
       <AppTheme themeComponents={xThemeComponents}>
