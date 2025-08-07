@@ -68,10 +68,13 @@ export default function StatementDataGrid({
   // Bulk-delete handler
   const handleDelete = () => {
     console.log("Delete: ", selectionModel.ids);
+    // TODO implement bulk delete via api
+
     setSelectionModel({
       type: "include",
       ids: new Set(),
     }); // clear checkboxes
+    router.refresh();
   };
 
   // Custom toolbar
