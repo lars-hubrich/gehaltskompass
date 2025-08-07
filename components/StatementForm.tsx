@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Grid,
   Typography,
@@ -75,6 +75,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (statementId === "new") {
@@ -95,10 +96,22 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   // Handle file drop
   const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setError(null);
-    const files = e.dataTransfer.files;
-    if (!files || files.length === 0) return;
+    await handleFile(e.dataTransfer.files);
+  }, []);
+
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    await handleFile(e.target.files);
+  };
+
+  const handleFile = async (files: FileList) => {
+    if (files.length === 0) return;
     const file = files[0];
+    setError(null);
     if (file.type !== "application/pdf") {
       setError("Bitte eine PDF-Datei hochladen.");
       return;
@@ -125,10 +138,6 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
   };
 
   const handleField =
@@ -216,17 +225,30 @@ export default function StatementForm({ statementId }: StatementFormProps) {
           : "Abrechnung ansehen und bearbeiten"}
       </Typography>
 
-      {/* Drag & Drop Bereich */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        style={{ display: "none" }}
+        onChange={onFileChange}
+      />
+
       <Paper
         variant="outlined"
-        sx={{ p: 2, textAlign: "center", borderStyle: "dashed" }}
+        sx={{
+          p: 2,
+          textAlign: "center",
+          borderStyle: "dashed",
+          cursor: "pointer",
+        }}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        onClick={() => fileInputRef.current?.click()}
       >
         <UploadFileIcon sx={{ fontSize: 40, mb: 1 }} />
         <Typography>
-          Ziehe hier dein PDF-Dokument hinein, um die Felder automatisch zu
-          befüllen.
+          Klicke hier oder ziehe dein PDF-Dokument hinein, um die Felder
+          automatisch zu befüllen.
         </Typography>
         {loading && <CircularProgress sx={{ mt: 1 }} />}
         {error && (
@@ -358,9 +380,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                       type="number"
                       value={data[f as keyof StatementData] as number}
                       onChange={handleField(f as keyof StatementData)}
-                      slotProps={{
-                        htmlInput: { step: 0.01 },
-                      }}
+                      slotProps={{ htmlInput: { step: 0.01 } }}
                     />
                   </Grid>
                 ))}

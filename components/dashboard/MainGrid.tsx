@@ -136,7 +136,10 @@ export default function MainGrid() {
           <StatementBarChart statements={statements} />
         </Grid>
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <SocialPieChart statements={statements} />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
         <SocialPieChart statements={statements} />
       </Grid>
       <Grid container spacing={2} columns={12}>
