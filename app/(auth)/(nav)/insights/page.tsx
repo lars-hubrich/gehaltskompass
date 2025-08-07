@@ -54,7 +54,10 @@ export default function ChatPage() {
         mb: 4,
       }}
     >
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{ p: 4, borderRadius: 2, backgroundColor: "background.paper" }}
+      >
         <Typography variant="h5" align="center" gutterBottom>
           Gehaltsabrechnungs-Chat
         </Typography>
@@ -68,7 +71,7 @@ export default function ChatPage() {
           <TextField
             label="Stelle hier Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
             multiline
-            rows={4}
+            rows={6}
             fullWidth
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
@@ -78,7 +81,15 @@ export default function ChatPage() {
             type="submit"
             variant="contained"
             disabled={loading || question.trim() === ""}
-            sx={{ alignSelf: "center", minWidth: 150 }}
+            sx={{
+              alignSelf: "center",
+              minWidth: 150,
+              "&.Mui-disabled": {
+                backgroundColor: (theme) =>
+                  theme.palette.action.disabledBackground,
+                color: (theme) => theme.palette.text.primary,
+              },
+            }}
           >
             {loading ? <CircularProgress size={24} /> : "Frage stellen"}
           </Button>
