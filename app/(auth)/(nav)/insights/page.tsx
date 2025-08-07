@@ -10,10 +10,7 @@ import {
   Button,
   CircularProgress,
   Alert,
-  Stack,
-  Avatar,
 } from "@mui/material";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
 export default function ChatPage() {
   const [question, setQuestion] = useState("");
@@ -52,75 +49,66 @@ export default function ChatPage() {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        bgcolor: "grey.100",
-        p: { xs: 2, md: 4 },
+        width: "100%",
+        maxWidth: { xs: "100%", md: 800 },
+        mt: 2,
+        mb: 4,
       }}
     >
       <Paper
-        elevation={8}
-        sx={{
-          maxWidth: 600,
-          width: "100%",
-          p: { xs: 3, md: 5 },
-          borderRadius: 3,
-          bgcolor: "background.paper",
-        }}
+        elevation={3}
+        sx={{ p: 4, borderRadius: 2, backgroundColor: "background.paper" }}
       >
-        <Stack direction="row" alignItems="center" spacing={1} mb={3}>
-          <Avatar sx={{ bgcolor: "primary.main" }}>
-            <ChatBubbleOutlineIcon />
-          </Avatar>
-          <Typography variant="h4" component="h1">
-            Gehaltsabrechnungs-Chat
-          </Typography>
-        </Stack>
+        <Typography variant="h5" align="center" gutterBottom>
+          Gehaltsabrechnungs-Chat
+        </Typography>
 
         <Box
           component="form"
           onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           noValidate
         >
           <TextField
-            label="Frage zu deinen Abrechnungsdaten"
-            placeholder="Stelle hier Fragen und erhalte KI-gestützte Antworten"
+            label="Stelle hier Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
             multiline
-            rows={4}
+            rows={6}
             fullWidth
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             disabled={loading}
           />
-
           <Button
             type="submit"
             variant="contained"
-            size="large"
             disabled={loading || question.trim() === ""}
-            sx={{ alignSelf: "center", minWidth: 180 }}
+            sx={{
+              alignSelf: "center",
+              minWidth: 150,
+              "&.Mui-disabled": {
+                backgroundColor: (theme) =>
+                  theme.palette.action.disabledBackground,
+                color: (theme) => theme.palette.text.primary,
+              },
+            }}
           >
-            {loading ? <CircularProgress size={28} /> : "Frage stellen"}
+            {loading ? <CircularProgress size={24} /> : "Frage stellen"}
           </Button>
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ mt: 3 }}>
+          <Alert severity="error" sx={{ mt: 2 }}>
             Fehler: {error}
           </Alert>
         )}
-
         {answer && (
-          <Paper
-            variant="outlined"
-            sx={{ mt: 4, p: 3, borderRadius: 2, bgcolor: "grey.50" }}
-          >
+          <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 1 }}>
             <Typography
               variant="body1"
-              sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
             >
               {answer}
             </Typography>
