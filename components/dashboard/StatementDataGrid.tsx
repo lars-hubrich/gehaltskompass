@@ -6,6 +6,7 @@ import { Statement } from "@/constants/Interfaces";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 
 interface CustomizedDataGridProps {
@@ -61,6 +62,13 @@ export default function StatementDataGrid({
         Gehaltsabrechnungen
       </Typography>
       <Button
+        startIcon={<DeleteIcon />}
+        variant="outlined"
+        // disabled={selectionModel.length === 0}
+      >
+        Löschen
+      </Button>
+      <Button
         startIcon={<AddIcon />}
         variant="contained"
         onClick={() => router.push("/statement/new")}
@@ -72,6 +80,8 @@ export default function StatementDataGrid({
 
   return (
     <DataGrid
+      checkboxSelection
+      disableRowSelectionOnClick
       rows={rows}
       columns={columns}
       showToolbar
