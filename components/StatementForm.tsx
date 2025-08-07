@@ -146,7 +146,10 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   };
 
   const handleDelete = async () => {
-    if (!statementId || statementId === "new") return;
+    if (!statementId || statementId === "new") {
+      router.push("/");
+      return;
+    }
 
     const res = await fetch(`/api/statement/${statementId}`, {
       method: "DELETE",
@@ -306,7 +309,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
       <Box display="flex" justifyContent="flex-end" gap={2}>
         <Button variant="contained" color="error" onClick={handleDelete}>
-          Abbrechen
+          {statementId === "new" ? "Abbrechen" : "Löschen"}
         </Button>
         <Button type="submit" variant="contained" color="success">
           Speichern
