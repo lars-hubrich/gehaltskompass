@@ -12,6 +12,11 @@ import {
   Divider,
   Paper,
   CircularProgress,
+  Backdrop,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -79,6 +84,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     success: number;
     failed: number;
   } | null>(null);
+  const [openResult, setOpenResult] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -94,6 +100,12 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       })();
     }
   }, [statementId]);
+
+  useEffect(() => {
+    if (bulkResult) {
+      setOpenResult(true);
+    }
+  }, [bulkResult]);
 
   const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -124,17 +136,17 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const res = await fetch("/api/extract", {
+        const resExtract = await fetch("/api/extract", {
           method: "POST",
           body: formData,
           credentials: "include",
         });
-        if (!res.ok) {
-          const err = await res.json();
+        if (!resExtract.ok) {
+          const err = await resExtract.json();
           // noinspection ExceptionCaughtLocallyJS
           throw new Error(err.error || "Upload fehlgeschlagen");
         }
-        const json: StatementData = await res.json();
+        const json: StatementData = await resExtract.json();
         setData({ ...json, incomes: json.incomes || [] });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
@@ -166,22 +178,42 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const res = await fetch("/api/extract", {
+        const resExtract = await fetch("/api/extract", {
           method: "POST",
           body: formData,
           credentials: "include",
         });
-        if (res.ok) {
-          success++;
-        } else {
-          failed++;
+        if (!resExtract.ok) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error("Extraktion fehlgeschlagen");
         }
-      } catch {
+        const statement: StatementData = await resExtract.json();
+
+        const resSave = await fetch("/api/statement", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(statement),
+          credentials: "include",
+        });
+        if (!resSave.ok) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error("Speichern fehlgeschlagen");
+        }
+
+        success++;
+      } catch (err) {
+        console.error(err);
         failed++;
       }
     }
+
     setLoading(false);
     setBulkResult({ success, failed });
+  };
+
+  const handleCloseResult = () => {
+    setOpenResult(false);
+    router.replace("/");
   };
 
   const handleField =
@@ -252,199 +284,216 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{ display: "flex", flexDirection: "column", gap: 4 }}
-    >
-      <Typography variant="h4" align="center">
-        {statementId === "new"
-          ? "Neue Abrechnung erstellen"
-          : "Abrechnung ansehen und bearbeiten"}
-      </Typography>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/pdf"
-        multiple
-        hidden
-        onChange={onFileChange}
-      />
-
-      <Paper
-        variant="outlined"
-        sx={{
-          p: 2,
-          textAlign: "center",
-          borderStyle: "dashed",
-          cursor: "pointer",
-        }}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onClick={() => fileInputRef.current?.click()}
+    <>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
       >
-        <UploadFileIcon fontSize="large" />
-        <Typography sx={{ mt: 1 }}>
-          Klicke hier oder ziehe dein PDF-Dokument(e) hinein, um die Felder
-          automatisch zu befüllen.
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: "flex", flexDirection: "column", gap: 4 }}
+      >
+        <Typography variant="h4" align="center">
+          {statementId === "new"
+            ? "Neue Abrechnung erstellen"
+            : "Abrechnung ansehen und bearbeiten"}
         </Typography>
-        {loading && <CircularProgress sx={{ mt: 1 }} />}
-        {error && (
-          <Typography color="error" sx={{ mt: 1 }}>
-            {error}
-          </Typography>
-        )}
-        {bulkResult && (
-          <Typography sx={{ mt: 1 }}>
-            Upload abgeschlossen: {bulkResult.success} erfolgreich,{" "}
-            {bulkResult.failed} fehlgeschlagen.
-          </Typography>
-        )}
-      </Paper>
 
-      <Paper variant="outlined" sx={{ p: 2 }}>
-        <Typography variant="h6">Abrechnungszeitraum</Typography>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid size={{ xs: 6 }}>
-            <TextField
-              fullWidth
-              label="Monat"
-              type="number"
-              value={data.month}
-              onChange={handleField("month")}
-            />
-          </Grid>
-          <Grid size={{ xs: 6 }}>
-            <TextField
-              fullWidth
-              label="Jahr"
-              type="number"
-              value={data.year}
-              onChange={handleField("year")}
-            />
-          </Grid>
-        </Grid>
-      </Paper>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf"
+          multiple
+          hidden
+          onChange={onFileChange}
+        />
 
-      <Paper variant="outlined" sx={{ p: 2 }}>
-        <Box
+        <Paper
+          variant="outlined"
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            p: 2,
+            textAlign: "center",
+            borderStyle: "dashed",
+            cursor: "pointer",
           }}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onClick={() => fileInputRef.current?.click()}
         >
-          <Typography variant="h6">Einkommensarten</Typography>
-          <IconButton onClick={addIncome} color="primary">
-            <AddIcon />
-          </IconButton>
-        </Box>
-        <Divider sx={{ my: 2 }} />
-        {data.incomes.map((inc, idx) => (
-          <Paper key={idx} variant="outlined" sx={{ p: 2, mb: 2 }}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 5 }}>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  value={inc.name}
-                  onChange={handleIncomeChange(idx, "name")}
-                />
-              </Grid>
-              <Grid size={{ xs: 5 }}>
-                <TextField
-                  fullWidth
-                  label="Identifier"
-                  value={inc.identifier}
-                  onChange={handleIncomeChange(idx, "identifier")}
-                />
-              </Grid>
-              <Grid size={{ xs: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Wert"
-                  type="number"
-                  value={inc.value}
-                  onChange={handleIncomeChange(idx, "value")}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }} textAlign="right">
-                <IconButton onClick={() => removeIncome(idx)} color="error">
-                  <DeleteIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Paper>
-        ))}
-      </Paper>
+          <UploadFileIcon fontSize="large" />
+          <Typography sx={{ mt: 1 }}>
+            Klicke hier oder ziehe dein PDF-Dokument(e) hinein, um die Felder
+            automatisch zu befüllen.
+          </Typography>
+          {error && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+        </Paper>
 
-      <Grid container spacing={2}>
-        {[
-          {
-            title: "Brutto",
-            fields: [
-              "brutto_tax",
-              "brutto_av",
-              "brutto_pv",
-              "brutto_rv",
-              "brutto_kv",
-            ],
-          },
-          {
-            title: "Abzüge",
-            fields: [
-              "deduction_tax_income",
-              "deduction_tax_church",
-              "deduction_tax_solidarity",
-              "deduction_tax_other",
-            ],
-          },
-          {
-            title: "Sozialabgaben",
-            fields: ["social_av", "social_pv", "social_rv", "social_kv"],
-          },
-          {
-            title: "Auszahlung",
-            fields: [
-              "payout_netto",
-              "payout_transfer",
-              "payout_vwl",
-              "payout_other",
-            ],
-          },
-        ].map((section, idx) => (
-          <Grid size={{ xs: 12, md: 6 }} key={idx}>
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                {section.title}
-              </Typography>
-              <Grid container spacing={1}>
-                {section.fields.map((field) => (
-                  <Grid size={{ xs: 6 }} key={field}>
-                    <TextField
-                      fullWidth
-                      label={field.replace(/_/g, " ")}
-                      type="number"
-                      value={data[field as keyof StatementData] as number}
-                      onChange={handleField(field as keyof StatementData)}
-                    />
-                  </Grid>
-                ))}
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <Typography variant="h6">Abrechnungszeitraum</Typography>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid size={{ xs: 6 }}>
+              <TextField
+                fullWidth
+                label="Monat"
+                type="number"
+                value={data.month}
+                onChange={handleField("month")}
+              />
+            </Grid>
+            <Grid size={{ xs: 6 }}>
+              <TextField
+                fullWidth
+                label="Jahr"
+                type="number"
+                value={data.year}
+                onChange={handleField("year")}
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h6">Einkommensarten</Typography>
+            <IconButton onClick={addIncome} color="primary">
+              <AddIcon />
+            </IconButton>
+          </Box>
+          <Divider sx={{ my: 2 }} />
+          {data.incomes.map((inc, idx) => (
+            <Paper key={idx} variant="outlined" sx={{ p: 2, mb: 2 }}>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 5 }}>
+                  <TextField
+                    fullWidth
+                    label="Name"
+                    value={inc.name}
+                    onChange={handleIncomeChange(idx, "name")}
+                  />
+                </Grid>
+                <Grid size={{ xs: 5 }}>
+                  <TextField
+                    fullWidth
+                    label="Identifier"
+                    value={inc.identifier}
+                    onChange={handleIncomeChange(idx, "identifier")}
+                  />
+                </Grid>
+                <Grid size={{ xs: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="Wert"
+                    type="number"
+                    value={inc.value}
+                    onChange={handleIncomeChange(idx, "value")}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }} textAlign="right">
+                  <IconButton onClick={() => removeIncome(idx)} color="error">
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
               </Grid>
             </Paper>
-          </Grid>
-        ))}
-      </Grid>
+          ))}
+        </Paper>
 
-      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-        <Button variant="contained" color="error" onClick={handleDelete}>
-          {statementId === "new" ? "Abbrechen" : "Löschen"}
-        </Button>
-        <Button type="submit" variant="contained" color="success">
-          Speichern
-        </Button>
+        <Grid container spacing={2}>
+          {[
+            {
+              title: "Brutto",
+              fields: [
+                "brutto_tax",
+                "brutto_av",
+                "brutto_pv",
+                "brutto_rv",
+                "brutto_kv",
+              ],
+            },
+            {
+              title: "Abzüge",
+              fields: [
+                "deduction_tax_income",
+                "deduction_tax_church",
+                "deduction_tax_solidarity",
+                "deduction_tax_other",
+              ],
+            },
+            {
+              title: "Sozialabgaben",
+              fields: ["social_av", "social_pv", "social_rv", "social_kv"],
+            },
+            {
+              title: "Auszahlung",
+              fields: [
+                "payout_netto",
+                "payout_transfer",
+                "payout_vwl",
+                "payout_other",
+              ],
+            },
+          ].map((section, idx) => (
+            <Grid size={{ xs: 12, md: 6 }} key={idx}>
+              <Paper variant="outlined" sx={{ p: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  {section.title}
+                </Typography>
+                <Grid container spacing={1}>
+                  {section.fields.map((field) => (
+                    <Grid size={{ xs: 6 }} key={field}>
+                      <TextField
+                        fullWidth
+                        label={field.replace(/_/g, " ")}
+                        type="number"
+                        value={data[field as keyof StatementData] as number}
+                        onChange={handleField(field as keyof StatementData)}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <Button variant="contained" color="error" onClick={handleDelete}>
+            {statementId === "new" ? "Abbrechen" : "Löschen"}
+          </Button>
+          <Button type="submit" variant="contained" color="success">
+            Speichern
+          </Button>
+        </Box>
       </Box>
-    </Box>
+
+      <Dialog open={openResult} onClose={handleCloseResult}>
+        <DialogTitle>Upload abgeschlossen</DialogTitle>
+        <DialogContent>
+          <Typography>
+            {bulkResult?.success} erfolgreich, {bulkResult?.failed}{" "}
+            fehlgeschlagen.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseResult} autoFocus>
+            Zurück zum Dashboard
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
