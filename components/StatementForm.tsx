@@ -30,32 +30,6 @@ interface StatementFormProps {
 export default function StatementForm({ statementId }: StatementFormProps) {
   const router = useRouter();
 
-  const getInitialState = (): StatementData => ({
-    month: new Date().getMonth() + 1,
-    year: new Date().getFullYear(),
-    incomes: [
-      { name: "Grundgehalt", identifier: "grundgehalt", value: 4500.0 },
-      { name: "Leistungsprämie", identifier: "leistungspraemie", value: 350.5 },
-    ],
-    brutto_tax: 4850.5,
-    brutto_av: 4850.5,
-    brutto_pv: 4850.5,
-    brutto_rv: 4850.5,
-    brutto_kv: 4850.5,
-    deduction_tax_income: 950.75,
-    deduction_tax_church: 85.56,
-    deduction_tax_solidarity: 0.0,
-    deduction_tax_other: 0.0,
-    social_av: 95.8,
-    social_pv: 75.2,
-    social_rv: 450.8,
-    social_kv: 390.1,
-    payout_netto: 2802.29,
-    payout_transfer: 2802.29,
-    payout_vwl: 40.0,
-    payout_other: 0.0,
-  });
-
   const [data, setData] = useState<StatementData>({
     month: 0,
     year: 0,
@@ -88,9 +62,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (statementId === "new") {
-      setData(getInitialState());
-    } else if (statementId) {
+    if (statementId && statementId !== "new") {
       (async () => {
         const res = await fetch(`/api/statement/${statementId}`);
         if (res.ok) {
