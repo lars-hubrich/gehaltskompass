@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import {
   Box,
   Paper,
@@ -9,7 +10,6 @@ import {
   Button,
   CircularProgress,
   Alert,
-  Stack,
 } from "@mui/material";
 
 export default function ChatPage() {
@@ -51,71 +51,64 @@ export default function ChatPage() {
       sx={{
         width: "100%",
         maxWidth: { xs: "100%", md: 800 },
-        mx: "auto",
-        mt: 4,
-        mb: 6,
-        px: 2,
+        mt: 2,
+        mb: 4,
       }}
     >
       <Paper
-        elevation={4}
-        sx={{ p: 4, borderRadius: 2, bgcolor: "background.paper" }}
+        elevation={3}
+        sx={{ p: 4, borderRadius: 2, backgroundColor: "background.paper" }}
       >
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h5" align="center" gutterBottom>
           Gehaltsabrechnungs-Chat
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Stack spacing={2}>
-            <TextField
-              placeholder="Stelle deine Frage zu deinen Abrechnungsdaten..."
-              multiline
-              rows={5}
-              fullWidth
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              disabled={loading}
-            />
-            <Box textAlign="center">
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading || question.trim() === ""}
-                sx={{ minWidth: 160, py: 1.5 }}
-              >
-                {loading ? <CircularProgress size={24} /> : "Frage stellen"}
-              </Button>
-            </Box>
-          </Stack>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          noValidate
+        >
+          <TextField
+            label="Stelle hier Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
+            multiline
+            rows={6}
+            fullWidth
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            disabled={loading}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading || question.trim() === ""}
+            sx={{
+              alignSelf: "center",
+              minWidth: 150,
+              "&.Mui-disabled": {
+                backgroundColor: (theme) =>
+                  theme.palette.action.disabledBackground,
+                color: (theme) => theme.palette.text.primary,
+              },
+            }}
+          >
+            {loading ? <CircularProgress size={24} /> : "Frage stellen"}
+          </Button>
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ mt: 3, borderRadius: 1 }}>
+          <Alert severity="error" sx={{ mt: 2 }}>
             Fehler: {error}
           </Alert>
         )}
-
         {answer && (
-          <Paper
-            variant="outlined"
-            sx={{ mt: 4, p: 3, borderRadius: 1, bgcolor: "grey.50" }}
-          >
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              Deine Frage:
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ mb: 2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-            >
-              {question}
-            </Typography>
-
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              KI-Antwort:
-            </Typography>
+          <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 1 }}>
             <Typography
               variant="body1"
-              sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
             >
               {answer}
             </Typography>
