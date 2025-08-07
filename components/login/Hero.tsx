@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { GithubIcon } from "@/components/icons/CustomIcons";
 import { signIn } from "next-auth/react";
+import { router } from "next/client";
 
 const StyledBox = styled("div")(({ theme }) => ({
   alignSelf: "center",
@@ -101,7 +102,11 @@ export default function Hero() {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => signIn("github")}
+              onClick={() => {
+                signIn("github").then(() => {
+                  router.push("/");
+                });
+              }}
               startIcon={<GithubIcon />}
             >
               Mit Github Anmelden
