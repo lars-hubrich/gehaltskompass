@@ -30,6 +30,10 @@ interface UpdateStatementData {
   payout_vwl?: number;
   payout_other?: number;
   incomes?: IncomeData[];
+  id?: string;
+  user_id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export async function GET(
@@ -68,6 +72,7 @@ export async function PUT(
   if (!("id" in userOrResponse)) {
     return userOrResponse;
   }
+
   try {
     const { id } = await context.params;
     const existing = await prisma.statement.findUnique({ where: { id } });
@@ -94,7 +99,11 @@ export async function PUT(
                   identifier: income.identifier,
                   value: income.value,
                 },
-                create: income,
+                create: {
+                  name: income.name,
+                  identifier: income.identifier,
+                  value: income.value,
+                },
               })),
             }
           : undefined,
