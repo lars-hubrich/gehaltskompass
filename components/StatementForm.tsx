@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Grid,
   Typography,
@@ -11,9 +11,11 @@ import {
   Box,
   Divider,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { StatementData } from "@/constants/Interfaces";
 
 interface StatementFormProps {
@@ -71,6 +73,8 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     payout_vwl: 0,
     payout_other: 0,
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (statementId === "new") {
@@ -79,14 +83,53 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       const fetchStatement = async () => {
         const res = await fetch(`/api/statement/${statementId}`);
         if (res.ok) {
-          const data = await res.json();
-          // Ensure incomes is always an array
-          setData({ ...data, incomes: data.incomes || [] });
+          const loaded = await res.json();
+          setData({ ...loaded, incomes: loaded.incomes || [] });
         }
       };
+      // noinspection JSIgnoredPromiseFromCall
       fetchStatement();
     }
   }, [statementId]);
+
+  // Handle file drop
+  const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setError(null);
+    const files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (file.type !== "application/pdf") {
+      setError("Bitte eine PDF-Datei hochladen.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/extract", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        // noinspection ExceptionCaughtLocallyJS
+        throw new Error(err.error || "Upload fehlgeschlagen");
+      }
+      const json: StatementData = await res.json();
+      setData({ ...json, incomes: json.incomes || [] });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
 
   const handleField =
     (field: keyof StatementData) =>
@@ -136,7 +179,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: "include", // Session-Cookies mitsenden
+      credentials: "include",
     });
 
     if (res.ok) {
@@ -172,6 +215,26 @@ export default function StatementForm({ statementId }: StatementFormProps) {
           ? "Neue Abrechnung erstellen"
           : "Abrechnung ansehen und bearbeiten"}
       </Typography>
+
+      {/* Drag & Drop Bereich */}
+      <Paper
+        variant="outlined"
+        sx={{ p: 2, textAlign: "center", borderStyle: "dashed" }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+      >
+        <UploadFileIcon sx={{ fontSize: 40, mb: 1 }} />
+        <Typography>
+          Ziehe hier dein PDF-Dokument hinein, um die Felder automatisch zu
+          befüllen.
+        </Typography>
+        {loading && <CircularProgress sx={{ mt: 1 }} />}
+        {error && (
+          <Typography color="error" sx={{ mt: 1 }}>
+            {error}
+          </Typography>
+        )}
+      </Paper>
 
       {/* Zeitraum */}
       <Paper variant="outlined" sx={{ p: 2 }}>

@@ -61,8 +61,8 @@ export default function SocialPieChart({
           <PieChart
             series={[{ data: pieData }]}
             colors={colors}
-            width={300}
-            height={300}
+            width={150}
+            height={150}
           />
         </Stack>
       </CardContent>

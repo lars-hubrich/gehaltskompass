@@ -129,15 +129,15 @@ export default function MainGrid() {
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <HighlightedCard />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <SocialPieChart statements={statements} />
-        </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart statements={statements} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <StatementBarChart statements={statements} />
         </Grid>
+      </Grid>
+      <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
+        <SocialPieChart statements={statements} />
       </Grid>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
