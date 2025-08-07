@@ -16,19 +16,16 @@ import Typography from "@mui/material/Typography";
 
 interface CustomizedDataGridProps {
   statements: Statement[];
+  onRefresh: () => Promise<void>;
   pageSize?: number;
 }
 
 export default function StatementDataGrid({
   statements,
   pageSize = 10,
+  onRefresh,
 }: CustomizedDataGridProps) {
   const router = useRouter();
-  const [selectionModel, setSelectionModel] =
-    React.useState<GridRowSelectionModel>({
-      type: "include",
-      ids: new Set(),
-    });
 
   const euroFormatter = (value: number) => `${value.toFixed(2)} €`;
 
@@ -65,11 +62,27 @@ export default function StatementDataGrid({
     },
   ];
 
+  const [selectionModel, setSelectionModel] =
+    React.useState<GridRowSelectionModel>({
+      type: "include",
+      ids: new Set(),
+    });
+
+  const selectedIds = React.useMemo(() => {
+    const { type, ids } = selectionModel;
+    if (type === "include") {
+      // only those explicitly included
+      return Array.from(ids);
+    }
+    // exclude mode = “all row IDs except those in ids”
+    return rows.map((row) => row.id).filter((id) => !ids.has(id));
+  }, [selectionModel, rows]);
+
   // Bulk-delete handler
   const handleDelete = async () => {
-    console.log("Delete: ", selectionModel.ids);
+    console.log("Delete: ", selectedIds);
 
-    if (selectionModel.ids.size === 0) {
+    if (selectedIds.length === 0) {
       return;
     }
 
@@ -77,9 +90,10 @@ export default function StatementDataGrid({
       const response = await fetch("/api/statement", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: Array.from(selectionModel.ids.values()) }),
+        body: JSON.stringify({ ids: selectedIds }),
       });
       console.log("Bulk delete response:", response);
+
       if (!response.ok) {
         console.error("Bulk delete failed");
       }
@@ -90,7 +104,7 @@ export default function StatementDataGrid({
         type: "include",
         ids: new Set(),
       }); // clear checkboxes
-      router.refresh();
+      await onRefresh();
     }
   };
 
@@ -103,7 +117,7 @@ export default function StatementDataGrid({
       <Button
         startIcon={<DeleteIcon />}
         variant="outlined"
-        disabled={selectionModel.ids.size === 0}
+        disabled={selectedIds.length === 0}
         onClick={handleDelete}
         sx={{ mr: 1 }}
       >

@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -7,7 +9,7 @@ import HighlightedCard from "./HighlightedCard";
 import PageViewsBarChart from "./PageViewsBarChart";
 import SessionsChart from "./SessionsChart";
 import StatCard, { StatCardProps } from "./StatCard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Statement } from "@/constants/Interfaces";
 
 const data: StatCardProps[] = [
@@ -47,16 +49,14 @@ const data: StatCardProps[] = [
 export default function MainGrid() {
   const [statements, setStatements] = useState<Statement[]>([]);
 
-  useEffect(() => {
-    const fetchStatements = async () => {
-      const res = await fetch("/api/statement");
-      if (res.ok) {
-        const data = await res.json();
-        setStatements(data);
-      }
-    };
-    fetchStatements();
+  const fetchStatements = useCallback(async () => {
+    const res = await fetch("/api/statement");
+    if (res.ok) setStatements(await res.json());
   }, []);
+
+  useEffect(() => {
+    fetchStatements();
+  }, [fetchStatements]);
 
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
@@ -87,7 +87,10 @@ export default function MainGrid() {
       </Grid>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          <StatementDataGrid statements={statements} />
+          <StatementDataGrid
+            statements={statements}
+            onRefresh={fetchStatements}
+          />
         </Grid>
       </Grid>
     </Box>
