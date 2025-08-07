@@ -74,7 +74,7 @@ export default function StatementDataGrid({
     }
 
     try {
-      const response = await fetch("/api/statements", {
+      const response = await fetch("/api/statement", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectionModel.ids }),

@@ -60,7 +60,7 @@ export async function GET(
 
     return NextResponse.json(statement);
   } catch (e) {
-    return handleError(e, "GET /api/statements/[id]");
+    return handleError(e, "GET /api/statement/[id]");
   }
 }
 
@@ -113,7 +113,7 @@ export async function PUT(
 
     return NextResponse.json(updated);
   } catch (e) {
-    return handleError(e, "PUT /api/statements/[id]");
+    return handleError(e, "PUT /api/statement/[id]");
   }
 }
 
@@ -143,6 +143,6 @@ export async function DELETE(
     await prisma.statement.delete({ where: { id } });
     return NextResponse.json({ message: "Statement deleted" });
   } catch (e) {
-    return handleError(e, "DELETE /api/statements/[id]");
+    return handleError(e, "DELETE /api/statement/[id]");
   }
 }

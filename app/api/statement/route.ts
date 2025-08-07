@@ -46,7 +46,7 @@ export async function GET() {
     });
     return NextResponse.json(statements);
   } catch (error) {
-    return handleError(error, "GET /api/statements");
+    return handleError(error, "GET /api/statement");
   }
 }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json(newStatement, { status: 201 });
   } catch (error) {
-    return handleError(error, "POST /api/statements");
+    return handleError(error, "POST /api/statement");
   }
 }
 
@@ -105,6 +105,6 @@ export async function DELETE(request: NextRequest) {
     });
     return NextResponse.json({ deletedCount: result.count });
   } catch (error) {
-    return handleError(error, "DELETE /api/statements");
+    return handleError(error, "DELETE /api/statement");
   }
 }
