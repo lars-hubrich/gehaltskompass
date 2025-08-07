@@ -6,8 +6,6 @@ import Drawer, { drawerClasses } from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
-import MenuButton from "./MenuButton";
 import MenuContent from "./MenuContent";
 import { useSession, signOut } from "next-auth/react";
 
@@ -56,9 +54,6 @@ export default function SideMenuMobile({
               {session?.user?.name}
             </Typography>
           </Stack>
-          <MenuButton showBadge>
-            <NotificationsRoundedIcon />
-          </MenuButton>
         </Stack>
         <Divider />
         <Stack sx={{ flexGrow: 1 }}>

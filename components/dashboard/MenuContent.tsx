@@ -7,32 +7,52 @@ import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
+import AssistantIcon from "@mui/icons-material/Assistant";
+import { usePathname, useRouter } from "next/navigation";
 
 const mainListItems = [
-  { text: "Home", icon: <HomeRoundedIcon /> },
-  { text: "Analytics", icon: <AnalyticsRoundedIcon /> },
-  { text: "Clients", icon: <PeopleRoundedIcon /> },
-  { text: "Tasks", icon: <AssignmentRoundedIcon /> },
+  { text: "Dashboard", icon: <HomeRoundedIcon />, path: "/dashboard" },
+  {
+    text: "Analytics",
+    icon: <AnalyticsRoundedIcon />,
+    path: "/dashboard/analytics",
+  },
+  { text: "AI Insights", icon: <AssistantIcon />, path: "/dashboard/insights" },
 ];
 
 const secondaryListItems = [
-  { text: "Settings", icon: <SettingsRoundedIcon /> },
-  { text: "About", icon: <InfoRoundedIcon /> },
-  { text: "Feedback", icon: <HelpRoundedIcon /> },
+  { text: "Einstellungen", icon: <SettingsRoundedIcon /> },
+  { text: "Über uns", icon: <InfoRoundedIcon /> },
 ];
 
 export default function MenuContent() {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const title = React.useMemo(() => {
+    if (pathname === "/dashboard") {
+      return "Dashboard";
+    } else if (pathname === "/dashboard/analytics") {
+      return "Analytics";
+    } else if (pathname === "/dashboard/insights") {
+      return "AI Insights";
+    }
+    return undefined;
+  }, [pathname]);
+
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <ListItemButton selected={index === 0}>
+            <ListItemButton
+              selected={item.text === title}
+              onClick={() => {
+                router.push(item.path);
+              }}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
