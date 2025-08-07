@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// noinspection JSUnusedGlobalSymbols
 export const config = { api: { bodyParser: false } };
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
