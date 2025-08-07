@@ -20,6 +20,7 @@ const xThemeComponents = {
   ...dataGridCustomizations,
 };
 
+// TODO delete unused Dashboard component
 export default function Dashboard() {
   return (
     <AppTheme themeComponents={xThemeComponents}>

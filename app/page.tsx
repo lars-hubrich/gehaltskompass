@@ -1,11 +1,5 @@
-"use client";
-import AuthGuard from "@/components/AuthGuard";
-import Dashboard from "@/components/Dashboard";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return (
-    <AuthGuard>
-      <Dashboard />
-    </AuthGuard>
-  );
+export default function Home(): never {
+  redirect("/dashboard");
 }
