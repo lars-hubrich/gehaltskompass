@@ -42,28 +42,30 @@ export default function StatementForm({
   onCancel,
 }: StatementFormProps) {
   const router = useRouter();
-
-  const [data, setData] = useState<StatementData>({
-    month: 0,
-    year: 0,
-    incomes: [],
-    brutto_tax: 0,
-    brutto_av: 0,
-    brutto_pv: 0,
-    brutto_rv: 0,
-    brutto_kv: 0,
-    deduction_tax_income: 0,
-    deduction_tax_church: 0,
-    deduction_tax_solidarity: 0,
-    deduction_tax_other: 0,
-    social_av: 0,
-    social_pv: 0,
-    social_rv: 0,
-    social_kv: 0,
-    payout_netto: 0,
-    payout_transfer: 0,
-    payout_vwl: 0,
-    payout_other: 0,
+  const [data, setData] = useState<StatementData>(() => {
+    const now = new Date();
+    return {
+      month: statementId === "new" ? now.getMonth() + 1 : 0,
+      year: statementId === "new" ? now.getFullYear() : 0,
+      incomes: [],
+      brutto_tax: 0,
+      brutto_av: 0,
+      brutto_pv: 0,
+      brutto_rv: 0,
+      brutto_kv: 0,
+      deduction_tax_income: 0,
+      deduction_tax_church: 0,
+      deduction_tax_solidarity: 0,
+      deduction_tax_other: 0,
+      social_av: 0,
+      social_pv: 0,
+      social_rv: 0,
+      social_kv: 0,
+      payout_netto: 0,
+      payout_transfer: 0,
+      payout_vwl: 0,
+      payout_other: 0,
+    };
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -200,7 +202,9 @@ export default function StatementForm({
             throw new Error(err.error || "Upload fehlgeschlagen");
           }
           const json: StatementData = await resExtract.json();
-          setData({ ...json, incomes: json.incomes || [] });
+          const newData = { ...json, incomes: json.incomes || [] };
+          setData(newData);
+          validate(newData);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
           setError(err.message);
@@ -264,7 +268,7 @@ export default function StatementForm({
       setLoading(false);
       setBulkResult({ success, failed });
     },
-    [existingCount],
+    [existingCount, validate],
   );
 
   const onDrop = useCallback(
