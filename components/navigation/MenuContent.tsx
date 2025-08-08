@@ -16,7 +16,7 @@ const mainListItems = [
   { text: "Dashboard", icon: <AnalyticsRoundedIcon />, path: "/dashboard" },
   {
     text: "Abrechnungen",
-    icon: <AccountBalanceIcon />, // TODO change
+    icon: <AccountBalanceIcon />,
     path: "/statements",
   },
   { text: "AI Insights", icon: <AssistantIcon />, path: "/insights" },

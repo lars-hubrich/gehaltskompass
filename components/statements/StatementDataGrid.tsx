@@ -7,7 +7,7 @@ import {
   Toolbar,
   GridRowSelectionModel,
 } from "@mui/x-data-grid";
-import { filteredStatement } from "@/constants/Interfaces";
+import { StatementOverviewData } from "@/constants/Interfaces";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,7 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 
 interface CustomizedDataGridProps {
-  statements: filteredStatement[];
+  statements: StatementOverviewData[];
   onRefresh: () => Promise<void>;
   pageSize?: number;
 }
@@ -39,7 +39,7 @@ export default function StatementDataGrid({
   }));
 
   // Define DataGrid columns
-  const columns: GridColDef<filteredStatement>[] = [
+  const columns: GridColDef<StatementOverviewData>[] = [
     { field: "year", headerName: "Jahr", flex: 1 },
     { field: "month", headerName: "Monat", flex: 1 },
     {

@@ -1,4 +1,4 @@
-export interface filteredStatement {
+export interface StatementOverviewData {
   id: string;
   month: number;
   year: number;
