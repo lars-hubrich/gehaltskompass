@@ -66,7 +66,8 @@ export default function IncomePieChart({
                     currency: "EUR",
                     maximumFractionDigits: 0,
                   }),
-                arcLabelMinAngle: 10,
+                arcLabelMinAngle: 35,
+                arcLabelRadius: "60%",
               },
             ]}
             colors={colors}
