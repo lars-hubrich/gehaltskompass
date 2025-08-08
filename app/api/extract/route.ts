@@ -3,6 +3,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
 
 // noinspection JSUnusedGlobalSymbols
 export const config = { api: { bodyParser: false } };
@@ -39,10 +40,15 @@ export async function POST(req: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const encoded = buffer.toString("base64");
+  const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS)
+    .map(([key, desc]) => `${key}: ${desc}`)
+    .join("\n");
   const contents = [
     {
       role: "system",
-      text: "Extrahiere Lohnabrechnungsdaten aus dem angehängten PDF. Nutze ausschließlich die Daten aus der PDF. Falls du einen Wert nicht findest, setzte diesen auf 0.",
+      text:
+        "Extrahiere Lohnabrechnungsdaten aus dem angehängten PDF. Gib die folgenden Felder zurück und nutze ausschließlich die Daten aus der PDF. Falls du einen Wert nicht findest, setze ihn auf 0.\n" +
+        fieldDescriptions,
     },
     { inlineData: { mimeType: "application/pdf", data: encoded } },
   ];
