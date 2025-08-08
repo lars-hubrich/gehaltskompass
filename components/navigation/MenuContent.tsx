@@ -36,6 +36,7 @@ export default function MenuContent() {
   const router = useRouter();
   const [openSettings, setOpenSettings] = React.useState(false);
   const [openAbout, setOpenAbout] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const secondaryListItems = [
     {
@@ -66,6 +67,29 @@ export default function MenuContent() {
       URL.revokeObjectURL(url);
     } catch {
       // ignore errors
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImportFile = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      await fetch("/api/user/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: text,
+      });
+    } catch {
+      // ignore errors
+    } finally {
+      e.target.value = "";
     }
   };
 
@@ -151,8 +175,18 @@ export default function MenuContent() {
         <DialogTitle>Einstellungen</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2} sx={{ pt: 1 }}>
+            <input
+              type="file"
+              accept="application/json"
+              hidden
+              ref={fileInputRef}
+              onChange={handleImportFile}
+            />
             <Button variant="outlined" onClick={handleExport}>
               Daten exportieren
+            </Button>
+            <Button variant="outlined" onClick={handleImportClick}>
+              Daten importieren
             </Button>
             <Button color="error" variant="outlined" onClick={handleDelete}>
               Account löschen
