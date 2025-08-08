@@ -5,11 +5,15 @@ Dieses Dokument beschreibt die Funktion der einzelnen Dateien und Ordner des Pro
 ## Wurzelverzeichnis
 
 ### Ordner `.github`
+
 Konfigurationsdateien für GitHub.
+
 - `workflows/ci.yml` – GitHub Actions Workflow für Continuous Integration.
 
 ### Ordner `.idea`
+
 Projektkonfiguration für JetBrains IDEs.
+
 - `jsLinters/eslint.xml` – IDE-Konfiguration für ESLint in JetBrains‑Tools.
 - `prettier.xml` – IDE-Konfiguration für Prettier.
 
@@ -49,24 +53,29 @@ Projektkonfiguration für JetBrains IDEs.
 ### Ordner `app/api`
 
 #### `auth/[...nextauth]`
+
 - `route.ts` – NextAuth API‑Route für Authentifizierung.
 - `route.test.ts` – Tests für die Authentifizierungs‑Route.
 
 #### `chat`
+
 - `route.ts` – API‑Route für Chat‑Funktionen.
 - `route.test.ts` – Tests für die Chat‑Route.
 
 #### `extract`
+
 - `route.ts` – API‑Route zum Extrahieren von Daten aus Uploads.
 - `route.test.ts` – Tests für diese Extraktions‑Route.
 
 #### `statement`
+
 - `route.ts` – API‑Route zum Anlegen von Statements.
 - `route.test.ts` – Tests für das Anlegen von Statements.
 - `[id]/route.ts` – API‑Route für einzelne Statements.
 - `[id]/route.test.ts` – Tests für die Einzel‑Statement‑Route.
 
 #### `user`
+
 - `route.ts` – API‑Route für Benutzerdaten.
 - `route.test.ts` – Tests für die Benutzer‑Route.
 - `export/route.ts` – Export von Benutzerdaten.
@@ -81,6 +90,7 @@ Projektkonfiguration für JetBrains IDEs.
 - `StatementForm.tsx` – Formular zum Erfassen von Statements.
 
 ### Ordner `components/dashboard`
+
 - `HighlightedCard.tsx` – Hervorgehobene Kennzahlenkarte.
 - `MainGrid.tsx` – Hauptlayout des Dashboards.
 - `NoStatementsCard.tsx` – Hinweiskarte bei fehlenden Statements.
@@ -90,15 +100,18 @@ Projektkonfiguration für JetBrains IDEs.
 - `StatementPieChart.tsx` – Tortendiagramm für Statements.
 
 ### Ordner `components/icons`
+
 - `CustomIcons.tsx` – Sammlung benutzerdefinierter Icons.
 - `GehaltskompassIcon.tsx` – App-spezifisches Icon.
 
 ### Ordner `components/login`
+
 - `AppAppBar.tsx` – App-Bar der Login-Seiten.
 - `Features.tsx` – Feature-Beschreibung im Login.
 - `Hero.tsx` – Hero-Sektion der Login-Seiten.
 
 ### Ordner `components/navigation`
+
 - `AppNavbar.tsx` – Navigationsleiste der App.
 - `Header.tsx` – Kopfbereich der Seiten.
 - `LogoutButton.tsx` – Button zum Abmelden.
@@ -109,6 +122,7 @@ Projektkonfiguration für JetBrains IDEs.
 - `SideMenuMobile.tsx` – Seitenmenü für mobile Ansicht.
 
 ### Ordner `components/statements`
+
 - `StatementDataGrid.tsx` – Datenraster für Statements.
 - `StatementsGrid.tsx` – Übersichtsgrid der Statements.
 
@@ -141,6 +155,7 @@ Projektkonfiguration für JetBrains IDEs.
 - `server-utils.ts` – allgemeine Server-Helfer.
 
 ### Ordner `lib/statements`
+
 - `chart-data.ts` – Aufbereitung von Statement-Daten für Charts.
 - `utils.ts` – Utility-Funktionen für Statements.
 - `utils.test.ts` – Tests für `utils.ts`.
@@ -165,6 +180,7 @@ Projektkonfiguration für JetBrains IDEs.
 - `themePrimitives.ts` – Grundlegende Theme‑Konstanten.
 
 ### Ordner `theme/customizations`
+
 - `charts.ts` – Theme-Anpassungen für Diagramme.
 - `dataDisplay.tsx` – Theme-Anpassungen für Datenanzeige-Komponenten.
 - `dataGrid.ts` – Anpassungen für DataGrid-Komponente.
@@ -173,4 +189,3 @@ Projektkonfiguration für JetBrains IDEs.
 - `inputs.tsx` – Anpassungen für Eingabekomponenten.
 - `navigation.tsx` – Anpassungen für Navigation.
 - `surfaces.ts` – Anpassungen für Oberflächenkomponenten.
-
