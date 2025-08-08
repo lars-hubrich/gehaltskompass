@@ -16,7 +16,6 @@ Projektkonfiguration für JetBrains IDEs.
 
 - `jsLinters/eslint.xml` – IDE-Konfiguration für ESLint in JetBrains‑Tools.
 - `prettier.xml` – IDE-Konfiguration für Prettier.
-
 - `.gitignore` – legt Dateien fest, die von Git ignoriert werden.
 - `.prettierignore` – Dateien, die nicht von Prettier formatiert werden sollen.
 - `Dockerfile` – Definition des Docker-Images für die Anwendung.
