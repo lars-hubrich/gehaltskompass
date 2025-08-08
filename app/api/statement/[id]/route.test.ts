@@ -83,7 +83,9 @@ describe("/api/statement/[id]", () => {
   it("returns 404 on DELETE when statement missing", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
-    const req = new Request("http://localhost/api/statement/s1", { method: "DELETE" });
+    const req = new Request("http://localhost/api/statement/s1", {
+      method: "DELETE",
+    });
     const res = await DELETE(req as NextRequest, {
       params: Promise.resolve({ id: "s1" }),
     });
@@ -97,11 +99,15 @@ describe("/api/statement/[id]", () => {
       user_id: "u1",
     });
     (prisma.statement.delete as jest.Mock).mockResolvedValueOnce({});
-    const req = new Request("http://localhost/api/statement/s1", { method: "DELETE" });
+    const req = new Request("http://localhost/api/statement/s1", {
+      method: "DELETE",
+    });
     const res = await DELETE(req as NextRequest, {
       params: Promise.resolve({ id: "s1" }),
     });
-    expect(prisma.statement.delete).toHaveBeenCalledWith({ where: { id: "s1" } });
+    expect(prisma.statement.delete).toHaveBeenCalledWith({
+      where: { id: "s1" },
+    });
     expect(res.status).toBe(200);
   });
 });

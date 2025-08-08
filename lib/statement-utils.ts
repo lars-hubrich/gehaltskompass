@@ -25,10 +25,11 @@ const NUMERIC_FIELDS: (keyof StatementData)[] = [
 export function ensurePositiveStatement(data: StatementData): StatementData {
   const result: StatementData = {
     ...data,
-    incomes: data.incomes?.map((inc) => ({
-      ...inc,
-      value: Math.abs(Number(inc.value) || 0),
-    })) ?? [],
+    incomes:
+      data.incomes?.map((inc) => ({
+        ...inc,
+        value: Math.abs(Number(inc.value) || 0),
+      })) ?? [],
   };
 
   for (const field of NUMERIC_FIELDS) {
