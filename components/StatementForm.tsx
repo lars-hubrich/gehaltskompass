@@ -24,10 +24,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { StatementData } from "@/constants/Interfaces";
-import {
-  FIELD_DESCRIPTIONS_AI,
-  FIELD_DESCRIPTIONS_HUMAN,
-} from "@/constants/fieldDescriptions";
+import { FIELD_DESCRIPTIONS_HUMAN } from "@/constants/fieldDescriptions";
 import {
   MAX_FILE_SIZE,
   MAX_FILES_PER_UPLOAD,
@@ -152,9 +149,10 @@ export default function StatementForm({
         "brutto_kv",
       ];
       if (Math.abs(totalIncome - value.brutto_tax) > 1) {
+        const diff = Math.abs(totalIncome - value.brutto_tax);
         bruttoFields.forEach((field) => {
           warnings[field] =
-            "Summe der Einnahmen stimmt nicht mit Steuer-Brutto überein.";
+            `Summe der Einnahmen stimmt nicht mit Steuer-Brutto überein (Differenz: ${diff.toFixed(2)} €).`;
         });
       }
 
@@ -174,8 +172,11 @@ export default function StatementForm({
       );
 
       if (totalDeductions > value.brutto_tax) {
+        const diff = totalDeductions - value.brutto_tax;
         deductionFields.forEach((field) => {
-          warnings[field] = "Abzüge übersteigen Steuer-Brutto.";
+          warnings[field] = `Abzüge übersteigen Steuer-Brutto um ${diff.toFixed(
+            2,
+          )} €.`;
         });
       }
 
@@ -621,7 +622,7 @@ export default function StatementForm({
                 onChange={handleField("month")}
                 disabled={!isEditing}
                 error={!!fieldWarnings.month}
-                helperText={fieldWarnings.month || FIELD_DESCRIPTIONS_AI.month}
+                helperText={fieldWarnings.month || ""}
               />
             </Grid>
             <Grid size={{ xs: 6 }}>
@@ -633,7 +634,7 @@ export default function StatementForm({
                 onChange={handleField("year")}
                 disabled={!isEditing}
                 error={!!fieldWarnings.year}
-                helperText={fieldWarnings.year || FIELD_DESCRIPTIONS_AI.year}
+                helperText={fieldWarnings.year || ""}
               />
             </Grid>
           </Grid>
@@ -755,9 +756,7 @@ export default function StatementForm({
                         onChange={handleField(field as keyof StatementData)}
                         disabled={!isEditing}
                         error={!!fieldWarnings[field]}
-                        helperText={
-                          fieldWarnings[field] || FIELD_DESCRIPTIONS_AI[field]
-                        }
+                        helperText={fieldWarnings[field] || ""}
                       />
                     </Grid>
                   ))}
