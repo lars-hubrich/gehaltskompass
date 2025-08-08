@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
-import { ensurePositiveStatement } from "@/lib/statement-utils";
+import { ensurePositiveStatement } from "@/lib/statements/utils";
 import { MAX_STATEMENTS_PER_USER } from "@/constants/limits";
 
 type IncomeCreateInput = {

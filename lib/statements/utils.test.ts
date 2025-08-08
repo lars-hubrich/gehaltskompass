@@ -4,7 +4,7 @@
 import {
   ensurePositivePartialStatement,
   ensurePositiveStatement,
-} from "./statement-utils";
+} from "./utils";
 import type { StatementData } from "@/constants/Interfaces";
 
 describe("ensurePositiveStatement", () => {

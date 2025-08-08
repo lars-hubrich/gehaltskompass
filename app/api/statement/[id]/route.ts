@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
-import { ensurePositivePartialStatement } from "@/lib/statement-utils";
+import { ensurePositivePartialStatement } from "@/lib/statements/utils";
 
 interface IncomeData {
   id?: string;

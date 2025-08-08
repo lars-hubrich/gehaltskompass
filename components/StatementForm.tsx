@@ -31,7 +31,7 @@ import {
   MAX_STATEMENTS_PER_USER,
 } from "@/constants/limits";
 import StatementPieChart from "@/components/dashboard/StatementPieChart";
-import { validateBruttoFields } from "@/lib/statement-validation";
+import { validateBruttoFields } from "@/lib/statements/validation";
 
 interface StatementFormProps {
   statementId?: string;

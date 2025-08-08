@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { FIELD_DESCRIPTIONS_AI } from "@/constants/fieldDescriptions";
-import { ensurePositiveStatement } from "@/lib/statement-utils";
+import { ensurePositiveStatement } from "@/lib/statements/utils";
 import { MAX_FILE_SIZE } from "@/constants/limits";
 
 // noinspection JSUnusedGlobalSymbols

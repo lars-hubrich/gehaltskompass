@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { validateBruttoFields } from "./statement-validation";
+import { validateBruttoFields } from "./validation";
 import type { StatementData } from "@/constants/Interfaces";
 
 describe("validateBruttoFields", () => {
