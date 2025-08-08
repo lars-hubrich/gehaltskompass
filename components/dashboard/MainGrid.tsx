@@ -155,7 +155,7 @@ export default function MainGrid() {
           <HighlightedCard />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Stack>
+          <Stack spacing={2}>
             <SocialPieChart statements={statements} />
             <TaxPieChart statements={statements} />
             <IncomePieChart statements={statements} />
