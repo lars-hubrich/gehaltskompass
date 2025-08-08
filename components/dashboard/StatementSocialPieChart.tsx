@@ -55,7 +55,7 @@ export default function SocialPieChart({
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Verteilung der Sozialabgaben (letzte Abrechnung)
+          Verteilung der Sozialabgaben
         </Typography>
         <Stack alignItems="center" justifyContent="center">
           <PieChart

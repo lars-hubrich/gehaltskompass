@@ -65,7 +65,7 @@ export default function TaxPieChart({ statements = [] }: TaxPieChartProps) {
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Verteilung der Steuerabgaben (letzte Abrechnung)
+          Verteilung der Steuerabgaben
         </Typography>
         <Stack alignItems="center" justifyContent="center">
           <PieChart

@@ -53,7 +53,7 @@ export default function IncomePieChart({
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Verteilung der Einkommen (letzte Abrechnung)
+          Verteilung des Einkommens
         </Typography>
         <Stack alignItems="center" justifyContent="center">
           <PieChart
