@@ -13,7 +13,7 @@ import GehaltskompassIcon from "@/components/icons/GehaltskompassIcon";
 
 const drawerWidth = 240;
 
-const Drawer = styled(MuiDrawer)({
+const Drawer = styled(MuiDrawer)(({ theme }) => ({
   width: drawerWidth,
   flexShrink: 0,
   boxSizing: "border-box",
@@ -21,8 +21,10 @@ const Drawer = styled(MuiDrawer)({
   [`& .${drawerClasses.paper}`]: {
     width: drawerWidth,
     boxSizing: "border-box",
+    borderRight: `1px solid ${theme.palette.divider}`,
+    backgroundImage: "none",
   },
-});
+}));
 
 /**
  * Permanent side navigation menu for desktop layouts.
@@ -38,7 +40,7 @@ export default function SideMenu() {
       sx={{
         display: { xs: "none", md: "block" },
         [`& .${drawerClasses.paper}`]: {
-          backgroundColor: "background.paper",
+          backgroundColor: "background.default",
         },
       }}
     >

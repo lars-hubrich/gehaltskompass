@@ -35,7 +35,9 @@ export default function SideMenuMobile({
         zIndex: (theme) => theme.zIndex.drawer + 1,
         [`& .${drawerClasses.paper}`]: {
           backgroundImage: "none",
-          backgroundColor: "background.paper",
+          backgroundColor: "background.default",
+          borderLeft: "1px solid",
+          borderColor: "divider",
         },
       }}
     >

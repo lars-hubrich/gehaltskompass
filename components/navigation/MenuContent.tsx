@@ -71,6 +71,25 @@ export default function MenuContent() {
     }
   };
 
+  const listItemButtonSx = {
+    borderRadius: 1,
+    mx: 0.5,
+    "&.Mui-selected": {
+      bgcolor: "action.selected",
+      borderLeft: "4px solid",
+      borderColor: "primary.main",
+      "& .MuiListItemIcon-root": {
+        color: "primary.main",
+      },
+      "&:hover": {
+        bgcolor: "action.selected",
+      },
+    },
+    "&:hover": {
+      bgcolor: "action.hover",
+    },
+  } as const;
+
   const secondaryListItems = [
     {
       text: "Einstellungen",
@@ -206,6 +225,7 @@ export default function MenuContent() {
               onClick={() => {
                 router.push(item.path);
               }}
+              sx={listItemButtonSx}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
@@ -217,7 +237,7 @@ export default function MenuContent() {
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <ListItemButton onClick={item.action}>
+            <ListItemButton sx={listItemButtonSx} onClick={item.action}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
