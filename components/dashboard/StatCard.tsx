@@ -23,7 +23,7 @@ function getMonthsInYear(month: number, year: number): string[] {
 
   for (let offset = 5; offset >= 0; offset--) {
     const d = new Date(current.getFullYear(), current.getMonth() - offset);
-    const name = d.toLocaleDateString("en-US", {
+    const name = d.toLocaleDateString("de-DE", {
       month: "short",
       year: "numeric",
     });

@@ -21,7 +21,7 @@ export default function NavbarBreadcrumbs() {
 
   const title = React.useMemo(() => {
     if (pathname === "/dashboard") {
-      return "Dashboard";
+      return "Übersicht";
     } else if (pathname === "/statements") {
       return "Abrechnungen";
     } else if (pathname === "/insights") {

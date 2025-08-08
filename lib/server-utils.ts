@@ -6,14 +6,14 @@ import prisma from "@/lib/prisma";
 export async function requireAuthenticatedUser() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ error: "Nicht authentifiziert" }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
   if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
   }
 
   return user;
@@ -21,5 +21,5 @@ export async function requireAuthenticatedUser() {
 
 export function handleError(error: unknown, route: string) {
   console.error(`${route} error:`, error);
-  return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
 }

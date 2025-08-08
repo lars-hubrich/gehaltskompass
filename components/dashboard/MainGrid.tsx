@@ -103,7 +103,7 @@ export default function MainGrid() {
     },
     {
       title: "Anteil Abgaben",
-      value: formatValue(abgabenData[abgabenData.length - 1], true),
+      value: formatValue(abgabenData.at(-1) ?? 0, true),
       interval: "Letztes Jahr",
       trend: trendOf(abgabenData),
       data: abgabenData,
@@ -121,7 +121,7 @@ export default function MainGrid() {
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
       {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Overview
+        Übersicht
       </Typography>
       <Grid
         container

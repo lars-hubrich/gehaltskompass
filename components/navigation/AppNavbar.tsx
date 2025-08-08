@@ -69,11 +69,11 @@ export default function AppNavbar() {
               component="h1"
               sx={{ color: "text.primary" }}
             >
-              Dashboard
+              Übersicht
             </Typography>
           </Stack>
           <ColorModeIconDropdown />
-          <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
+          <MenuButton aria-label="Menü" onClick={toggleDrawer(true)}>
             <MenuRoundedIcon />
           </MenuButton>
           <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />

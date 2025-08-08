@@ -27,7 +27,7 @@ export default function SocialPieChart({
     return (
       <Card variant="outlined" sx={{ width: "100%" }}>
         <CardContent>
-          <Typography>No statement data available.</Typography>
+          <Typography>Keine Abrechnungsdaten vorhanden.</Typography>
         </CardContent>
       </Card>
     );

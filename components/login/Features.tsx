@@ -14,7 +14,7 @@ import ViewQuiltRoundedIcon from "@mui/icons-material/ViewQuiltRounded";
 const items = [
   {
     icon: <ViewQuiltRoundedIcon />,
-    title: "Dashboard",
+    title: "Übersicht",
     description:
       "Behalte deine Gehaltsentwicklung sowie Steuer- und Sozialabgaben im Blick",
     imageLight: `url("${
@@ -164,7 +164,7 @@ export default function Features() {
           gutterBottom
           sx={{ color: "text.primary" }}
         >
-          Features
+          Funktionen
         </Typography>
         <Typography
           variant="body1"
