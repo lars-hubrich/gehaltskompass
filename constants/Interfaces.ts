@@ -35,5 +35,6 @@ export interface StatementData {
   payout_transfer: number;
   payout_vwl: number;
   payout_other: number;
-  [key: string]: string | number | Income[];
+
+  [key: string]: string | number | Income[] | undefined;
 }
