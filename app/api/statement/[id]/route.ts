@@ -99,7 +99,7 @@ export async function PUT(
     }
     const duplicate = await prisma.statement.findFirst({
       where: {
-        user_id: userOrRes.id,
+        user_id: userOrResponse.id,
         month: newMonth,
         year: newYear,
         NOT: { id },
