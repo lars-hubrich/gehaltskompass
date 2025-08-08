@@ -3,7 +3,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
+import { FIELD_DESCRIPTIONS_AI } from "@/constants/fieldDescriptions";
 import { ensurePositiveStatement } from "@/lib/statement-utils";
 
 // noinspection JSUnusedGlobalSymbols
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const encoded = buffer.toString("base64");
-  const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS)
+  const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS_AI)
     .map(([key, desc]) => `${key}: ${desc}`)
     .join("\n");
   const contents = [

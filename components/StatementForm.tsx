@@ -22,7 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { StatementData } from "@/constants/Interfaces";
-import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
+import { FIELD_DESCRIPTIONS_HUMAN } from "@/constants/fieldDescriptions";
 
 interface StatementFormProps {
   statementId?: string;
@@ -430,7 +430,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                     <Grid size={{ xs: 6 }} key={field}>
                       <TextField
                         fullWidth
-                        label={FIELD_DESCRIPTIONS[field] || field}
+                        label={FIELD_DESCRIPTIONS_HUMAN[field] || field}
                         type="number"
                         value={data[field as keyof StatementData] as number}
                         onChange={handleField(field as keyof StatementData)}

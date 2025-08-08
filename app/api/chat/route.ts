@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { GoogleGenAI } from "@google/genai";
-import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
+import { FIELD_DESCRIPTIONS_AI } from "@/constants/fieldDescriptions";
 
 export const config = { api: { bodyParser: true } };
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
   const contextJson = JSON.stringify(statements, null, 2);
 
-  const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS)
+  const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS_AI)
     .map(([key, desc]) => `${key}: ${desc}`)
     .join("\n");
 
