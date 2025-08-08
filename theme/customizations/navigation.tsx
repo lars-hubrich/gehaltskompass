@@ -58,6 +58,13 @@ export const navigationCustomizations: Components<Theme> = {
   MuiSelect: {
     defaultProps: {
       IconComponent: React.forwardRef<SVGSVGElement, SvgIconProps>(
+        /**
+         * Dropdown icon used in select components.
+         *
+         * @param {SvgIconProps} props - Icon properties.
+         * @param {React.Ref<SVGSVGElement>} ref - Forwarded ref.
+         * @returns {JSX.Element} The rendered icon.
+         */
         function Icon(props, ref) {
           return (
             <UnfoldMoreRoundedIcon fontSize="small" {...props} ref={ref} />

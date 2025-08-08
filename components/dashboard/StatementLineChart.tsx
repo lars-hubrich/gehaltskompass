@@ -15,6 +15,9 @@ interface StatementLineChartProps {
 
 /**
  * SVG gradient definition for the line chart areas.
+ *
+ * @param {{ color: string; id: string }} params - Gradient color and identifier.
+ * @returns {JSX.Element} SVG gradient element.
  */
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (

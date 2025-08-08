@@ -5,6 +5,7 @@ import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 /**
  * Exports all user data including statements and incomes.
  *
+ * @param {NextRequest} req - The HTTP request.
  * @returns {Promise<NextResponse>} The user with related data or an error response.
  */
 export async function GET(req: NextRequest) {

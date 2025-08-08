@@ -1,5 +1,8 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
+/**
+ * Mocks the authentication request to simulate a logged-in user.
+ */
 const loginIntercept = () => {
   cy.intercept("GET", "/api/auth/session", {
     statusCode: 200,

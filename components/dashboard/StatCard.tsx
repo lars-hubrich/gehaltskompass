@@ -42,6 +42,9 @@ function getMonthsInYear(month: number, year: number): string[] {
 
 /**
  * SVG gradient definition for sparkline areas.
+ *
+ * @param {{ color: string; id: string }} params - Gradient color and identifier.
+ * @returns {JSX.Element} SVG gradient element.
  */
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (

@@ -1,4 +1,4 @@
-import { createTheme, alpha, PaletteMode, Shadows } from "@mui/material/styles";
+import { alpha, createTheme, PaletteMode, Shadows } from "@mui/material/styles";
 
 declare module "@mui/material/Paper" {
   interface PaperPropsVariantOverrides {
@@ -92,6 +92,12 @@ export const red = {
   900: "hsl(0, 93%, 6%)",
 };
 
+/**
+ * Generates theme design tokens based on the selected palette mode.
+ *
+ * @param {PaletteMode} mode - Current palette mode.
+ * @returns {object} Design tokens for the provided mode.
+ */
 export const getDesignTokens = (mode: PaletteMode) => {
   customShadows[1] =
     mode === "dark"

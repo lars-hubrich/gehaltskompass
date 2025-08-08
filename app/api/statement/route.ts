@@ -60,7 +60,7 @@ export async function GET() {
 /**
  * Creates a new salary statement for the authenticated user.
  *
- * @param {NextRequest} request The incoming HTTP request.
+ * @param {NextRequest} request - The incoming HTTP request with statement data.
  * @returns {Promise<NextResponse>} The created statement or an error response.
  */
 export async function POST(request: NextRequest) {
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
 /**
  * Deletes multiple salary statements belonging to the authenticated user.
  *
- * @param {NextRequest} request The incoming HTTP request containing statement IDs.
+ * @param {NextRequest} request - The incoming HTTP request containing statement IDs.
  * @returns {Promise<NextResponse>} The result of the deletion or an error response.
  */
 export async function DELETE(request: NextRequest) {

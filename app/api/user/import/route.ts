@@ -10,7 +10,7 @@ type ImportedIncome = StatementData["incomes"][number] &
 /**
  * Imports an array of salary statements for the authenticated user, replacing existing ones.
  *
- * @param {NextRequest} req The HTTP request containing statements JSON.
+ * @param {NextRequest} req - The HTTP request containing statements JSON or CSV data.
  * @returns {Promise<NextResponse>} The created statements or an error response.
  */
 export async function POST(req: NextRequest) {

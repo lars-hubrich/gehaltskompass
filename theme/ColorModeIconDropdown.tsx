@@ -7,16 +7,36 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useColorScheme } from "@mui/material/styles";
 
+/**
+ * Dropdown icon allowing users to switch between color modes.
+ *
+ * @param {IconButtonOwnProps} props - Icon button properties.
+ * @returns {JSX.Element} Color mode toggle dropdown.
+ */
 export default function ColorModeIconDropdown(props: IconButtonOwnProps) {
   const { mode, systemMode, setMode } = useColorScheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  /**
+   * Opens the color mode selection menu.
+   *
+   * @param {React.MouseEvent<HTMLElement>} event - Click event.
+   */
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  /**
+   * Closes the color mode selection menu.
+   */
   const handleClose = () => {
     setAnchorEl(null);
   };
+  /**
+   * Changes the current color mode.
+   *
+   * @param {"system" | "light" | "dark"} targetMode - Desired mode.
+   * @returns {() => void} Function applying the mode change.
+   */
   const handleMode = (targetMode: "system" | "light" | "dark") => () => {
     setMode(targetMode);
     handleClose();
