@@ -7,11 +7,11 @@ import Typography from "@mui/material/Typography";
 import StatementDataGrid from "./StatementDataGrid";
 import HighlightedCard from "./HighlightedCard";
 import StatementBarChart from "./StatementBarChart";
-import SessionsChart from "./StatementLineChart";
 import StatCard, { StatCardProps } from "./StatCard";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { filteredStatement, StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
+import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
 
 export default function MainGrid() {
   const [filteredStatements, setFilteredStatements] = useState<
@@ -130,16 +130,13 @@ export default function MainGrid() {
           <HighlightedCard />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SessionsChart statements={statements} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
           <StatementBarChart statements={statements} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <SocialPieChart statements={statements} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SocialPieChart statements={statements} />
+          <TaxPieChart statements={statements} />
         </Grid>
       </Grid>
       <Grid container spacing={2} columns={12}>
