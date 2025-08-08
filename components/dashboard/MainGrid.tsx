@@ -67,10 +67,6 @@ export default function MainGrid() {
     () => bruttoData.reduce((sum, v) => sum + v, 0),
     [bruttoData],
   );
-  const totalAbgaben = useMemo(
-    () => abgabenData.reduce((sum, v) => sum + v, 0),
-    [abgabenData],
-  );
 
   const trendOf = (arr: number[]): "up" | "down" | "neutral" => {
     if (arr.length < 2) return "neutral";
