@@ -1,0 +1,107 @@
+/**
+ * @jest-environment node
+ */
+jest.mock("@/lib/prisma", () => ({
+  statement: {
+    findUnique: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+jest.mock("@/lib/server-utils", () => ({
+  requireAuthenticatedUser: jest.fn(),
+  handleError: jest.fn(),
+}));
+import prisma from "@/lib/prisma";
+import { GET, PUT, DELETE } from "./route";
+import type { NextRequest } from "next/server";
+import { requireAuthenticatedUser } from "@/lib/server-utils";
+
+const mockRequire = requireAuthenticatedUser as jest.Mock;
+
+describe("/api/statement/[id]", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it("returns 404 when statement not found", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    const res = await GET({} as NextRequest, {
+      params: Promise.resolve({ id: "s1" }),
+    });
+    expect(res.status).toBe(404);
+  });
+
+  it("returns statement when found", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce({
+      id: "s1",
+      user_id: "u1",
+      incomes: [],
+    });
+    const res = await GET({} as NextRequest, {
+      params: Promise.resolve({ id: "s1" }),
+    });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ id: "s1", user_id: "u1", incomes: [] });
+  });
+
+  it("returns 404 on PUT when statement missing", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    const req = new Request("http://localhost/api/statement/s1", {
+      method: "PUT",
+      body: JSON.stringify({ month: 2 }),
+    });
+    const res = await PUT(req as NextRequest, {
+      params: Promise.resolve({ id: "s1" }),
+    });
+    expect(res.status).toBe(404);
+  });
+
+  it("updates statement on PUT", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce({
+      id: "s1",
+      user_id: "u1",
+    });
+    (prisma.statement.update as jest.Mock).mockResolvedValueOnce({
+      id: "s1",
+      month: 2,
+      incomes: [],
+    });
+    const req = new Request("http://localhost/api/statement/s1", {
+      method: "PUT",
+      body: JSON.stringify({ month: 2 }),
+    });
+    const res = await PUT(req as NextRequest, {
+      params: Promise.resolve({ id: "s1" }),
+    });
+    expect(prisma.statement.update).toHaveBeenCalled();
+    expect(await res.json()).toEqual({ id: "s1", month: 2, incomes: [] });
+  });
+
+  it("returns 404 on DELETE when statement missing", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    const req = new Request("http://localhost/api/statement/s1", { method: "DELETE" });
+    const res = await DELETE(req as NextRequest, {
+      params: Promise.resolve({ id: "s1" }),
+    });
+    expect(res.status).toBe(404);
+  });
+
+  it("deletes statement", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce({
+      id: "s1",
+      user_id: "u1",
+    });
+    (prisma.statement.delete as jest.Mock).mockResolvedValueOnce({});
+    const req = new Request("http://localhost/api/statement/s1", { method: "DELETE" });
+    const res = await DELETE(req as NextRequest, {
+      params: Promise.resolve({ id: "s1" }),
+    });
+    expect(prisma.statement.delete).toHaveBeenCalledWith({ where: { id: "s1" } });
+    expect(res.status).toBe(200);
+  });
+});
