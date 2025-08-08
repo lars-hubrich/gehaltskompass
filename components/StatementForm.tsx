@@ -31,6 +31,7 @@ import {
   MAX_STATEMENTS_PER_USER,
 } from "@/constants/limits";
 import StatementPieChart from "@/components/dashboard/StatementPieChart";
+import { validateBruttoFields } from "@/lib/statement-validation";
 
 interface StatementFormProps {
   statementId?: string;
@@ -139,24 +140,7 @@ export default function StatementForm({
         }
       });
 
-      const totalIncome = value.incomes.reduce(
-        (sum, inc) => sum + inc.value,
-        0,
-      );
-      const bruttoFields = [
-        "brutto_tax",
-        "brutto_av",
-        "brutto_pv",
-        "brutto_rv",
-        "brutto_kv",
-      ];
-      if (Math.abs(totalIncome - value.brutto_tax) > 1) {
-        const diff = Math.abs(totalIncome - value.brutto_tax);
-        bruttoFields.forEach((field) => {
-          warnings[field] =
-            `Summe der Einnahmen stimmt nicht mit Steuer-Brutto überein (Differenz: ${diff.toFixed(2)} €).`;
-        });
-      }
+      Object.assign(warnings, validateBruttoFields(value));
 
       const deductionFields = [
         "deduction_tax_income",
