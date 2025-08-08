@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
 import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
+import { Stack } from "@mui/material";
 
 export default function MainGrid() {
   const [statements, setStatements] = useState<StatementData[]>([]);
@@ -125,10 +126,10 @@ export default function MainGrid() {
           <HighlightedCard />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SocialPieChart statements={statements} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <TaxPieChart statements={statements} />
+          <Stack>
+            <SocialPieChart statements={statements} />
+            <TaxPieChart statements={statements} />
+          </Stack>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <StatementBarChart statements={statements} />
