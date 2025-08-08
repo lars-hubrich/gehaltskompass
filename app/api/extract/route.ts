@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
+import { ensurePositiveStatement } from "@/lib/statement-utils";
 
 // noinspection JSUnusedGlobalSymbols
 export const config = { api: { bodyParser: false } };
@@ -123,5 +124,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json(JSON.parse(<string>response.text));
+  const raw = JSON.parse(<string>response.text);
+  const data = ensurePositiveStatement(raw);
+  return NextResponse.json(data);
 }

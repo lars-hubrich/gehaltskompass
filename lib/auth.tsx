@@ -30,7 +30,6 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
-      console.log("DEBUG: user ", user);
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -39,7 +38,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log("DEBUG: token ", token);
       session.user = {
         id: token.id as string,
         email: token.email ?? "",

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
+import { ensurePositiveStatement } from "@/lib/statement-utils";
 
 type IncomeCreateInput = {
   name: string;
@@ -28,7 +29,7 @@ type StatementCreateBody = {
   payout_transfer: number;
   payout_vwl: number;
   payout_other: number;
-  incomes?: IncomeCreateInput[];
+  incomes: IncomeCreateInput[];
 };
 
 type BulkDeleteBody = {
@@ -54,18 +55,19 @@ export async function POST(request: NextRequest) {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;
   try {
-    const body: StatementCreateBody = await request.json();
+    const body: StatementCreateBody = ensurePositiveStatement(
+      await request.json(),
+    );
     const newStatement = await prisma.statement.create({
       data: {
         user_id: userOrRes.id,
         ...body,
         incomes: {
-          create:
-            body.incomes?.map((inc) => ({
-              name: inc.name,
-              identifier: inc.identifier,
-              value: inc.value,
-            })) ?? [],
+          create: body.incomes.map((inc) => ({
+            name: inc.name,
+            identifier: inc.identifier,
+            value: inc.value,
+          })),
         },
       },
       include: { incomes: true },

@@ -44,8 +44,6 @@ export async function POST(req: NextRequest) {
 
   const contextJson = JSON.stringify(statements, null, 2);
 
-  console.log("DEBUG Lars Context JSON:", contextJson);
-
   const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS)
     .map(([key, desc]) => `${key}: ${desc}`)
     .join("\n");
@@ -69,8 +67,6 @@ export async function POST(req: NextRequest) {
     },
   ];
 
-  console.log("DEBUG Lars Contents:", contents);
-
   try {
     const res = await ai.models.generateContent({
       model: "gemini-2.5-flash-lite",
@@ -80,8 +76,6 @@ export async function POST(req: NextRequest) {
         maxOutputTokens: 350,
       },
     });
-
-    console.log("DEBUG Lars Res:", res);
 
     if (!res?.text) {
       return NextResponse.json(
