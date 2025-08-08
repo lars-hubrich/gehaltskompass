@@ -17,8 +17,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert,
 } from "@mui/material";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -434,8 +434,11 @@ export default function StatementForm({
               ? "Abrechnung bearbeiten"
               : "Abrechnung ansehen"}
         </Typography>
-        {error && <Alert severity="error">{error}</Alert>}
-        {validationError && <Alert severity="error">{validationError}</Alert>}
+        <ErrorSnackbar error={error} onClose={() => setError(null)} />
+        <ErrorSnackbar
+          error={validationError}
+          onClose={() => setValidationError(null)}
+        />
 
         {statementId === "new" && (
           <>

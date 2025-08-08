@@ -12,7 +12,8 @@ import { StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
 import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
 import IncomePieChart from "@/components/dashboard/StatementIncomePieChart";
-import { Stack, Alert } from "@mui/material";
+import { Stack } from "@mui/material";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import NoStatementsCard from "./NoStatementsCard";
 
 export default function MainGrid() {
@@ -122,7 +123,7 @@ export default function MainGrid() {
   if (!loading && error) {
     return (
       <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
-        <Alert severity="error">{error}</Alert>
+        <ErrorSnackbar error={error} onClose={() => setError(null)} />
       </Box>
     );
   }

@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import StatementDataGrid from "./StatementDataGrid";
 import { useState, useEffect, useCallback } from "react";
 import { StatementOverviewData } from "@/constants/Interfaces";
-import { Alert } from "@mui/material";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 
 export default function StatementsGrid() {
   const [statements, setStatements] = useState<StatementOverviewData[]>([]);
@@ -38,7 +38,7 @@ export default function StatementsGrid() {
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Gehaltsabrechnungen
       </Typography>
-      {error && <Alert severity="error">{error}</Alert>}
+      <ErrorSnackbar error={error} onClose={() => setError(null)} />
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
           {/*TODO fixed height*/}

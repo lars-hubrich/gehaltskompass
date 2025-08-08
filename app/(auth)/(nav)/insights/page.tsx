@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -14,6 +13,7 @@ import {
   TextareaAutosize,
   Typography,
 } from "@mui/material";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 
 export default function ChatPage() {
   const [question, setQuestion] = useState("");
@@ -92,7 +92,7 @@ export default function ChatPage() {
               </Button>
             </Stack>
           </Box>
-          {error && <Alert severity="error">Fehler: {error}</Alert>}
+          <ErrorSnackbar error={error} onClose={() => setError(null)} />
           {answer && (
             <Paper variant="outlined" sx={{ p: 2, borderRadius: 1 }}>
               <Typography
