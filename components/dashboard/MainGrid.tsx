@@ -12,9 +12,11 @@ import { StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
 import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
 import { Stack } from "@mui/material";
+import NoStatementsCard from "./NoStatementsCard";
 
 export default function MainGrid() {
   const [statements, setStatements] = useState<StatementData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchStatements = useCallback(async () => {
     const res = await fetch("/api/statement");
@@ -22,6 +24,7 @@ export default function MainGrid() {
       const data = await res.json();
       setStatements(data);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -104,6 +107,13 @@ export default function MainGrid() {
       data: abgabenData,
     },
   ];
+  if (!loading && statements.length === 0) {
+    return (
+      <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
+        <NoStatementsCard />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
