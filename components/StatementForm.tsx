@@ -32,9 +32,15 @@ import {
 
 interface StatementFormProps {
   statementId?: string;
+  onSaved?: () => void;
+  onCancel?: () => void;
 }
 
-export default function StatementForm({ statementId }: StatementFormProps) {
+export default function StatementForm({
+  statementId,
+  onSaved,
+  onCancel,
+}: StatementFormProps) {
   const router = useRouter();
 
   const [data, setData] = useState<StatementData>({
@@ -68,6 +74,8 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   const [openResult, setOpenResult] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [existingCount, setExistingCount] = useState(0);
+  const [originalData, setOriginalData] = useState<StatementData | null>(null);
+  const [isEditing, setIsEditing] = useState(statementId === "new");
 
   useEffect(() => {
     if (statementId && statementId !== "new") {
@@ -75,7 +83,10 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         const res = await fetch(`/api/statement/${statementId}`);
         if (res.ok) {
           const loaded = await res.json();
-          setData({ ...loaded, incomes: loaded.incomes || [] });
+          const normalized = { ...loaded, incomes: loaded.incomes || [] };
+          setData(normalized);
+          setOriginalData(normalized);
+          setIsEditing(false);
         } else {
           const err = await res.json();
           setError(err.error || "Fehler beim Laden der Abrechnung");
@@ -89,6 +100,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
           setExistingCount(statements.length);
         }
       })();
+      setIsEditing(true);
     }
   }, [statementId]);
 
@@ -236,7 +248,11 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   const handleCloseResult = () => {
     setOpenResult(false);
-    router.replace("/statements");
+    if (onSaved) {
+      onSaved();
+    } else {
+      router.replace("/statements");
+    }
   };
 
   const handleField =
@@ -293,7 +309,11 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       credentials: "include",
     });
     if (res.ok) {
-      router.replace("/statements");
+      if (onSaved) {
+        onSaved();
+      } else {
+        router.replace("/statements");
+      }
     } else {
       const err = await res.json();
       setError(err.error || "Speichern fehlgeschlagen");
@@ -302,7 +322,11 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   const handleDelete = async () => {
     if (!statementId || statementId === "new") {
-      router.replace("/statements");
+      if (onCancel) {
+        onCancel();
+      } else {
+        router.replace("/statements");
+      }
       return;
     }
     setError(null);
@@ -310,10 +334,33 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       method: "DELETE",
     });
     if (res.ok) {
-      router.replace("/statements");
+      if (onSaved) {
+        onSaved();
+      } else {
+        router.replace("/statements");
+      }
     } else {
       const err = await res.json();
       setError(err.error || "Löschen fehlgeschlagen");
+    }
+  };
+
+  const handleCancel = () => {
+    if (statementId === "new") {
+      if (onCancel) {
+        onCancel();
+      } else {
+        router.replace("/statements");
+      }
+      return;
+    }
+    if (isEditing && originalData) {
+      setData(originalData);
+      setIsEditing(false);
+    } else if (onCancel) {
+      onCancel();
+    } else {
+      router.replace("/statements");
     }
   };
 
@@ -334,37 +381,43 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         <Typography variant="h4" align="center">
           {statementId === "new"
             ? "Neue Abrechnung erstellen"
-            : "Abrechnung ansehen und bearbeiten"}
+            : isEditing
+              ? "Abrechnung bearbeiten"
+              : "Abrechnung ansehen"}
         </Typography>
         {error && <Alert severity="error">{error}</Alert>}
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/pdf"
-          multiple
-          hidden
-          onChange={onFileChange}
-        />
+        {statementId === "new" && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              multiple
+              hidden
+              onChange={onFileChange}
+            />
 
-        <Paper
-          variant="outlined"
-          sx={{
-            p: 2,
-            textAlign: "center",
-            borderStyle: "dashed",
-            cursor: "pointer",
-          }}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <UploadFileIcon fontSize="large" />
-          <Typography sx={{ mt: 1 }}>
-            Klicke hier oder ziehe dein PDF-Dokument(e) hinein, um die Felder
-            automatisch zu befüllen.
-          </Typography>
-        </Paper>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                textAlign: "center",
+                borderStyle: "dashed",
+                cursor: "pointer",
+              }}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <UploadFileIcon fontSize="large" />
+              <Typography sx={{ mt: 1 }}>
+                Klicke hier oder ziehe dein PDF-Dokument(e) hinein, um die
+                Felder automatisch zu befüllen.
+              </Typography>
+            </Paper>
+          </>
+        )}
 
         <Paper variant="outlined" sx={{ p: 2 }}>
           <Typography variant="h6">Abrechnungszeitraum</Typography>
@@ -376,6 +429,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                 type="number"
                 value={data.month}
                 onChange={handleField("month")}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid size={{ xs: 6 }}>
@@ -385,6 +439,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                 type="number"
                 value={data.year}
                 onChange={handleField("year")}
+                disabled={!isEditing}
               />
             </Grid>
           </Grid>
@@ -399,9 +454,11 @@ export default function StatementForm({ statementId }: StatementFormProps) {
             }}
           >
             <Typography variant="h6">Einkommensarten</Typography>
-            <IconButton onClick={addIncome} color="primary">
-              <AddIcon />
-            </IconButton>
+            {isEditing && (
+              <IconButton onClick={addIncome} color="primary">
+                <AddIcon />
+              </IconButton>
+            )}
           </Box>
           <Divider sx={{ my: 2 }} />
           {data.incomes.map((inc, idx) => (
@@ -413,6 +470,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                     label="Name"
                     value={inc.name}
                     onChange={handleIncomeChange(idx, "name")}
+                    disabled={!isEditing}
                   />
                 </Grid>
                 <Grid size={{ xs: 5 }}>
@@ -421,6 +479,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                     label="Kennung"
                     value={inc.identifier}
                     onChange={handleIncomeChange(idx, "identifier")}
+                    disabled={!isEditing}
                   />
                 </Grid>
                 <Grid size={{ xs: 2 }}>
@@ -430,13 +489,16 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                     type="number"
                     value={inc.value}
                     onChange={handleIncomeChange(idx, "value")}
+                    disabled={!isEditing}
                   />
                 </Grid>
-                <Grid size={{ xs: 12 }} textAlign="right">
-                  <IconButton onClick={() => removeIncome(idx)} color="error">
-                    <DeleteIcon />
-                  </IconButton>
-                </Grid>
+                {isEditing && (
+                  <Grid size={{ xs: 12 }} textAlign="right">
+                    <IconButton onClick={() => removeIncome(idx)} color="error">
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
+                )}
               </Grid>
             </Paper>
           ))}
@@ -491,6 +553,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                         type="number"
                         value={data[field as keyof StatementData] as number}
                         onChange={handleField(field as keyof StatementData)}
+                        disabled={!isEditing}
                       />
                     </Grid>
                   ))}
@@ -500,14 +563,27 @@ export default function StatementForm({ statementId }: StatementFormProps) {
           ))}
         </Grid>
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-          <Button variant="contained" color="error" onClick={handleDelete}>
-            {statementId === "new" ? "Abbrechen" : "Löschen"}
-          </Button>
-          <Button type="submit" variant="contained" color="success">
-            Speichern
-          </Button>
-        </Box>
+        {isEditing ? (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            {statementId !== "new" && (
+              <Button variant="contained" color="error" onClick={handleDelete}>
+                Löschen
+              </Button>
+            )}
+            <Button variant="outlined" onClick={handleCancel}>
+              Abbrechen
+            </Button>
+            <Button type="submit" variant="contained" color="success">
+              Speichern
+            </Button>
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="contained" onClick={() => setIsEditing(true)}>
+              Bearbeiten
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Dialog open={openResult} onClose={handleCloseResult}>

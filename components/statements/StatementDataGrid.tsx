@@ -12,7 +12,8 @@ import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Dialog, DialogContent } from "@mui/material";
+import StatementForm from "@/components/StatementForm";
 
 interface CustomizedDataGridProps {
   statements: StatementOverviewData[];
@@ -68,6 +69,7 @@ export default function StatementDataGrid({
       ids: new Set(),
     });
   const [error, setError] = React.useState<string | null>(null);
+  const [openCreate, setOpenCreate] = React.useState(false);
 
   const selectedIds = React.useMemo(() => {
     const { type, ids } = selectionModel;
@@ -125,7 +127,7 @@ export default function StatementDataGrid({
       <Button
         startIcon={<AddIcon />}
         variant="contained"
-        onClick={() => router.push("/statement/new")}
+        onClick={() => setOpenCreate(true)}
       >
         Neue Abrechnung
       </Button>
@@ -165,6 +167,23 @@ export default function StatementDataGrid({
           {error}
         </Alert>
       </Snackbar>
+      <Dialog
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogContent>
+          <StatementForm
+            statementId="new"
+            onSaved={async () => {
+              setOpenCreate(false);
+              await onRefresh();
+            }}
+            onCancel={() => setOpenCreate(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
