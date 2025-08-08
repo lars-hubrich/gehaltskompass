@@ -185,7 +185,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   const handleCloseResult = () => {
     setOpenResult(false);
-    router.replace("/");
+    router.replace("/statements");
   };
 
   const handleField =
@@ -238,20 +238,20 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       credentials: "include",
     });
     if (res.ok) {
-      router.replace("/");
+      router.replace("/statements");
     }
   };
 
   const handleDelete = async () => {
     if (!statementId || statementId === "new") {
-      router.replace("/");
+      router.replace("/statements");
       return;
     }
     const res = await fetch(`/api/statement/${statementId}`, {
       method: "DELETE",
     });
     if (res.ok) {
-      router.replace("/");
+      router.replace("/statements");
     }
   };
 

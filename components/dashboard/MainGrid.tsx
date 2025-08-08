@@ -4,19 +4,16 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import StatementDataGrid from "./StatementDataGrid";
 import HighlightedCard from "./HighlightedCard";
 import StatementBarChart from "./StatementBarChart";
-import SessionsChart from "./StatementLineChart";
 import StatCard, { StatCardProps } from "./StatCard";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { filteredStatement, StatementData } from "@/constants/Interfaces";
+import { StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
+import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
+import { Stack } from "@mui/material";
 
 export default function MainGrid() {
-  const [filteredStatements, setFilteredStatements] = useState<
-    filteredStatement[]
-  >([]);
   const [statements, setStatements] = useState<StatementData[]>([]);
 
   const fetchStatements = useCallback(async () => {
@@ -24,7 +21,6 @@ export default function MainGrid() {
     if (res.ok) {
       const data = await res.json();
       setStatements(data);
-      setFilteredStatements(data);
     }
   }, []);
 
@@ -131,24 +127,13 @@ export default function MainGrid() {
           <HighlightedCard />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SessionsChart statements={statements} />
+          <Stack>
+            <SocialPieChart statements={statements} />
+            <TaxPieChart statements={statements} />
+          </Stack>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <StatementBarChart statements={statements} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <SocialPieChart statements={statements} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <SocialPieChart statements={statements} />
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} columns={12}>
-        <Grid size={{ xs: 12, lg: 12 }}>
-          <StatementDataGrid
-            statements={filteredStatements}
-            onRefresh={fetchStatements}
-          />
         </Grid>
       </Grid>
     </Box>
