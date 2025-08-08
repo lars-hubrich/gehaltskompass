@@ -179,11 +179,12 @@ export default function StatementForm({
         });
       }
 
-      const expectedNet = value.brutto_tax - totalDeductions;
-      if (Math.abs(expectedNet - value.payout_netto) > 1) {
-        warnings["payout_netto"] =
-          "Nettoauszahlung passt nicht zu Brutto minus Abzügen.";
-      }
+      // disabled for now, as payout_netto is not always equal to brutto_tax - deductions
+      // const expectedNet = value.brutto_tax - totalDeductions;
+      // if (Math.abs(expectedNet - value.payout_netto) > 1) {
+      //   warnings["payout_netto"] =
+      //     "Nettoauszahlung passt nicht zu Brutto minus Abzügen.";
+      // }
 
       setValidationError(msg);
       setFieldWarnings(warnings);

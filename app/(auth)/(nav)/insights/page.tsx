@@ -2,18 +2,16 @@
 
 import * as React from "react";
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  Grid,
-  Paper,
-  Stack,
-  TextareaAutosize,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+import Typography from "@mui/material/Typography";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 
 /**
@@ -119,7 +117,7 @@ export default function ChatPage() {
             </Typography>
             <Grid container spacing={1}>
               {examplePrompts.map((prompt) => (
-                <Grid item xs={12} sm={6} key={prompt}>
+                <Grid size={{ xs: 12, sm: 6 }} key={prompt}>
                   <Button
                     fullWidth
                     variant="outlined"
