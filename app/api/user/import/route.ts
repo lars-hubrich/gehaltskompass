@@ -38,8 +38,9 @@ export async function POST(req: NextRequest) {
           ...rest,
           user_id: userOrRes.id,
           incomes: {
-            create: incomes.map((inc: ImportedIncome) => {
-              const { id, statement_id, statementId, ...incRest } = inc;
+            create: (incomes as ImportedIncome[]).map((inc) => {
+              const { id, statement_id, statementId, ...incRest } =
+                inc as ImportedIncome;
               void id;
               void statement_id;
               void statementId;
