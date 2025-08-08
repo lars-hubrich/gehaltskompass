@@ -1,5 +1,8 @@
 # GehaltsKompass
 
+Ein Open-Source-Projekt, das es Nutzern ermöglicht, ihre Gehälter zu analysieren. Die Anwendung nutzt die Gemini-API von
+Google für KI-gestützte Analysen und GitHub für die Authentifizierung.
+
 ## Lokale Entwicklung
 
 Führe die folgenden Schritte aus, um die Datenbank einzurichten und die Anwendung im Entwicklungsmodus zu starten.
