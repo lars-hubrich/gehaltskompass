@@ -53,7 +53,7 @@ export const FIELD_DESCRIPTIONS_AI: Record<string, string> = {
     "Endgültiger Nettolohn, der nach allen Abzügen ausgezahlt wird.",
   payout_transfer: "Übertragener Auszahlungsbetrag aus einem vorherigen Monat.",
   payout_vwl:
-    "Zusätzlich gezahlte vermögenswirksame Leistungen des Arbeitgebers.",
+    "Zusätzlich gezahlte vermögenswirksame Leistungen des Arbeitgebers (VB Überweisung).",
   payout_other:
     "Weitere Auszahlungen, die nicht zu den regulären Gehaltsbestandteilen zählen.",
   incomes:
