@@ -4,14 +4,14 @@ import * as React from "react";
 import {
   DataGrid,
   GridColDef,
-  Toolbar,
   GridRowSelectionModel,
+  Toolbar,
 } from "@mui/x-data-grid";
 import { StatementOverviewData } from "@/constants/Interfaces";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Snackbar, Alert, Dialog, DialogContent } from "@mui/material";
+import { Alert, Dialog, DialogContent, Snackbar } from "@mui/material";
 import StatementForm from "@/components/StatementForm";
 
 interface CustomizedDataGridProps {
@@ -81,8 +81,6 @@ export default function StatementDataGrid({
 
   // Bulk-delete handler
   const handleDelete = async () => {
-    console.log("Delete: ", selectedIds);
-
     if (selectedIds.length === 0) {
       return;
     }
@@ -93,7 +91,6 @@ export default function StatementDataGrid({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedIds }),
       });
-      console.log("Bulk delete response:", response);
 
       if (!response.ok) {
         const err = await response.json();

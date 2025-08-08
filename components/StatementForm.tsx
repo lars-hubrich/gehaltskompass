@@ -30,9 +30,7 @@ import {
   MAX_FILES_PER_UPLOAD,
   MAX_STATEMENTS_PER_USER,
 } from "@/constants/limits";
-import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
-import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
-import IncomePieChart from "@/components/dashboard/StatementIncomePieChart";
+import StatementPieChart from "@/components/dashboard/StatementPieChart";
 
 interface StatementFormProps {
   statementId?: string;
@@ -658,9 +656,9 @@ export default function StatementForm({
         <DialogTitle>Diagramme</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            <SocialPieChart statements={[data]} />
-            <TaxPieChart statements={[data]} />
-            <IncomePieChart statements={[data]} />
+            <StatementPieChart statements={[data]} variant="social" />
+            <StatementPieChart statements={[data]} variant="tax" />
+            <StatementPieChart statements={[data]} variant="income" />
           </Stack>
         </DialogContent>
         <DialogActions>

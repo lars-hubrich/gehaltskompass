@@ -1,17 +1,15 @@
 "use client";
 
 import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import HighlightedCard from "./HighlightedCard";
 import StatementBarChart from "./StatementBarChart";
 import StatCard, { StatCardProps } from "./StatCard";
-import { useState, useEffect, useCallback, useMemo } from "react";
 import { StatementData } from "@/constants/Interfaces";
-import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
-import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
-import IncomePieChart from "@/components/dashboard/StatementIncomePieChart";
+import StatementPieChart from "@/components/dashboard/StatementPieChart";
 import { Stack } from "@mui/material";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 import NoStatementsCard from "./NoStatementsCard";
@@ -157,9 +155,9 @@ export default function MainGrid() {
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2}>
-            <SocialPieChart statements={statements} />
-            <TaxPieChart statements={statements} />
-            <IncomePieChart statements={statements} />
+            <StatementPieChart statements={statements} variant="social" />
+            <StatementPieChart statements={statements} variant="tax" />
+            <StatementPieChart statements={statements} variant="income" />
           </Stack>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
