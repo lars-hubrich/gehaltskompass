@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -69,6 +70,9 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         if (res.ok) {
           const loaded = await res.json();
           setData({ ...loaded, incomes: loaded.incomes || [] });
+        } else {
+          const err = await res.json();
+          setError(err.error || "Fehler beim Laden der Abrechnung");
         }
       })();
     }
@@ -227,6 +231,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     const url =
       statementId === "new"
         ? "/api/statement"
@@ -240,6 +245,9 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     });
     if (res.ok) {
       router.replace("/statements");
+    } else {
+      const err = await res.json();
+      setError(err.error || "Speichern fehlgeschlagen");
     }
   };
 
@@ -248,11 +256,15 @@ export default function StatementForm({ statementId }: StatementFormProps) {
       router.replace("/statements");
       return;
     }
+    setError(null);
     const res = await fetch(`/api/statement/${statementId}`, {
       method: "DELETE",
     });
     if (res.ok) {
       router.replace("/statements");
+    } else {
+      const err = await res.json();
+      setError(err.error || "Löschen fehlgeschlagen");
     }
   };
 
@@ -275,6 +287,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
             ? "Neue Abrechnung erstellen"
             : "Abrechnung ansehen und bearbeiten"}
         </Typography>
+        {error && <Alert severity="error">{error}</Alert>}
 
         <input
           ref={fileInputRef}
@@ -302,11 +315,6 @@ export default function StatementForm({ statementId }: StatementFormProps) {
             Klicke hier oder ziehe dein PDF-Dokument(e) hinein, um die Felder
             automatisch zu befüllen.
           </Typography>
-          {error && (
-            <Typography color="error" sx={{ mt: 1 }}>
-              {error}
-            </Typography>
-          )}
         </Paper>
 
         <Paper variant="outlined" sx={{ p: 2 }}>

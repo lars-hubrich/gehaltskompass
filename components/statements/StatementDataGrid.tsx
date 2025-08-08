@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Snackbar, Alert } from "@mui/material";
 
 interface CustomizedDataGridProps {
   statements: StatementOverviewData[];
@@ -66,6 +67,7 @@ export default function StatementDataGrid({
       type: "include",
       ids: new Set(),
     });
+  const [error, setError] = React.useState<string | null>(null);
 
   const selectedIds = React.useMemo(() => {
     const { type, ids } = selectionModel;
@@ -94,10 +96,11 @@ export default function StatementDataGrid({
       console.log("Bulk delete response:", response);
 
       if (!response.ok) {
-        console.error("Bulk delete failed");
+        const err = await response.json();
+        setError(err.error || "Löschen fehlgeschlagen");
       }
     } catch (error) {
-      console.error("Error deleting statements:", error);
+      setError(error instanceof Error ? error.message : String(error));
     } finally {
       setSelectionModel({
         type: "include",
@@ -130,23 +133,38 @@ export default function StatementDataGrid({
   );
 
   return (
-    <DataGrid
-      checkboxSelection
-      disableRowSelectionOnClick
-      rows={rows}
-      columns={columns}
-      rowSelectionModel={selectionModel}
-      onRowSelectionModelChange={(newSel) => setSelectionModel(newSel)}
-      showToolbar
-      slots={{ toolbar: CustomToolbar }}
-      pageSizeOptions={[5, 10, 20]}
-      initialState={{ pagination: { paginationModel: { pageSize } } }}
-      onRowClick={(params) => router.push(`/statement/${params.id}`)}
-      getRowClassName={(params) =>
-        params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-      }
-      disableColumnResize
-      density="compact"
-    />
+    <>
+      <DataGrid
+        checkboxSelection
+        disableRowSelectionOnClick
+        rows={rows}
+        columns={columns}
+        rowSelectionModel={selectionModel}
+        onRowSelectionModelChange={(newSel) => setSelectionModel(newSel)}
+        showToolbar
+        slots={{ toolbar: CustomToolbar }}
+        pageSizeOptions={[5, 10, 20]}
+        initialState={{ pagination: { paginationModel: { pageSize } } }}
+        onRowClick={(params) => router.push(`/statement/${params.id}`)}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
+        disableColumnResize
+        density="compact"
+      />
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError(null)}
+      >
+        <Alert
+          severity="error"
+          onClose={() => setError(null)}
+          sx={{ width: "100%" }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

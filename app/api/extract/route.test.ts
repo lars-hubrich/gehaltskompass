@@ -93,6 +93,6 @@ describe("POST /api/extract", () => {
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json).toEqual(expect.objectContaining({ month: 1 }));
+    expect(json).toMatchObject({ month: 1 });
   });
 });

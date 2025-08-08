@@ -11,18 +11,27 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
 import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
-import { Stack } from "@mui/material";
+import { Stack, Alert } from "@mui/material";
 import NoStatementsCard from "./NoStatementsCard";
 
 export default function MainGrid() {
   const [statements, setStatements] = useState<StatementData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchStatements = useCallback(async () => {
-    const res = await fetch("/api/statement");
-    if (res.ok) {
-      const data = await res.json();
-      setStatements(data);
+    try {
+      const res = await fetch("/api/statement");
+      if (res.ok) {
+        const data = await res.json();
+        setStatements(data);
+        setError(null);
+      } else {
+        const err = await res.json();
+        setError(err.error || "Fehler beim Laden der Abrechnungen");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
     }
     setLoading(false);
   }, []);
@@ -109,6 +118,13 @@ export default function MainGrid() {
       data: abgabenData,
     },
   ];
+  if (!loading && error) {
+    return (
+      <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
   if (!loading && statements.length === 0) {
     return (
       <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
