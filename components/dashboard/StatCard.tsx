@@ -80,10 +80,30 @@ export default function StatCard({
     down: "error" as const,
     neutral: "default" as const,
   };
-
+  function computeTrendLabel(arr: number[]) {
+    if (!arr || arr.length < 2) return "0%";
+    const first = arr[0];
+    const last = arr[arr.length - 1];
+    if (first === 0) return "0%"; // Schutz vor Division durch 0 (oder entscheide anders)
+    const pct = ((last - first) / first) * 100;
+    const sign = pct > 0 ? "+" : pct < 0 ? "-" : "";
+    return `${sign}${Math.abs(pct).toFixed(1)}%`;
+  }
   const color = labelColors[trend];
   const chartColor = trendColors[trend];
-  const trendValues = { up: "+25%", down: "-25%", neutral: "+5%" };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const makeTrendValues = (arr: number[]) => {
+    const label = computeTrendLabel(arr);
+    return {
+      up: label,
+      down: label,
+      neutral: "0%",
+    } as const;
+  };
+  const trendValues = React.useMemo(
+    () => makeTrendValues(data),
+    [data, makeTrendValues],
+  );
 
   return (
     <Card variant="outlined" sx={{ height: "100%", flexGrow: 1 }}>
