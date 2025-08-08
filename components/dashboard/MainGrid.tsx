@@ -45,14 +45,15 @@ export default function MainGrid() {
     () =>
       last12.map(
         (s) =>
-          s.deduction_tax_income +
-          s.deduction_tax_church +
-          s.deduction_tax_solidarity +
-          s.deduction_tax_other +
-          s.social_av +
-          s.social_pv +
-          s.social_rv +
-          s.social_kv,
+          (s.deduction_tax_income +
+            s.deduction_tax_church +
+            s.deduction_tax_solidarity +
+            s.deduction_tax_other +
+            s.social_av +
+            s.social_pv +
+            s.social_rv +
+            s.social_kv) /
+          s.brutto_tax,
       ),
     [last12],
   );

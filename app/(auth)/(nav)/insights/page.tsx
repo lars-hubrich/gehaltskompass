@@ -8,9 +8,11 @@ import {
   Button,
   CircularProgress,
   Container,
+  FormControl,
+  FormLabel,
   Paper,
   Stack,
-  TextField,
+  TextareaAutosize,
   Typography,
 } from "@mui/material";
 
@@ -61,17 +63,24 @@ export default function ChatPage() {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
-              <TextField
-                label="Deine Frage"
-                placeholder="Was möchtest du über deine Abrechnungsdaten wissen?"
-                multiline
-                minRows={3}
-                fullWidth
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                disabled={loading}
-                slotProps={{ input: { sx: { alignItems: "flex-start" } } }}
-              />
+              <FormControl fullWidth>
+                <FormLabel sx={{ mb: 1 }}>Deine Frage</FormLabel>
+                <TextareaAutosize
+                  minRows={3}
+                  placeholder="Was möchtest du über deine Abrechnungsdaten wissen?"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  style={{
+                    width: "100%",
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.23)",
+                    padding: 12,
+                    background: "transparent",
+                    color: "inherit",
+                    outline: "none",
+                  }}
+                />
+              </FormControl>
               <Button
                 type="submit"
                 variant="contained"
