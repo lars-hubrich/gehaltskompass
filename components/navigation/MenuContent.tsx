@@ -18,6 +18,8 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import AssistantIcon from "@mui/icons-material/Assistant";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import BackupRoundedIcon from "@mui/icons-material/BackupRounded";
+import { sampleStatements } from "@/constants/sampleStatements";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
@@ -38,7 +40,33 @@ export default function MenuContent() {
   const [openAbout, setOpenAbout] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const handleLoadSample = async () => {
+    if (
+      !confirm(
+        "Beim Laden werden alle vorhandenen Abrechnungen gelöscht und Beispieldaten importiert. Fortfahren?",
+      )
+    )
+      return;
+    try {
+      const res = await fetch("/api/user/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ statements: sampleStatements }),
+      });
+      if (res.ok) {
+        location.reload();
+      }
+    } catch {
+      // ignore errors
+    }
+  };
+
   const secondaryListItems = [
+    {
+      text: "Beispieldaten laden",
+      icon: <BackupRoundedIcon />,
+      action: handleLoadSample,
+    },
     {
       text: "Einstellungen",
       icon: <SettingsRoundedIcon />,
