@@ -75,6 +75,7 @@ export default function SideMenuMobile({
             startIcon={<LogoutRoundedIcon />}
             onClick={() => {
               toggleDrawer(false);
+              // noinspection JSIgnoredPromiseFromCall
               signOut();
             }}
           >

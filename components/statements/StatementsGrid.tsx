@@ -38,6 +38,7 @@ export default function StatementsGrid() {
   }, []);
 
   useEffect(() => {
+    // noinspection JSIgnoredPromiseFromCall
     fetchStatements();
   }, [fetchStatements]);
 

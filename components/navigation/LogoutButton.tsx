@@ -13,6 +13,7 @@ export default function LogoutButton() {
     <Button
       variant="outlined"
       onClick={() => {
+        // noinspection JSIgnoredPromiseFromCall
         signOut();
       }}
     >
