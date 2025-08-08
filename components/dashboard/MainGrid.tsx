@@ -42,8 +42,8 @@ export default function MainGrid() {
   const nettoData = useMemo(() => last12.map((s) => s.payout_netto), [last12]);
   const bruttoData = useMemo(() => last12.map((s) => s.brutto_tax), [last12]);
   const abgabenData = useMemo(() => {
-    return last12.map(
-      (s) =>
+    return last12.map((s) => {
+      const value =
         ((s.deduction_tax_income +
           s.deduction_tax_church +
           s.deduction_tax_solidarity +
@@ -53,8 +53,10 @@ export default function MainGrid() {
           s.social_rv +
           s.social_kv) /
           s.brutto_tax) *
-        100,
-    );
+        100;
+
+      return Number(value.toFixed(2));
+    });
   }, [last12]);
 
   const totalNetto = useMemo(
@@ -76,10 +78,14 @@ export default function MainGrid() {
     return diff > 0 ? "up" : diff < 0 ? "down" : "neutral";
   };
 
-  const formatValue = (num: number) =>
-    num >= 1000
+  const formatValue = (num: number, isPercentage = false) => {
+    if (isPercentage) {
+      return `${num.toFixed(1)}%`;
+    }
+    return num >= 1000
       ? `${(num / 1000).toFixed(1)}k`
       : num.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  };
 
   const cards: StatCardProps[] = [
     {
@@ -98,7 +104,7 @@ export default function MainGrid() {
     },
     {
       title: "Anteil Abgaben",
-      value: formatValue(totalAbgaben),
+      value: formatValue(totalAbgaben / abgabenData.length, true),
       interval: "Letztes Jahr",
       trend: trendOf(abgabenData),
       data: abgabenData,
