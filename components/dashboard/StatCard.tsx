@@ -91,19 +91,14 @@ export default function StatCard({
   }
   const color = labelColors[trend];
   const chartColor = trendColors[trend];
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const makeTrendValues = (arr: number[]) => {
-    const label = computeTrendLabel(arr);
+  const trendValues = React.useMemo(() => {
+    const label = computeTrendLabel(data);
     return {
       up: label,
       down: label,
       neutral: "0%",
     } as const;
-  };
-  const trendValues = React.useMemo(
-    () => makeTrendValues(data),
-    [data, makeTrendValues],
-  );
+  }, [data]);
 
   return (
     <Card variant="outlined" sx={{ height: "100%", flexGrow: 1 }}>

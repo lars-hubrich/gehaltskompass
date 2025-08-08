@@ -41,22 +41,21 @@ export default function MainGrid() {
 
   const nettoData = useMemo(() => last12.map((s) => s.payout_netto), [last12]);
   const bruttoData = useMemo(() => last12.map((s) => s.brutto_tax), [last12]);
-  const abgabenData = useMemo(
-    () =>
-      last12.map(
-        (s) =>
-          (s.deduction_tax_income +
-            s.deduction_tax_church +
-            s.deduction_tax_solidarity +
-            s.deduction_tax_other +
-            s.social_av +
-            s.social_pv +
-            s.social_rv +
-            s.social_kv) /
-          s.brutto_tax,
-      ),
-    [last12],
-  );
+  const abgabenData = useMemo(() => {
+    return last12.map(
+      (s) =>
+        ((s.deduction_tax_income +
+          s.deduction_tax_church +
+          s.deduction_tax_solidarity +
+          s.deduction_tax_other +
+          s.social_av +
+          s.social_pv +
+          s.social_rv +
+          s.social_kv) /
+          s.brutto_tax) *
+        100,
+    );
+  }, [last12]);
 
   const totalNetto = useMemo(
     () => nettoData.reduce((sum, v) => sum + v, 0),
