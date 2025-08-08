@@ -3,13 +3,15 @@
 import * as React from "react";
 import { useState } from "react";
 import {
+  Alert,
   Box,
-  Paper,
-  Typography,
-  TextField,
   Button,
   CircularProgress,
-  Alert,
+  Container,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
 
 export default function ChatPage() {
@@ -47,74 +49,59 @@ export default function ChatPage() {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: { xs: "100%", md: 800 },
-        mt: 2,
-        mb: 4,
-      }}
-    >
-      <Paper
-        elevation={3}
-        sx={{ p: 4, borderRadius: 2, backgroundColor: "background.paper" }}
-      >
-        <Typography variant="h5" align="center" gutterBottom>
-          Gehaltsabrechnungs-Chat
-        </Typography>
-
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-          noValidate
-        >
-          <TextField
-            label="Stelle hier Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte Antworten."
-            multiline
-            rows={6}
-            fullWidth
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            disabled={loading}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={loading || question.trim() === ""}
-            sx={{
-              alignSelf: "center",
-              minWidth: 150,
-              "&.Mui-disabled": {
-                backgroundColor: (theme) =>
-                  theme.palette.action.disabledBackground,
-                color: (theme) => theme.palette.text.primary,
-              },
-            }}
-          >
-            {loading ? <CircularProgress size={24} /> : "Frage stellen"}
-          </Button>
-        </Box>
-
-        {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            Fehler: {error}
-          </Alert>
-        )}
-        {answer && (
-          <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 1 }}>
-            <Typography
-              variant="body1"
-              sx={{
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-              }}
-            >
-              {answer}
-            </Typography>
-          </Paper>
-        )}
+    <Container maxWidth="md" sx={{ mt: 2, mb: 4 }}>
+      <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2 }}>
+        <Stack spacing={3}>
+          <Typography variant="h5" align="center">
+            KI Insights
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Stelle Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte
+            Antworten.
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <Stack spacing={2}>
+              <TextField
+                label="Deine Frage"
+                placeholder="Was möchtest du über deine Abrechnungsdaten wissen?"
+                multiline
+                rows={6}
+                fullWidth
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                disabled={loading}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={loading || question.trim() === ""}
+                sx={{
+                  alignSelf: "center",
+                  minWidth: 150,
+                  "&.Mui-disabled": {
+                    backgroundColor: (theme) =>
+                      theme.palette.action.disabledBackground,
+                    color: (theme) => theme.palette.text.primary,
+                  },
+                }}
+              >
+                {loading ? <CircularProgress size={24} /> : "Frage stellen"}
+              </Button>
+            </Stack>
+          </Box>
+          {error && <Alert severity="error">Fehler: {error}</Alert>}
+          {answer && (
+            <Paper variant="outlined" sx={{ p: 2, borderRadius: 1 }}>
+              <Typography
+                variant="body1"
+                sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              >
+                {answer}
+              </Typography>
+            </Paper>
+          )}
+        </Stack>
       </Paper>
-    </Box>
+    </Container>
   );
 }
