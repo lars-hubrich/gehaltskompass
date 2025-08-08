@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { GoogleGenAI } from "@google/genai";
+import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
 
 export const config = { api: { bodyParser: true } };
 
@@ -45,6 +46,10 @@ export async function POST(req: NextRequest) {
 
   console.log("DEBUG Lars Context JSON:", contextJson);
 
+  const fieldDescriptions = Object.entries(FIELD_DESCRIPTIONS)
+    .map(([key, desc]) => `${key}: ${desc}`)
+    .join("\n");
+
   const contents = [
     {
       role: "system",
@@ -52,7 +57,11 @@ export async function POST(req: NextRequest) {
     },
     {
       role: "user",
-      text: "Abrechnungsdaten des Nutzers:\n" + contextJson,
+      text:
+        "Feldbeschreibungen:\n" +
+        fieldDescriptions +
+        "\n\nAbrechnungsdaten des Nutzers:\n" +
+        contextJson,
     },
     {
       role: "user",
