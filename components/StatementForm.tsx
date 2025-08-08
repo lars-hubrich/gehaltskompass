@@ -24,7 +24,10 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { StatementData } from "@/constants/Interfaces";
-import { FIELD_DESCRIPTIONS_HUMAN } from "@/constants/fieldDescriptions";
+import {
+  FIELD_DESCRIPTIONS_AI,
+  FIELD_DESCRIPTIONS_HUMAN,
+} from "@/constants/fieldDescriptions";
 import {
   MAX_FILE_SIZE,
   MAX_FILES_PER_UPLOAD,
@@ -91,6 +94,9 @@ export default function StatementForm({
     [],
   );
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [fieldWarnings, setFieldWarnings] = useState<Record<string, string>>(
+    {},
+  );
 
   /**
    * Validates the current statement data.
@@ -101,6 +107,8 @@ export default function StatementForm({
   const validate = useCallback(
     (value: StatementData) => {
       let msg: string | null = null;
+      const warnings: Record<string, string> = {};
+
       if (value.month < 1 || value.month > 12) {
         msg = "Monat muss zwischen 1 und 12 liegen.";
       } else if (value.year < 1900 || value.year > 2100) {
@@ -120,7 +128,65 @@ export default function StatementForm({
       ) {
         msg = "Werte müssen positiv sein.";
       }
+
+      Object.entries(value).forEach(([key, val]) => {
+        if (typeof val === "number" && val > 1_000_000) {
+          warnings[key] = "Wert ungewöhnlich hoch.";
+        }
+      });
+      value.incomes.forEach((inc, idx) => {
+        if (inc.value > 1_000_000) {
+          warnings[`income-${idx}`] = "Wert ungewöhnlich hoch.";
+        }
+      });
+
+      const totalIncome = value.incomes.reduce(
+        (sum, inc) => sum + inc.value,
+        0,
+      );
+      const bruttoFields = [
+        "brutto_tax",
+        "brutto_av",
+        "brutto_pv",
+        "brutto_rv",
+        "brutto_kv",
+      ];
+      if (Math.abs(totalIncome - value.brutto_tax) > 1) {
+        bruttoFields.forEach((field) => {
+          warnings[field] =
+            "Summe der Einnahmen stimmt nicht mit Steuer-Brutto überein.";
+        });
+      }
+
+      const deductionFields = [
+        "deduction_tax_income",
+        "deduction_tax_church",
+        "deduction_tax_solidarity",
+        "deduction_tax_other",
+        "social_av",
+        "social_pv",
+        "social_rv",
+        "social_kv",
+      ];
+      const totalDeductions = deductionFields.reduce(
+        (sum, field) => sum + (value[field as keyof StatementData] as number),
+        0,
+      );
+
+      if (totalDeductions > value.brutto_tax) {
+        deductionFields.forEach((field) => {
+          warnings[field] = "Abzüge übersteigen Steuer-Brutto.";
+        });
+      }
+
+      const expectedNet = value.brutto_tax - totalDeductions;
+      if (Math.abs(expectedNet - value.payout_netto) > 1) {
+        warnings["payout_netto"] =
+          "Nettoauszahlung passt nicht zu Brutto minus Abzügen.";
+      }
+
       setValidationError(msg);
+      setFieldWarnings(warnings);
       return !msg;
     },
     [existingStatements, statementId],
@@ -553,6 +619,8 @@ export default function StatementForm({
                 value={data.month}
                 onChange={handleField("month")}
                 disabled={!isEditing}
+                error={!!fieldWarnings.month}
+                helperText={fieldWarnings.month || FIELD_DESCRIPTIONS_AI.month}
               />
             </Grid>
             <Grid size={{ xs: 6 }}>
@@ -563,6 +631,8 @@ export default function StatementForm({
                 value={data.year}
                 onChange={handleField("year")}
                 disabled={!isEditing}
+                error={!!fieldWarnings.year}
+                helperText={fieldWarnings.year || FIELD_DESCRIPTIONS_AI.year}
               />
             </Grid>
           </Grid>
@@ -594,6 +664,7 @@ export default function StatementForm({
                     value={inc.name}
                     onChange={handleIncomeChange(idx, "name")}
                     disabled={!isEditing}
+                    helperText="Bezeichnung des Einkommensbestandteils"
                   />
                 </Grid>
                 <Grid size={{ xs: 5 }}>
@@ -603,6 +674,7 @@ export default function StatementForm({
                     value={inc.identifier}
                     onChange={handleIncomeChange(idx, "identifier")}
                     disabled={!isEditing}
+                    helperText="Kennung laut Abrechnung"
                   />
                 </Grid>
                 <Grid size={{ xs: 2 }}>
@@ -613,6 +685,10 @@ export default function StatementForm({
                     value={inc.value}
                     onChange={handleIncomeChange(idx, "value")}
                     disabled={!isEditing}
+                    error={!!fieldWarnings[`income-${idx}`]}
+                    helperText={
+                      fieldWarnings[`income-${idx}`] || "Betrag in Euro"
+                    }
                   />
                 </Grid>
                 {isEditing && (
@@ -677,6 +753,10 @@ export default function StatementForm({
                         value={data[field as keyof StatementData] as number}
                         onChange={handleField(field as keyof StatementData)}
                         disabled={!isEditing}
+                        error={!!fieldWarnings[field]}
+                        helperText={
+                          fieldWarnings[field] || FIELD_DESCRIPTIONS_AI[field]
+                        }
                       />
                     </Grid>
                   ))}
