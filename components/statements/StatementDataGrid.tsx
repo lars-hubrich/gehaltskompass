@@ -25,7 +25,6 @@ export default function StatementDataGrid({
   pageSize = 10,
   onRefresh,
 }: CustomizedDataGridProps) {
-
   const euroFormatter = (value: number) => `${value.toFixed(2)} €`;
 
   // Transform statements into rows

@@ -72,7 +72,6 @@ describe("/api/statement/[id]", () => {
     expect(res.status).toBe(404);
   });
 
-
   it("returns 404 on DELETE when statement missing", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

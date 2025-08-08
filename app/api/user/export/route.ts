@@ -18,4 +18,3 @@ export async function GET() {
     return handleError(error, "GET /api/user/export");
   }
 }
-

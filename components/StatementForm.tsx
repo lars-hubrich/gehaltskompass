@@ -78,7 +78,9 @@ export default function StatementForm({
   const [existingCount, setExistingCount] = useState(0);
   const [originalData, setOriginalData] = useState<StatementData | null>(null);
   const [isEditing, setIsEditing] = useState(statementId === "new");
-  const [existingStatements, setExistingStatements] = useState<StatementData[]>([]);
+  const [existingStatements, setExistingStatements] = useState<StatementData[]>(
+    [],
+  );
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const validate = useCallback(
@@ -98,9 +100,8 @@ export default function StatementForm({
       ) {
         msg = "Abrechnung für diesen Monat existiert bereits.";
       } else if (
-        Object.values(value).some(
-          (v) => typeof v === "number" && v < 0,
-        ) || value.incomes.some((inc) => inc.value < 0)
+        Object.values(value).some((v) => typeof v === "number" && v < 0) ||
+        value.incomes.some((inc) => inc.value < 0)
       ) {
         msg = "Werte müssen positiv sein.";
       }

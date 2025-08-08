@@ -125,8 +125,8 @@ export default function MenuContent() {
         <DialogTitle>Über uns</DialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom>
-            GehaltsKompass hilft dir, deine Gehaltsabrechnungen zu verwalten
-            und auszuwerten.
+            GehaltsKompass hilft dir, deine Gehaltsabrechnungen zu verwalten und
+            auszuwerten.
           </Typography>
           <Typography gutterBottom>
             GitHub Repo:{" "}

@@ -20,4 +20,3 @@ export default function ErrorSnackbar({ error, onClose }: ErrorSnackbarProps) {
     </Snackbar>
   );
 }
-

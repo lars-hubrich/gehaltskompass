@@ -43,4 +43,3 @@ describe("/api/user", () => {
     expect(res.status).toBe(200);
   });
 });
-

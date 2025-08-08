@@ -12,4 +12,3 @@ export async function DELETE() {
     return handleError(error, "DELETE /api/user");
   }
 }
-

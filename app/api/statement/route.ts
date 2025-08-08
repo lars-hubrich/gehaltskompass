@@ -68,7 +68,12 @@ export async function POST(request: NextRequest) {
     const body: StatementCreateBody = ensurePositiveStatement(
       await request.json(),
     );
-    if (body.month < 1 || body.month > 12 || body.year < 1900 || body.year > 2100) {
+    if (
+      body.month < 1 ||
+      body.month > 12 ||
+      body.year < 1900 ||
+      body.year > 2100
+    ) {
       return NextResponse.json(
         { error: "Ungültiger Monat oder Jahr" },
         { status: 400 },
