@@ -19,6 +19,10 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import AssistantIcon from "@mui/icons-material/Assistant";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import BackupRoundedIcon from "@mui/icons-material/BackupRounded";
+import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
+import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
+import TableChartRoundedIcon from "@mui/icons-material/TableChartRounded";
+import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
 import { sampleStatements } from "@/constants/sampleStatements";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -254,27 +258,51 @@ export default function MenuContent() {
       <Dialog open={openSettings} onClose={() => setOpenSettings(false)}>
         <DialogTitle>Einstellungen</DialogTitle>
         <DialogContent dividers>
-          <Stack spacing={2} sx={{ pt: 1 }}>
-            <input
-              type="file"
-              accept="application/json,text/csv"
-              hidden
-              ref={fileInputRef}
-              onChange={handleImportFile}
-            />
-            <Button variant="outlined" onClick={handleExport}>
-              Daten exportieren
-            </Button>
-            <Button variant="outlined" onClick={handleExportCsv}>
-              CSV exportieren
-            </Button>
-            <Button variant="outlined" onClick={handleImportClick}>
-              Daten importieren
-            </Button>
-            <Button color="error" variant="outlined" onClick={handleDelete}>
-              Account löschen
-            </Button>
-          </Stack>
+          <input
+            type="file"
+            accept="application/json,text/csv"
+            hidden
+            ref={fileInputRef}
+            onChange={handleImportFile}
+          />
+          <List sx={{ pt: 1 }}>
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleExport}>
+                <ListItemIcon>
+                  <FileDownloadRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Daten exportieren" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleExportCsv}>
+                <ListItemIcon>
+                  <TableChartRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="CSV exportieren" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleImportClick}>
+                <ListItemIcon>
+                  <FileUploadRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Daten importieren" />
+              </ListItemButton>
+            </ListItem>
+            <Divider sx={{ my: 1 }} />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={handleDelete}
+                sx={{ color: "error.main" }}
+              >
+                <ListItemIcon sx={{ color: "error.main" }}>
+                  <DeleteForeverRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Account löschen" />
+              </ListItemButton>
+            </ListItem>
+          </List>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenSettings(false)}>Schließen</Button>
