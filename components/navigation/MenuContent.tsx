@@ -6,6 +6,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
+import ListSubheader from "@mui/material/ListSubheader";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -71,11 +72,6 @@ export default function MenuContent() {
   };
 
   const secondaryListItems = [
-    {
-      text: "Beispieldaten laden",
-      icon: <BackupRoundedIcon />,
-      action: handleLoadSample,
-    },
     {
       text: "Einstellungen",
       icon: <SettingsRoundedIcon />,
@@ -265,7 +261,7 @@ export default function MenuContent() {
             ref={fileInputRef}
             onChange={handleImportFile}
           />
-          <List sx={{ pt: 1 }}>
+          <List sx={{ pt: 1 }} subheader={<ListSubheader>Daten</ListSubheader>}>
             <ListItem disablePadding>
               <ListItemButton onClick={handleExport}>
                 <ListItemIcon>
@@ -290,7 +286,17 @@ export default function MenuContent() {
                 <ListItemText primary="Daten importieren" />
               </ListItemButton>
             </ListItem>
-            <Divider sx={{ my: 1 }} />
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleLoadSample}>
+                <ListItemIcon>
+                  <BackupRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Beispieldaten laden" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider sx={{ my: 1 }} />
+          <List subheader={<ListSubheader>Account</ListSubheader>}>
             <ListItem disablePadding>
               <ListItemButton
                 onClick={handleDelete}

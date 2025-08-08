@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Container,
   FormControl,
+  Grid,
   Paper,
   Stack,
   TextareaAutosize,
@@ -27,8 +28,8 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null);
 
   const examplePrompts = [
-    "Wie viel habe ich diesen Monat Netto verdient?",
-    "Wie viele Sozialabgaben habe ich diesen Monat gezahlt?",
+    "Wie viel habe ich letzten Monat Netto verdient?",
+    "Wie viele Sozialabgaben habe ich letzten Monat gezahlt?",
     "Wie hoch war mein Brutto-Gehalt im letzten Jahr?",
     "Welche Abzüge hatte ich im letzten Monat?",
     "Wie setzt sich mein Gehalt zusammen?",
@@ -112,17 +113,24 @@ export default function ChatPage() {
               </Button>
             </Stack>
           </Box>
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            {examplePrompts.map((prompt) => (
-              <Button
-                key={prompt}
-                variant="outlined"
-                size="small"
-                onClick={() => setQuestion(prompt)}
-              >
-                {prompt}
-              </Button>
-            ))}
+          <Stack spacing={1}>
+            <Typography variant="subtitle2" color="text.secondary">
+              Beispielanfragen:
+            </Typography>
+            <Grid container spacing={1}>
+              {examplePrompts.map((prompt) => (
+                <Grid item xs={12} sm={6} key={prompt}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setQuestion(prompt)}
+                  >
+                    {prompt}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
           </Stack>
           <ErrorSnackbar error={error} onClose={() => setError(null)} />
           {answer && (
