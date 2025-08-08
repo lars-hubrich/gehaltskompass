@@ -87,14 +87,14 @@ export async function DELETE(request: NextRequest) {
     ids = body.ids;
     if (!Array.isArray(ids) || ids.length === 0) {
       return NextResponse.json(
-        { error: "No statement IDs provided for deletion." },
+        { error: "Keine Abrechnungs-IDs für die Löschung angegeben." },
         { status: 400 },
       );
     }
   } catch (error) {
     console.error("Error parsing request body:", error);
     return NextResponse.json(
-      { error: "Invalid request body." },
+      { error: "Ungültiger Anfragetext." },
       { status: 400 },
     );
   }

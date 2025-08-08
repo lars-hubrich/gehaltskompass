@@ -1,9 +1,9 @@
 # GehaltsKompass
 
-## Setup DB and run application
+## Datenbank einrichten und Anwendung starten
 
-Initial setup of the database and running the application.
-Also use for new database scheme (delete dev.db beforehand).
+Initiale Einrichtung der Datenbank und Start der Anwendung.
+Auch für neue Datenbankschemata verwenden (zuvor dev.db löschen).
 
 ```bash
 npm install
@@ -12,7 +12,7 @@ npx prisma db push
 npm run dev
 ```
 
-On APS set Proxy before hand. Only use local sqlite db.
+Auf APS den Proxy vorher setzen. Es wird nur die lokale SQLite-Datenbank verwendet.
 
 ```bash
  $env:HTTPS_PROXY="http://sia-lb.telekom.de:8080"

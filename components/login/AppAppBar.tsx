@@ -36,6 +36,7 @@ export default function AppAppBar() {
     setOpen(newOpen);
   };
 
+  // noinspection HtmlUnknownAnchorTarget,XmlDeprecatedElement
   return (
     <AppBar
       position="fixed"
@@ -60,7 +61,7 @@ export default function AppAppBar() {
             </a>
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <Button href="#features" variant="text" color="info" size="small">
-                Features
+                Funktionen
               </Button>
             </Box>
           </Box>
@@ -75,7 +76,10 @@ export default function AppAppBar() {
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1 }}>
             <ColorModeIconDropdown size="medium" />
-            <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
+            <IconButton
+              aria-label="Menü-Schaltfläche"
+              onClick={toggleDrawer(true)}
+            >
               <MenuIcon />
             </IconButton>
             <Drawer
@@ -104,7 +108,7 @@ export default function AppAppBar() {
                   href="#features"
                   onClick={toggleDrawer(false)}
                 >
-                  Features
+                  Funktionen
                 </MenuItem>
               </Box>
             </Drawer>

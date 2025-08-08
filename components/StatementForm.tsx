@@ -22,6 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { StatementData } from "@/constants/Interfaces";
+import { FIELD_DESCRIPTIONS } from "@/constants/fieldDescriptions";
 
 interface StatementFormProps {
   statementId?: string;
@@ -360,7 +361,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                 <Grid size={{ xs: 5 }}>
                   <TextField
                     fullWidth
-                    label="Identifier"
+                    label="Kennung"
                     value={inc.identifier}
                     onChange={handleIncomeChange(idx, "identifier")}
                   />
@@ -429,7 +430,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
                     <Grid size={{ xs: 6 }} key={field}>
                       <TextField
                         fullWidth
-                        label={field.replace(/_/g, " ")}
+                        label={FIELD_DESCRIPTIONS[field] || field}
                         type="number"
                         value={data[field as keyof StatementData] as number}
                         onChange={handleField(field as keyof StatementData)}
@@ -462,7 +463,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseResult} autoFocus>
-            Zurück zum Dashboard
+            Zurück zur Übersicht
           </Button>
         </DialogActions>
       </Dialog>

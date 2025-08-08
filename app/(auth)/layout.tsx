@@ -12,7 +12,7 @@ export default function AppLayout({
 
   // TODO fix loading screen
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <p>Wird geladen...</p>;
   }
 
   if (status === "unauthenticated") {

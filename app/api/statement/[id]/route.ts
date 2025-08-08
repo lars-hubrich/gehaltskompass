@@ -53,7 +53,7 @@ export async function GET(
 
     if (!statement || statement.user_id !== userOrResponse.id) {
       return NextResponse.json(
-        { error: "Statement not found or access denied" },
+        { error: "Abrechnung nicht gefunden oder Zugriff verweigert" },
         { status: 404 },
       );
     }
@@ -78,7 +78,7 @@ export async function PUT(
     const existing = await prisma.statement.findUnique({ where: { id } });
     if (!existing || existing.user_id !== userOrResponse.id) {
       return NextResponse.json(
-        { error: "Not found or access denied" },
+        { error: "Nicht gefunden oder Zugriff verweigert" },
         { status: 404 },
       );
     }
@@ -135,13 +135,13 @@ export async function DELETE(
       existing_statement.user_id !== userOrResponse.id
     ) {
       return NextResponse.json(
-        { error: "Not found or access denied" },
+        { error: "Nicht gefunden oder Zugriff verweigert" },
         { status: 404 },
       );
     }
 
     await prisma.statement.delete({ where: { id } });
-    return NextResponse.json({ message: "Statement deleted" });
+    return NextResponse.json({ message: "Abrechnung gelöscht" });
   } catch (e) {
     return handleError(e, "DELETE /api/statement/[id]");
   }

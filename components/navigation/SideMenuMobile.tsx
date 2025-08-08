@@ -70,7 +70,7 @@ export default function SideMenuMobile({
               signOut();
             }}
           >
-            Logout
+            Abmelden
           </Button>
         </Stack>
       </Stack>
