@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Stack,
 } from "@mui/material";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 import AddIcon from "@mui/icons-material/Add";
@@ -29,6 +30,9 @@ import {
   MAX_FILES_PER_UPLOAD,
   MAX_STATEMENTS_PER_USER,
 } from "@/constants/limits";
+import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
+import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
+import IncomePieChart from "@/components/dashboard/StatementIncomePieChart";
 
 interface StatementFormProps {
   statementId?: string;
@@ -74,6 +78,7 @@ export default function StatementForm({
     failed: number;
   } | null>(null);
   const [openResult, setOpenResult] = useState(false);
+  const [openCharts, setOpenCharts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [existingCount, setExistingCount] = useState(0);
   const [originalData, setOriginalData] = useState<StatementData | null>(null);
@@ -633,12 +638,34 @@ export default function StatementForm({
           </Box>
         ) : (
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="outlined" onClick={() => setOpenCharts(true)}>
+              Diagramme
+            </Button>
             <Button variant="contained" onClick={() => setIsEditing(true)}>
               Bearbeiten
             </Button>
           </Box>
         )}
       </Box>
+
+      <Dialog
+        open={openCharts}
+        onClose={() => setOpenCharts(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Diagramme</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <SocialPieChart statements={[data]} />
+            <TaxPieChart statements={[data]} />
+            <IncomePieChart statements={[data]} />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenCharts(false)}>Zurück</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={openResult} onClose={handleCloseResult}>
         <DialogTitle>Upload abgeschlossen</DialogTitle>
