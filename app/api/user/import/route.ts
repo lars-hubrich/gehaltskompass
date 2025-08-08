@@ -9,6 +9,12 @@ interface ImportedIncome extends Record<string, unknown> {
   value: number;
 }
 
+/**
+ * Imports an array of salary statements for the authenticated user, replacing existing ones.
+ *
+ * @param {NextRequest} req The HTTP request containing statements JSON.
+ * @returns {Promise<NextResponse>} The created statements or an error response.
+ */
 export async function POST(req: NextRequest) {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;

@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireAuthenticatedUser, handleError } from "@/lib/server-utils";
+import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 
+/**
+ * Exports all user data including statements and incomes.
+ *
+ * @returns {Promise<NextResponse>} The user with related data or an error response.
+ */
 export async function GET() {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;

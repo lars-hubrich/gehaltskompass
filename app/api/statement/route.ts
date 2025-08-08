@@ -37,6 +37,11 @@ type BulkDeleteBody = {
   ids: string[];
 };
 
+/**
+ * Retrieves all salary statements for the authenticated user.
+ *
+ * @returns {Promise<NextResponse>} A JSON response containing the statements or an error.
+ */
 export async function GET() {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;
@@ -52,6 +57,12 @@ export async function GET() {
   }
 }
 
+/**
+ * Creates a new salary statement for the authenticated user.
+ *
+ * @param {NextRequest} request The incoming HTTP request.
+ * @returns {Promise<NextResponse>} The created statement or an error response.
+ */
 export async function POST(request: NextRequest) {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;
@@ -112,6 +123,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/**
+ * Deletes multiple salary statements belonging to the authenticated user.
+ *
+ * @param {NextRequest} request The incoming HTTP request containing statement IDs.
+ * @returns {Promise<NextResponse>} The result of the deletion or an error response.
+ */
 export async function DELETE(request: NextRequest) {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;

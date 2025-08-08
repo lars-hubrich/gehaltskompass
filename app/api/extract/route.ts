@@ -12,6 +12,12 @@ export const config = { api: { bodyParser: false } };
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+/**
+ * Extracts salary statement data from an uploaded PDF using Gemini.
+ *
+ * @param {NextRequest} req The HTTP request containing a PDF file in form-data.
+ * @returns {Promise<NextResponse>} The extracted statement data or an error response.
+ */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {

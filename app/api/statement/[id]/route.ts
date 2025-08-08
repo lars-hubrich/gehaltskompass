@@ -37,6 +37,13 @@ interface UpdateStatementData {
   updatedAt?: Date;
 }
 
+/**
+ * Returns a single statement by ID for the authenticated user.
+ *
+ * @param {NextRequest} _request Unused request object.
+ * @param {{ params: Promise<{ id: string }> }} context Route parameters containing the statement ID.
+ * @returns {Promise<NextResponse>} The statement data or an error response.
+ */
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ id: string }> },
@@ -65,6 +72,13 @@ export async function GET(
   }
 }
 
+/**
+ * Updates an existing statement belonging to the authenticated user.
+ *
+ * @param {NextRequest} request The incoming HTTP request with JSON body.
+ * @param {{ params: Promise<{ id: string }> }} context Route parameters containing the statement ID.
+ * @returns {Promise<NextResponse>} The updated statement or an error response.
+ */
 export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ id: string }> },
@@ -143,6 +157,13 @@ export async function PUT(
   }
 }
 
+/**
+ * Deletes a statement of the authenticated user.
+ *
+ * @param {NextRequest} _request Unused request object.
+ * @param {{ params: Promise<{ id: string }> }} context Route parameters containing the statement ID.
+ * @returns {Promise<NextResponse>} A confirmation or an error response.
+ */
 export async function DELETE(
   _request: NextRequest,
   context: { params: Promise<{ id: string }> },

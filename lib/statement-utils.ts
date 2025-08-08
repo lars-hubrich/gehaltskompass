@@ -22,6 +22,12 @@ const NUMERIC_FIELDS: (keyof StatementData)[] = [
   "payout_other",
 ];
 
+/**
+ * Normalizes all numeric fields of a full statement and ensures values are positive.
+ *
+ * @param {StatementData} data The raw statement data.
+ * @returns {StatementData} A new statement with absolute numeric values.
+ */
 export function ensurePositiveStatement(data: StatementData): StatementData {
   const result: StatementData = {
     ...data,
@@ -39,6 +45,13 @@ export function ensurePositiveStatement(data: StatementData): StatementData {
   return result;
 }
 
+/**
+ * Converts numeric fields of a partial statement to absolute values.
+ *
+ * @template T
+ * @param {T} data Partial statement data.
+ * @returns {T} The partial statement with positive numbers.
+ */
 export function ensurePositivePartialStatement<
   T extends Partial<StatementData>,
 >(data: T): T {

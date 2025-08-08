@@ -9,6 +9,12 @@ export const config = { api: { bodyParser: true } };
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+/**
+ * Answers a user's question about their salary statements using Gemini.
+ *
+ * @param {NextRequest} req The HTTP request containing the user's question.
+ * @returns {Promise<NextResponse>} The AI-generated answer or an error response.
+ */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
