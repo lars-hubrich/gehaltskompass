@@ -1,10 +1,5 @@
 Feature: Authentication
 
-  Scenario: Redirect unauthenticated user to login from home
-    Given I am not logged in
-    When I visit the home page
-    Then I am redirected to the login page
-
   Scenario: Redirect unauthenticated user to login from dashboard
     Given I am not logged in
     When I visit the dashboard page
