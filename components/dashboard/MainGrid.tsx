@@ -161,7 +161,10 @@ export default function MainGrid() {
           </Stack>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <StatementBarChart statements={statements} />
+          <StatementBarChart
+            statements={statements}
+            onRefresh={fetchStatements}
+          />
         </Grid>
       </Grid>
     </Box>

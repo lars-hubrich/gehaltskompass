@@ -14,6 +14,7 @@ interface Income {
 }
 
 export interface StatementData {
+  id?: string;
   month: number;
   year: number;
   incomes: Income[];
