@@ -1,5 +1,7 @@
-import Typography from "@mui/material/Typography";
+"use client";
+
+import StatementsGrid from "@/components/statements/StatementsGrid";
 
 export default function StatementsPage() {
-  return <Typography>Statements. Under construction...</Typography>;
+  return <StatementsGrid />;
 }
