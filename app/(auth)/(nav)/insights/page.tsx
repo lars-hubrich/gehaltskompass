@@ -71,7 +71,7 @@ export default function ChatPage() {
                   style={{
                     width: "100%",
                     borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.23)",
+                    border: "1px solid",
                     padding: 12,
                     background: "transparent",
                     color: "inherit",
@@ -86,11 +86,6 @@ export default function ChatPage() {
                 sx={{
                   alignSelf: "center",
                   minWidth: 150,
-                  "&.Mui-disabled": {
-                    backgroundColor: (theme) =>
-                      theme.palette.action.disabledBackground,
-                    color: (theme) => theme.palette.text.primary,
-                  },
                 }}
               >
                 {loading ? <CircularProgress size={24} /> : "Frage stellen"}
