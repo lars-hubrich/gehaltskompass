@@ -33,6 +33,11 @@ const mainListItems = [
   { text: "AI Insights", icon: <AssistantIcon />, path: "/insights" },
 ];
 
+/**
+ * Side menu content including navigation items and user actions.
+ *
+ * @returns {JSX.Element} Menu content component.
+ */
 export default function MenuContent() {
   const pathname = usePathname();
   const router = useRouter();
@@ -79,6 +84,9 @@ export default function MenuContent() {
     },
   ];
 
+  /**
+   * Exports user data as JSON file.
+   */
   const handleExport = async () => {
     try {
       const res = await fetch("/api/user/export");
@@ -98,6 +106,9 @@ export default function MenuContent() {
     }
   };
 
+  /**
+   * Exports user data as CSV file.
+   */
   const handleExportCsv = async () => {
     try {
       const res = await fetch("/api/user/export?format=csv");
@@ -115,10 +126,18 @@ export default function MenuContent() {
     }
   };
 
+  /**
+   * Triggers the hidden file input for importing data.
+   */
   const handleImportClick = () => {
     fileInputRef.current?.click();
   };
 
+  /**
+   * Imports user data from a selected file.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - File change event.
+   */
   const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -151,6 +170,9 @@ export default function MenuContent() {
     }
   };
 
+  /**
+   * Deletes the current user account after confirmation.
+   */
   const handleDelete = async () => {
     if (!confirm("Möchten Sie Ihren Account wirklich löschen?")) return;
     try {

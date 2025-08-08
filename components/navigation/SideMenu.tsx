@@ -24,6 +24,11 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
+/**
+ * Permanent side navigation menu for desktop layouts.
+ *
+ * @returns {JSX.Element} Side menu component.
+ */
 export default function SideMenu() {
   const { data: session } = useSession();
 

@@ -80,6 +80,9 @@ interface MobileLayoutProps {
   selectedFeature: (typeof items)[0];
 }
 
+/**
+ * Layout component for feature selection on mobile devices.
+ */
 export function MobileLayout({
   selectedItemIndex,
   handleItemClick,
@@ -145,9 +148,19 @@ export function MobileLayout({
   );
 }
 
+/**
+ * Features section showcasing application capabilities.
+ *
+ * @returns {JSX.Element} Features component.
+ */
 export default function Features() {
   const [selectedItemIndex, setSelectedItemIndex] = React.useState(0);
 
+  /**
+   * Handles selecting a feature card.
+   *
+   * @param {number} index - Index of the selected feature.
+   */
   const handleItemClick = (index: number) => {
     setSelectedItemIndex(index);
   };

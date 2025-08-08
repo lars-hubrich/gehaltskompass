@@ -13,6 +13,9 @@ interface StatementLineChartProps {
   statements: StatementData[];
 }
 
+/**
+ * SVG gradient definition for the line chart areas.
+ */
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (
     <defs>
@@ -24,6 +27,12 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
+/**
+ * Shows a line chart of statement data over time.
+ *
+ * @param {StatementLineChartProps} props - Component properties.
+ * @returns {JSX.Element} Line chart component.
+ */
 export default function StatementLineChart({
   statements = [],
 }: StatementLineChartProps) {

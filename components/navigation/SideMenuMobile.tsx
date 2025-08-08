@@ -7,13 +7,19 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuContent from "./MenuContent";
-import { useSession, signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
   toggleDrawer: (newOpen: boolean) => () => void;
 }
 
+/**
+ * Temporary side menu for mobile devices.
+ *
+ * @param {SideMenuMobileProps} props - Component properties.
+ * @returns {JSX.Element} Mobile side menu.
+ */
 export default function SideMenuMobile({
   open,
   toggleDrawer,

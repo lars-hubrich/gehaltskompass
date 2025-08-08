@@ -6,6 +6,13 @@ export interface MenuButtonProps extends IconButtonProps {
   showBadge?: boolean;
 }
 
+/**
+ * Icon button optionally displaying a notification badge.
+ *
+ * @param showBadge
+ * @param {MenuButtonProps} props - Component properties.
+ * @returns {JSX.Element} Menu button component.
+ */
 export default function MenuButton({
   showBadge = false,
   ...props

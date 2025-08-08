@@ -20,11 +20,23 @@ interface CustomizedDataGridProps {
   pageSize?: number;
 }
 
+/**
+ * Displays statements in a data grid with basic CRUD actions.
+ *
+ * @param {CustomizedDataGridProps} props - Component properties.
+ * @returns {JSX.Element} Data grid component.
+ */
 export default function StatementDataGrid({
   statements,
   pageSize = 10,
   onRefresh,
 }: CustomizedDataGridProps) {
+  /**
+   * Formats a numeric value as Euro currency.
+   *
+   * @param {number} value - Numeric value.
+   * @returns {string} Formatted currency string.
+   */
   const euroFormatter = (value: number) => `${value.toFixed(2)} €`;
 
   // Transform statements into rows
@@ -80,6 +92,9 @@ export default function StatementDataGrid({
   }, [selectionModel, rows]);
 
   // Bulk-delete handler
+  /**
+   * Deletes selected statements.
+   */
   const handleDelete = async () => {
     if (selectedIds.length === 0) {
       return;
@@ -108,6 +123,9 @@ export default function StatementDataGrid({
   };
 
   // Custom toolbar
+  /**
+   * Toolbar component for grid actions.
+   */
   const CustomToolbar = () => (
     <Toolbar>
       <Button

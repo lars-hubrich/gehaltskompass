@@ -1,18 +1,26 @@
 "use client";
 
 import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import StatementDataGrid from "./StatementDataGrid";
-import { useState, useEffect, useCallback } from "react";
 import { StatementOverviewData } from "@/constants/Interfaces";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 
+/**
+ * Container displaying the statements grid and handling data loading.
+ *
+ * @returns {JSX.Element} Statements grid wrapper.
+ */
 export default function StatementsGrid() {
   const [statements, setStatements] = useState<StatementOverviewData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Loads statements from the backend API.
+   */
   const fetchStatements = useCallback(async () => {
     try {
       const res = await fetch("/api/statement");

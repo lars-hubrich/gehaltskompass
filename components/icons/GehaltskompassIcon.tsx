@@ -1,6 +1,11 @@
 import * as React from "react";
 import Image from "next/image";
 
+/**
+ * Renders the Gehaltskompass logo image.
+ *
+ * @returns {JSX.Element} Logo component.
+ */
 export default function GehaltskompassIcon() {
   return (
     <Image

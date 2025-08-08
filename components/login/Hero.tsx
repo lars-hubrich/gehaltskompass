@@ -33,6 +33,11 @@ const StyledBox = styled("div")(({ theme }) => ({
   }),
 }));
 
+/**
+ * Hero section with sign-in call to action.
+ *
+ * @returns {JSX.Element} Hero component.
+ */
 export default function Hero() {
   return (
     <Box

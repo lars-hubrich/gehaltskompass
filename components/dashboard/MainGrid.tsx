@@ -14,11 +14,19 @@ import { Stack } from "@mui/material";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 import NoStatementsCard from "./NoStatementsCard";
 
+/**
+ * Dashboard main grid showing statistics and charts.
+ *
+ * @returns {JSX.Element} The rendered grid.
+ */
 export default function MainGrid() {
   const [statements, setStatements] = useState<StatementData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Fetches statements from the API.
+   */
   const fetchStatements = useCallback(async () => {
     try {
       const res = await fetch("/api/statement");
@@ -80,12 +88,25 @@ export default function MainGrid() {
     [bruttoData],
   );
 
+  /**
+   * Determines a basic trend from an array of numbers.
+   *
+   * @param {number[]} arr - Values to analyze.
+   * @returns {"up" | "down" | "neutral"} Trend direction.
+   */
   const trendOf = (arr: number[]): "up" | "down" | "neutral" => {
     if (arr.length < 2) return "neutral";
     const diff = arr[arr.length - 1] - arr[0];
     return diff > 0 ? "up" : diff < 0 ? "down" : "neutral";
   };
 
+  /**
+   * Formats numbers for display.
+   *
+   * @param {number} num - Value to format.
+   * @param {boolean} [isPercentage=false] - Whether to format as percentage.
+   * @returns {string} Formatted value.
+   */
   const formatValue = (num: number, isPercentage = false) => {
     if (isPercentage) {
       return `${num.toFixed(1)}%`;

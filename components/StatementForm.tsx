@@ -38,6 +38,12 @@ interface StatementFormProps {
   onCancel?: () => void;
 }
 
+/**
+ * Form for creating or editing a salary statement.
+ *
+ * @param {StatementFormProps} props - Component properties.
+ * @returns {JSX.Element} The rendered statement form.
+ */
 export default function StatementForm({
   statementId,
   onSaved,
@@ -86,6 +92,12 @@ export default function StatementForm({
   );
   const [validationError, setValidationError] = useState<string | null>(null);
 
+  /**
+   * Validates the current statement data.
+   *
+   * @param {StatementData} value - Statement data to validate.
+   * @returns {boolean} Whether the data is valid.
+   */
   const validate = useCallback(
     (value: StatementData) => {
       let msg: string | null = null;
@@ -156,6 +168,11 @@ export default function StatementForm({
     }
   }, [bulkResult]);
 
+  /**
+   * Handles file uploads and parsing.
+   *
+   * @param {FileList} files - Uploaded files.
+   */
   const handleFiles = useCallback(
     async (files: FileList) => {
       if (files.length === 0) return;
@@ -276,6 +293,11 @@ export default function StatementForm({
     [existingCount, validate],
   );
 
+  /**
+   * Handles drag-and-drop file uploads.
+   *
+   * @param {React.DragEvent<HTMLDivElement>} e - Drag event.
+   */
   const onDrop = useCallback(
     async (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -284,15 +306,28 @@ export default function StatementForm({
     [handleFiles],
   );
 
+  /**
+   * Prevents default browser handling while dragging files over the drop area.
+   *
+   * @param {React.DragEvent<HTMLDivElement>} e - Drag over event.
+   */
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
+  /**
+   * Handles file selection via the hidden file input.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Change event.
+   */
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     await handleFiles(e.target.files);
   };
 
+  /**
+   * Closes the result dialog and triggers navigation or callback.
+   */
   const handleCloseResult = () => {
     setOpenResult(false);
     if (onSaved) {
@@ -302,6 +337,11 @@ export default function StatementForm({
     }
   };
 
+  /**
+   * Returns a change handler for a numeric field.
+   *
+   * @param {keyof StatementData} field - Field name to update.
+   */
   const handleField =
     (field: keyof StatementData) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -316,6 +356,12 @@ export default function StatementForm({
       });
     };
 
+  /**
+   * Returns a change handler for an income entry.
+   *
+   * @param {number} index - Index of the income entry.
+   * @param {keyof StatementData['incomes'][0]} key - Property to update.
+   */
   const handleIncomeChange =
     (index: number, key: keyof StatementData["incomes"][0]) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -332,18 +378,31 @@ export default function StatementForm({
       });
     };
 
+  /**
+   * Adds a new empty income entry.
+   */
   const addIncome = () =>
     setData((prev) => ({
       ...prev,
       incomes: [...prev.incomes, { name: "", identifier: "", value: 0 }],
     }));
 
+  /**
+   * Removes an income entry by index.
+   *
+   * @param {number} index - Index of income to remove.
+   */
   const removeIncome = (index: number) =>
     setData((prev) => ({
       ...prev,
       incomes: prev.incomes.filter((_, i) => i !== index),
     }));
 
+  /**
+   * Handles form submission to save the statement.
+   *
+   * @param {React.FormEvent} e - Form event.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (statementId === "new" && existingCount >= MAX_STATEMENTS_PER_USER) {
@@ -374,6 +433,9 @@ export default function StatementForm({
     }
   };
 
+  /**
+   * Deletes the current statement if possible.
+   */
   const handleDelete = async () => {
     if (!statementId || statementId === "new") {
       if (onCancel) {
@@ -399,6 +461,9 @@ export default function StatementForm({
     }
   };
 
+  /**
+   * Cancels editing and restores previous state or navigates away.
+   */
   const handleCancel = () => {
     if (statementId === "new") {
       if (onCancel) {

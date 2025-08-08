@@ -17,6 +17,12 @@ interface CustomizedBarChartProps {
   onRefresh?: () => Promise<void>;
 }
 
+/**
+ * Displays a stacked bar chart summarizing statement data.
+ *
+ * @param {CustomizedBarChartProps} props - Component properties.
+ * @returns {JSX.Element} Bar chart component.
+ */
 export default function StatementBarChart({
   statements = [],
   onRefresh,

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -29,9 +29,20 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: "8px 12px",
 }));
 
+/**
+ * Application top app bar with navigation links.
+ *
+ * @returns {JSX.Element} App bar component.
+ */
 export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
 
+  /**
+   * Returns a handler to toggle the mobile drawer.
+   *
+   * @param {boolean} newOpen - Desired open state.
+   * @returns {() => void} Event handler.
+   */
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };

@@ -1,6 +1,11 @@
 import * as React from "react";
 import SvgIcon from "@mui/material/SvgIcon";
 
+/**
+ * GitHub logo icon.
+ *
+ * @returns {JSX.Element} SVG icon.
+ */
 export function GithubIcon() {
   return (
     <SvgIcon>

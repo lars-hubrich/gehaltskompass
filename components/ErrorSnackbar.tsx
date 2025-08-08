@@ -1,11 +1,17 @@
 import * as React from "react";
-import { Snackbar, Alert } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 
 interface ErrorSnackbarProps {
   error: string | null;
   onClose: () => void;
 }
 
+/**
+ * Displays an error message inside a snackbar.
+ *
+ * @param {ErrorSnackbarProps} props - Component properties.
+ * @returns {JSX.Element} Rendered snackbar component.
+ */
 export default function ErrorSnackbar({ error, onClose }: ErrorSnackbarProps) {
   return (
     <Snackbar

@@ -17,6 +17,13 @@ export type StatCardProps = {
   data: number[];
 };
 
+/**
+ * Generates labels for the last six months up to a given month and year.
+ *
+ * @param {number} month - Current month (1-12).
+ * @param {number} year - Current year.
+ * @returns {string[]} Array of month labels.
+ */
 function getMonthsInYear(month: number, year: number): string[] {
   const months: string[] = [];
   const current = new Date(year, month - 1);
@@ -33,6 +40,9 @@ function getMonthsInYear(month: number, year: number): string[] {
   return months;
 }
 
+/**
+ * SVG gradient definition for sparkline areas.
+ */
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (
     <defs>
@@ -44,6 +54,12 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
+/**
+ * Displays a statistic with a small sparkline chart.
+ *
+ * @param {StatCardProps} props - Component properties.
+ * @returns {JSX.Element} Stat card component.
+ */
 export default function StatCard({
   title,
   value,
@@ -80,6 +96,13 @@ export default function StatCard({
     down: "error" as const,
     neutral: "default" as const,
   };
+
+  /**
+   * Computes a percentage trend label from data values.
+   *
+   * @param {number[]} arr - Values to analyze.
+   * @returns {string} Trend label.
+   */
   function computeTrendLabel(arr: number[]) {
     if (!arr || arr.length < 2) return "0%";
     const first = arr[0];

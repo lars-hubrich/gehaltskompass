@@ -14,6 +14,12 @@ interface StatementPieChartProps {
   variant: "income" | "social" | "tax";
 }
 
+/**
+ * Renders a pie chart for income, social, or tax distributions.
+ *
+ * @param {StatementPieChartProps} props - Component properties.
+ * @returns {JSX.Element} Pie chart component.
+ */
 export default function StatementPieChart({
   statements = [],
   variant,

@@ -13,6 +13,12 @@ interface NoStatementsCardProps {
   onCreated?: () => Promise<void> | void;
 }
 
+/**
+ * Card displayed when no statements exist.
+ *
+ * @param {NoStatementsCardProps} props - Component properties.
+ * @returns {JSX.Element} Rendered card component.
+ */
 export default function NoStatementsCard({ onCreated }: NoStatementsCardProps) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);

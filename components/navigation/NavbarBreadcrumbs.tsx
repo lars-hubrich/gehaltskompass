@@ -16,6 +16,11 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
+/**
+ * Breadcrumb navigation reflecting current page.
+ *
+ * @returns {JSX.Element} Breadcrumb component.
+ */
 export default function NavbarBreadcrumbs() {
   const pathname = usePathname();
 

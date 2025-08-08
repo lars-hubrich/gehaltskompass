@@ -9,6 +9,11 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
 
+/**
+ * Card highlighting the AI Insights feature.
+ *
+ * @returns {JSX.Element} Highlighted card component.
+ */
 export default function HighlightedCard() {
   const theme = useTheme();
   const router = useRouter();

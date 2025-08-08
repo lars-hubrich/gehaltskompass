@@ -28,9 +28,20 @@ const Toolbar = styled(MuiToolbar)({
   },
 });
 
+/**
+ * Mobile app bar navigation component.
+ *
+ * @returns {JSX.Element} App navigation bar.
+ */
 export default function AppNavbar() {
   const [open, setOpen] = React.useState(false);
 
+  /**
+   * Returns a handler to toggle the mobile side drawer.
+   *
+   * @param {boolean} newOpen - Desired open state.
+   * @returns {() => void} Event handler.
+   */
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -83,6 +94,11 @@ export default function AppNavbar() {
   );
 }
 
+/**
+ * Small dashboard icon used in the navigation bar.
+ *
+ * @returns {JSX.Element} Custom icon.
+ */
 export function CustomIcon() {
   return (
     <Box
