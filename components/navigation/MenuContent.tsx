@@ -74,9 +74,7 @@ export default function MenuContent() {
     fileInputRef.current?.click();
   };
 
-  const handleImportFile = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {

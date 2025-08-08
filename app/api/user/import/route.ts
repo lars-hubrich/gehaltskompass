@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireAuthenticatedUser, handleError } from "@/lib/server-utils";
+import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 import { ensurePositiveStatement } from "@/lib/statement-utils";
 
 export async function POST(req: NextRequest) {
@@ -14,8 +14,16 @@ export async function POST(req: NextRequest) {
     }
     const created = [];
     for (const s of statements) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { incomes = [], id, user_id, userId, ...rest } = ensurePositiveStatement(s);
+      const {
+        incomes = [],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        id,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        user_id,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        userId,
+        ...rest
+      } = ensurePositiveStatement(s);
       const stmt = await prisma.statement.create({
         data: {
           ...rest,
@@ -38,4 +46,3 @@ export async function POST(req: NextRequest) {
     return handleError(error, "POST /api/user/import");
   }
 }
-

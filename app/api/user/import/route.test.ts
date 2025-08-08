@@ -13,7 +13,7 @@ import { POST } from "./route";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireAuthenticatedUser, handleError } from "@/lib/server-utils";
+import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockRequire = requireAuthenticatedUser as any;
@@ -48,12 +48,21 @@ describe("/api/user/import", () => {
       body: JSON.stringify({
         statements: [
           {
-            id: "old", user_id: "uOld", month: 1, year: 2024,
+            id: "old",
+            user_id: "uOld",
+            month: 1,
+            year: 2024,
             incomes: [
-              { id: "i1", statement_id: "old", name: "n", identifier: "id", value: 5 }
-            ]
-          }
-        ]
+              {
+                id: "i1",
+                statement_id: "old",
+                name: "n",
+                identifier: "id",
+                value: 5,
+              },
+            ],
+          },
+        ],
       }),
     });
     const res = await POST(req as unknown as NextRequest);
@@ -69,4 +78,3 @@ describe("/api/user/import", () => {
     expect(res.status).toBe(201);
   });
 });
-
