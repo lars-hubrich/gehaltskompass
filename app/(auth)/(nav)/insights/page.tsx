@@ -26,6 +26,15 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const examplePrompts = [
+    "Wie viel habe ich diesen Monat Netto verdient?",
+    "Wie viele Sozialabgaben habe ich diesen Monat gezahlt?",
+    "Wie hoch war mein Brutto-Gehalt im letzten Jahr?",
+    "Welche Abzüge hatte ich im letzten Monat?",
+    "Wie setzt sich mein Gehalt zusammen?",
+    "Vergleiche mein Gehalt der letzten 3 Monate.",
+  ];
+
   /**
    * Handles form submission to request an AI-generated answer.
    *
@@ -61,7 +70,7 @@ export default function ChatPage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 2, mb: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 6, mb: 4 }}>
       <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2 }}>
         <Stack spacing={3}>
           <Typography variant="h5" align="center">
@@ -103,6 +112,18 @@ export default function ChatPage() {
               </Button>
             </Stack>
           </Box>
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            {examplePrompts.map((prompt) => (
+              <Button
+                key={prompt}
+                variant="outlined"
+                size="small"
+                onClick={() => setQuestion(prompt)}
+              >
+                {prompt}
+              </Button>
+            ))}
+          </Stack>
           <ErrorSnackbar error={error} onClose={() => setError(null)} />
           {answer && (
             <Paper variant="outlined" sx={{ p: 2, borderRadius: 1 }}>
