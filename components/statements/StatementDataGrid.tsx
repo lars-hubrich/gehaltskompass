@@ -16,7 +16,7 @@ import StatementForm from "@/components/StatementForm";
 
 interface CustomizedDataGridProps {
   statements: StatementOverviewData[];
-  onRefresh: () => Promise<void>;
+  onRefreshAction: () => Promise<void>;
   pageSize?: number;
 }
 
@@ -29,7 +29,7 @@ interface CustomizedDataGridProps {
 export default function StatementDataGrid({
   statements,
   pageSize = 10,
-  onRefresh,
+  onRefreshAction,
 }: CustomizedDataGridProps) {
   /**
    * Formats a numeric value as Euro currency.
@@ -118,7 +118,7 @@ export default function StatementDataGrid({
         type: "include",
         ids: new Set(),
       }); // clear checkboxes
-      await onRefresh();
+      await onRefreshAction();
     }
   };
 
@@ -191,7 +191,7 @@ export default function StatementDataGrid({
             statementId="new"
             onSaved={async () => {
               setOpenCreate(false);
-              await onRefresh();
+              await onRefreshAction();
             }}
             onCancel={() => setOpenCreate(false)}
           />
@@ -209,7 +209,7 @@ export default function StatementDataGrid({
               statementId={editId}
               onSaved={async () => {
                 setEditId(null);
-                await onRefresh();
+                await onRefreshAction();
               }}
               onCancel={() => setEditId(null)}
             />

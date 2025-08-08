@@ -52,7 +52,7 @@ export default function StatementsGrid() {
           {/*TODO fixed height*/}
           <StatementDataGrid
             statements={statements}
-            onRefresh={fetchStatements}
+            onRefreshAction={fetchStatements}
           />
         </Grid>
       </Grid>
