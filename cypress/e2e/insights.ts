@@ -26,7 +26,7 @@ When("I visit the insights page", () => {
 });
 
 When("I submit a question", () => {
-  cy.get("textarea").type("Was ist die Antwort?");
+  cy.get("textarea:not([aria-hidden='true'])").type("Was ist die Antwort?");
   cy.contains("button", "Frage stellen").click();
 });
 
