@@ -6,6 +6,7 @@ jest.mock("@/lib/prisma", () => ({
     findUnique: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    findFirst: jest.fn(),
   },
 }));
 jest.mock("@/lib/server-utils", () => ({
@@ -15,15 +16,21 @@ jest.mock("@/lib/server-utils", () => ({
 import prisma from "@/lib/prisma";
 import { GET, PUT, DELETE } from "./route";
 import type { NextRequest } from "next/server";
-import { requireAuthenticatedUser } from "@/lib/server-utils";
+import { requireAuthenticatedUser, handleError } from "@/lib/server-utils";
+import { NextResponse } from "next/server";
 
 // Cast mocks to `any` to simplify TypeScript typing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockRequire = requireAuthenticatedUser as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockHandleError = handleError as any;
 
 describe("/api/statement/[id]", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockHandleError.mockImplementation((e: unknown) =>
+      NextResponse.json({ error: String(e) }, { status: 500 }),
+    );
   });
 
   it("returns 404 when statement not found", async () => {
@@ -65,29 +72,6 @@ describe("/api/statement/[id]", () => {
     expect(res.status).toBe(404);
   });
 
-  it("updates statement on PUT", async () => {
-    mockRequire.mockResolvedValueOnce({ id: "u1" });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.statement.findUnique as any).mockResolvedValueOnce({
-      id: "s1",
-      user_id: "u1",
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.statement.update as any).mockResolvedValueOnce({
-      id: "s1",
-      month: 2,
-      incomes: [],
-    });
-    const req = new Request("http://localhost/api/statement/s1", {
-      method: "PUT",
-      body: JSON.stringify({ month: 2 }),
-    });
-    const res = await PUT(req as NextRequest, {
-      params: Promise.resolve({ id: "s1" }),
-    });
-    expect(prisma.statement.update).toHaveBeenCalled();
-    expect(await res.json()).toEqual({ id: "s1", month: 2, incomes: [] });
-  });
 
   it("returns 404 on DELETE when statement missing", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });

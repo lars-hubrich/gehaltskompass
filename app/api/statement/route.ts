@@ -68,6 +68,25 @@ export async function POST(request: NextRequest) {
     const body: StatementCreateBody = ensurePositiveStatement(
       await request.json(),
     );
+    if (body.month < 1 || body.month > 12 || body.year < 1900 || body.year > 2100) {
+      return NextResponse.json(
+        { error: "Ungültiger Monat oder Jahr" },
+        { status: 400 },
+      );
+    }
+    const existingSame = await prisma.statement.findFirst({
+      where: {
+        user_id: userOrRes.id,
+        month: body.month,
+        year: body.year,
+      },
+    });
+    if (existingSame) {
+      return NextResponse.json(
+        { error: "Abrechnung für diesen Monat existiert bereits" },
+        { status: 409 },
+      );
+    }
     const newStatement = await prisma.statement.create({
       data: {
         user_id: userOrRes.id,

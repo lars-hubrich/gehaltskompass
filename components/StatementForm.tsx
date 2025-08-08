@@ -76,6 +76,37 @@ export default function StatementForm({
   const [existingCount, setExistingCount] = useState(0);
   const [originalData, setOriginalData] = useState<StatementData | null>(null);
   const [isEditing, setIsEditing] = useState(statementId === "new");
+  const [existingStatements, setExistingStatements] = useState<StatementData[]>([]);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const validate = useCallback(
+    (value: StatementData) => {
+      let msg: string | null = null;
+      if (value.month < 1 || value.month > 12) {
+        msg = "Monat muss zwischen 1 und 12 liegen.";
+      } else if (value.year < 1900 || value.year > 2100) {
+        msg = "Ungültiges Jahr.";
+      } else if (
+        existingStatements.some(
+          (s) =>
+            s.month === value.month &&
+            s.year === value.year &&
+            s.id !== statementId,
+        )
+      ) {
+        msg = "Abrechnung für diesen Monat existiert bereits.";
+      } else if (
+        Object.values(value).some(
+          (v) => typeof v === "number" && v < 0,
+        ) || value.incomes.some((inc) => inc.value < 0)
+      ) {
+        msg = "Werte müssen positiv sein.";
+      }
+      setValidationError(msg);
+      return !msg;
+    },
+    [existingStatements, statementId],
+  );
 
   useEffect(() => {
     if (statementId && statementId !== "new") {
@@ -87,22 +118,29 @@ export default function StatementForm({
           setData(normalized);
           setOriginalData(normalized);
           setIsEditing(false);
+          validate(normalized);
         } else {
           const err = await res.json();
           setError(err.error || "Fehler beim Laden der Abrechnung");
         }
       })();
-    } else if (statementId === "new") {
-      (async () => {
-        const res = await fetch(`/api/statement`);
-        if (res.ok) {
-          const statements = await res.json();
-          setExistingCount(statements.length);
-        }
-      })();
+    } else {
       setIsEditing(true);
     }
-  }, [statementId]);
+  }, [statementId, validate]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`/api/statement`);
+      if (res.ok) {
+        const statements = await res.json();
+        setExistingStatements(statements);
+        setExistingCount(statements.length);
+        validate({ ...data });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (bulkResult) {
@@ -262,7 +300,11 @@ export default function StatementForm({
         field === "month" || field === "year"
           ? parseInt(e.target.value, 10)
           : parseFloat(e.target.value);
-      setData((prev) => ({ ...prev, [field]: isNaN(value) ? 0 : value }));
+      setData((prev) => {
+        const newData = { ...prev, [field]: isNaN(value) ? 0 : value };
+        validate(newData);
+        return newData;
+      });
     };
 
   const handleIncomeChange =
@@ -275,7 +317,9 @@ export default function StatementForm({
           [key]:
             key === "value" ? parseFloat(e.target.value) || 0 : e.target.value,
         };
-        return { ...prev, incomes };
+        const newData = { ...prev, incomes };
+        validate(newData);
+        return newData;
       });
     };
 
@@ -297,6 +341,7 @@ export default function StatementForm({
       setError("Maximal 20 Abrechnungen erlaubt.");
       return;
     }
+    if (!validate(data)) return;
     const url =
       statementId === "new"
         ? "/api/statement"
@@ -386,6 +431,7 @@ export default function StatementForm({
               : "Abrechnung ansehen"}
         </Typography>
         {error && <Alert severity="error">{error}</Alert>}
+        {validationError && <Alert severity="error">{validationError}</Alert>}
 
         {statementId === "new" && (
           <>

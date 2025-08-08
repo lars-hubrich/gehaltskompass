@@ -8,7 +8,6 @@ import {
   GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import { StatementOverviewData } from "@/constants/Interfaces";
-import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -26,7 +25,6 @@ export default function StatementDataGrid({
   pageSize = 10,
   onRefresh,
 }: CustomizedDataGridProps) {
-  const router = useRouter();
 
   const euroFormatter = (value: number) => `${value.toFixed(2)} €`;
 
@@ -70,6 +68,7 @@ export default function StatementDataGrid({
     });
   const [error, setError] = React.useState<string | null>(null);
   const [openCreate, setOpenCreate] = React.useState(false);
+  const [editId, setEditId] = React.useState<string | null>(null);
 
   const selectedIds = React.useMemo(() => {
     const { type, ids } = selectionModel;
@@ -147,7 +146,7 @@ export default function StatementDataGrid({
         slots={{ toolbar: CustomToolbar }}
         pageSizeOptions={[5, 10, 20]}
         initialState={{ pagination: { paginationModel: { pageSize } } }}
-        onRowClick={(params) => router.push(`/statement/${params.id}`)}
+        onRowClick={(params) => setEditId(String(params.id))}
         getRowClassName={(params) =>
           params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
         }
@@ -182,6 +181,25 @@ export default function StatementDataGrid({
             }}
             onCancel={() => setOpenCreate(false)}
           />
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={!!editId}
+        onClose={() => setEditId(null)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogContent>
+          {editId && (
+            <StatementForm
+              statementId={editId}
+              onSaved={async () => {
+                setEditId(null);
+                await onRefresh();
+              }}
+              onCancel={() => setEditId(null)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

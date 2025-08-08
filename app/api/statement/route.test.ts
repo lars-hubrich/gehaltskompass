@@ -7,6 +7,7 @@ jest.mock("@/lib/prisma", () => ({
     create: jest.fn(),
     deleteMany: jest.fn(),
     count: jest.fn(),
+    findFirst: jest.fn(),
   },
 }));
 jest.mock("@/lib/server-utils", () => ({
@@ -18,14 +19,19 @@ import { GET, POST, DELETE } from "./route";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireAuthenticatedUser } from "@/lib/server-utils";
+import { requireAuthenticatedUser, handleError } from "@/lib/server-utils";
 
 // Cast mocks to `any` to keep tests simple
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockRequire = requireAuthenticatedUser as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockHandleError = handleError as any;
 describe("/api/statement root", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockHandleError.mockImplementation((e: unknown) =>
+      NextResponse.json({ error: String(e) }, { status: 500 }),
+    );
   });
 
   it("returns 401 if not authenticated on GET", async () => {
@@ -49,6 +55,7 @@ describe("/api/statement root", () => {
   it("creates statement on POST", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     (prisma.statement.count as jest.Mock).mockResolvedValueOnce(0);
+    (prisma.statement.findFirst as jest.Mock).mockResolvedValueOnce(null);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (prisma.statement.create as any).mockResolvedValueOnce({ id: "s1" });
     const req = new Request("http://localhost/api/statement", {
@@ -63,12 +70,25 @@ describe("/api/statement root", () => {
   it("returns 403 if user exceeded limit on POST", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     (prisma.statement.count as jest.Mock).mockResolvedValueOnce(20);
+    (prisma.statement.findFirst as jest.Mock).mockResolvedValueOnce(null);
     const req = new Request("http://localhost/api/statement", {
       method: "POST",
       body: JSON.stringify({ month: 1, year: 2024, incomes: [] }),
     });
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(403);
+  });
+
+  it("returns 400 on invalid month", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.count as jest.Mock).mockResolvedValueOnce(0);
+    (prisma.statement.findFirst as jest.Mock).mockResolvedValueOnce(null);
+    const req = new Request("http://localhost/api/statement", {
+      method: "POST",
+      body: JSON.stringify({ month: 13, year: 2024, incomes: [] }),
+    });
+    const res = await POST(req as NextRequest);
+    expect(res.status).toBe(400);
   });
 
   it("returns 400 if no ids on DELETE", async () => {

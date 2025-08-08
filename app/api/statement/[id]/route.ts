@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
+import { ensurePositivePartialStatement } from "@/lib/statement-utils";
 
 interface IncomeData {
   id?: string;
@@ -83,8 +84,33 @@ export async function PUT(
       );
     }
 
-    const data: UpdateStatementData = await request.json();
+    const data: UpdateStatementData = ensurePositivePartialStatement(
+      await request.json(),
+    );
     const { incomes, ...statementData } = data;
+
+    const newMonth = statementData.month ?? existing.month;
+    const newYear = statementData.year ?? existing.year;
+    if (newMonth < 1 || newMonth > 12 || newYear < 1900 || newYear > 2100) {
+      return NextResponse.json(
+        { error: "Ungültiger Monat oder Jahr" },
+        { status: 400 },
+      );
+    }
+    const duplicate = await prisma.statement.findFirst({
+      where: {
+        user_id: userOrRes.id,
+        month: newMonth,
+        year: newYear,
+        NOT: { id },
+      },
+    });
+    if (duplicate) {
+      return NextResponse.json(
+        { error: "Abrechnung für diesen Monat existiert bereits" },
+        { status: 409 },
+      );
+    }
 
     const updated = await prisma.statement.update({
       where: { id },

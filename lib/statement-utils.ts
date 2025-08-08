@@ -39,3 +39,25 @@ export function ensurePositiveStatement(data: StatementData): StatementData {
 
   return result;
 }
+
+export function ensurePositivePartialStatement<
+  T extends Partial<StatementData>,
+>(data: T): T {
+  const result: T = { ...data };
+  for (const field of NUMERIC_FIELDS) {
+    if (field in result) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (result as any)[field] = Math.abs(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Number((result as any)[field]) || 0,
+      );
+    }
+  }
+  if ("incomes" in result && result.incomes) {
+    result.incomes = result.incomes.map((inc) => ({
+      ...inc,
+      value: Math.abs(Number(inc.value) || 0),
+    }));
+  }
+  return result;
+}
