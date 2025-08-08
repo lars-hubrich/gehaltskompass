@@ -5,19 +5,19 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import AssistantIcon from "@mui/icons-material/Assistant";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { usePathname, useRouter } from "next/navigation";
 
 const mainListItems = [
-  { text: "Dashboard", icon: <HomeRoundedIcon />, path: "/dashboard" },
+  { text: "Dashboard", icon: <AnalyticsRoundedIcon />, path: "/dashboard" },
   {
-    text: "Analytics",
-    icon: <AnalyticsRoundedIcon />,
-    path: "/analytics",
+    text: "Abrechnungen",
+    icon: <AccountBalanceIcon />, // TODO change
+    path: "/statements",
   },
   { text: "AI Insights", icon: <AssistantIcon />, path: "/insights" },
 ];
@@ -34,8 +34,8 @@ export default function MenuContent() {
   const title = React.useMemo(() => {
     if (pathname === "/dashboard") {
       return "Dashboard";
-    } else if (pathname === "/analytics") {
-      return "Analytics";
+    } else if (pathname === "/statements") {
+      return "Abrechnungen";
     } else if (pathname === "/insights") {
       return "AI Insights";
     }
