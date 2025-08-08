@@ -48,6 +48,7 @@ export default function ChatPage() {
     }
   };
 
+  // noinspection XmlDeprecatedElement
   return (
     <Container maxWidth="md" sx={{ mt: 2, mb: 4 }}>
       <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2 }}>
@@ -65,11 +66,12 @@ export default function ChatPage() {
                 label="Deine Frage"
                 placeholder="Was möchtest du über deine Abrechnungsdaten wissen?"
                 multiline
-                rows={6}
+                minRows={6}
                 fullWidth
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 disabled={loading}
+                InputProps={{ sx: { alignItems: "flex-start" } }}
               />
               <Button
                 type="submit"
