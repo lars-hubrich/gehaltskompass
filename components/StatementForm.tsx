@@ -36,6 +36,7 @@ interface StatementFormProps {
   statementId?: string;
   onSaved?: () => void;
   onCancel?: () => void;
+  openChartsOnLoad?: boolean;
 }
 
 /**
@@ -48,6 +49,7 @@ export default function StatementForm({
   statementId,
   onSaved,
   onCancel,
+  openChartsOnLoad = false,
 }: StatementFormProps) {
   const router = useRouter();
   const [data, setData] = useState<StatementData>(() => {
@@ -82,7 +84,7 @@ export default function StatementForm({
     failed: number;
   } | null>(null);
   const [openResult, setOpenResult] = useState(false);
-  const [openCharts, setOpenCharts] = useState(false);
+  const [openCharts, setOpenCharts] = useState(openChartsOnLoad);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [existingCount, setExistingCount] = useState(0);
   const [originalData, setOriginalData] = useState<StatementData | null>(null);

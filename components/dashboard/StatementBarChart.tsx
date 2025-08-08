@@ -157,6 +157,7 @@ export default function StatementBarChart({
                 }
               }}
               onCancel={() => setEditId(null)}
+              openChartsOnLoad
             />
           )}
         </DialogContent>
