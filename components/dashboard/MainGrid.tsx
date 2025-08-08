@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { StatementData } from "@/constants/Interfaces";
 import SocialPieChart from "@/components/dashboard/StatementSocialPieChart";
 import TaxPieChart from "@/components/dashboard/StatementTaxPieChart";
+import IncomePieChart from "@/components/dashboard/StatementIncomePieChart";
 import { Stack, Alert } from "@mui/material";
 import NoStatementsCard from "./NoStatementsCard";
 
@@ -157,6 +158,7 @@ export default function MainGrid() {
           <Stack>
             <SocialPieChart statements={statements} />
             <TaxPieChart statements={statements} />
+            <IncomePieChart statements={statements} />
           </Stack>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
