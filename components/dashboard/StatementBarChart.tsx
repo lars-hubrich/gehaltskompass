@@ -127,7 +127,7 @@ export default function StatementBarChart({
                 stack: "stack",
               },
             ]}
-            height={400}
+            height={600}
             margin={{ left: 0, right: 0, top: 20, bottom: 0 }}
             grid={{ horizontal: true }}
             hideLegend={false}
