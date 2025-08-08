@@ -166,11 +166,11 @@ export default function StatementForm({
         });
       }
 
-      // todo: disabled for now, as payout_netto is not always equal to brutto_tax - deductions
       const expectedNet = value.brutto_tax - totalDeductions - value.payout_vwl;
-      if (Math.abs(expectedNet - value.payout_netto) > 1) {
+      const diff = expectedNet - value.payout_netto;
+      if (Math.abs(diff) > 1) {
         warnings["payout_netto"] =
-          "Nettoauszahlung passt nicht zu Brutto minus Abzügen.";
+          `Nettoauszahlung weicht vom erwarteten Wert um ${diff.toFixed(2)} €.`;
       }
 
       setValidationError(msg);

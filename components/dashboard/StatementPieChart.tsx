@@ -7,6 +7,11 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { PieChart } from "@mui/x-charts/PieChart";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Box from "@mui/material/Box";
 import { StatementData } from "@/constants/Interfaces";
 
 interface StatementPieChartProps {
@@ -121,7 +126,12 @@ export default function StatementPieChart({
         <Typography component="h2" variant="subtitle2" gutterBottom>
           {title}
         </Typography>
-        <Stack alignItems="center" justifyContent="center">
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems="center"
+          justifyContent="center"
+        >
           <PieChart
             series={[
               {
@@ -140,6 +150,37 @@ export default function StatementPieChart({
             width={150}
             height={150}
           />
+          <List dense>
+            {pieData.map((item, index) => (
+              <ListItem key={item.id} sx={{ py: 0.5 }}>
+                <ListItemIcon sx={{ minWidth: 16 }}>
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      bgcolor: colors[index],
+                      borderRadius: 0.5,
+                    }}
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  secondary={item.value.toLocaleString("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                    maximumFractionDigits: 0,
+                  })}
+                  slotProps={{
+                    primary: { variant: "body2" },
+                    secondary: {
+                      variant: "caption",
+                      color: "text.secondary",
+                    },
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
         </Stack>
       </CardContent>
     </Card>
