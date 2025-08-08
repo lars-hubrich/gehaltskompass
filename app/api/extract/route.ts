@@ -46,10 +46,7 @@ export async function POST(req: NextRequest) {
     );
   }
   if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json(
-      { error: "Datei ist zu groß" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Datei ist zu groß" }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());

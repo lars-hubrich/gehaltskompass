@@ -38,8 +38,8 @@ describe("/api/statement/[id]", () => {
 
   it("returns statement when found", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (prisma.statement.findUnique as any).mockResolvedValueOnce({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.findUnique as any).mockResolvedValueOnce({
       id: "s1",
       user_id: "u1",
       incomes: [],

@@ -217,10 +217,13 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     [existingCount],
   );
 
-  const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    await handleFiles(e.dataTransfer.files);
-  }, [handleFiles]);
+  const onDrop = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      await handleFiles(e.dataTransfer.files);
+    },
+    [handleFiles],
+  );
 
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -230,7 +233,6 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     if (!e.target.files) return;
     await handleFiles(e.target.files);
   };
-
 
   const handleCloseResult = () => {
     setOpenResult(false);

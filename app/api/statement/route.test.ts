@@ -39,9 +39,7 @@ describe("/api/statement root", () => {
   it("returns statements for authenticated user", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.statement.findMany as any).mockResolvedValueOnce([
-      { id: "s1" },
-    ]);
+    (prisma.statement.findMany as any).mockResolvedValueOnce([{ id: "s1" }]);
     const res = await GET();
     expect(prisma.statement.findMany).toHaveBeenCalled();
     expect(res.status).toBe(200);
@@ -51,7 +49,7 @@ describe("/api/statement root", () => {
   it("creates statement on POST", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     (prisma.statement.count as jest.Mock).mockResolvedValueOnce(0);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (prisma.statement.create as any).mockResolvedValueOnce({ id: "s1" });
     const req = new Request("http://localhost/api/statement", {
       method: "POST",

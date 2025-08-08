@@ -27,6 +27,7 @@ export async function requireAuthenticatedUser() {
 
 export function handleError(error: unknown, route: string) {
   console.error(`${route} error:`, error);
-  const message = error instanceof Error ? error.message : "Interner Serverfehler";
+  const message =
+    error instanceof Error ? error.message : "Interner Serverfehler";
   return NextResponse.json({ error: message }, { status: 500 });
 }
