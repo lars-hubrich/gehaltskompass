@@ -4,6 +4,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import ListSubheader from "@mui/material/ListSubheader";
@@ -204,6 +206,42 @@ export default function MenuContent() {
     }
   };
 
+  const dataSettings = [
+    {
+      text: "Daten exportieren",
+      secondary: "Sichert deine Daten als JSON-Datei",
+      icon: <FileDownloadRoundedIcon />,
+      action: handleExport,
+    },
+    {
+      text: "CSV exportieren",
+      secondary: "Exportiert Daten als CSV",
+      icon: <TableChartRoundedIcon />,
+      action: handleExportCsv,
+    },
+    {
+      text: "Daten importieren",
+      secondary: "Lädt Daten aus JSON oder CSV",
+      icon: <FileUploadRoundedIcon />,
+      action: handleImportClick,
+    },
+    {
+      text: "Beispieldaten laden",
+      secondary: "Ersetzt deine Daten mit Beispielen",
+      icon: <BackupRoundedIcon />,
+      action: handleLoadSample,
+    },
+  ];
+
+  const accountSettings = [
+    {
+      text: "Account löschen",
+      secondary: "Entfernt alle Daten endgültig",
+      icon: <DeleteForeverRoundedIcon />,
+      action: handleDelete,
+    },
+  ];
+
   const title = React.useMemo(() => {
     if (pathname === "/dashboard") {
       return "Übersicht";
@@ -282,52 +320,54 @@ export default function MenuContent() {
             onChange={handleImportFile}
           />
           <List sx={{ pt: 1 }} subheader={<ListSubheader>Daten</ListSubheader>}>
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleExport}>
-                <ListItemIcon>
-                  <FileDownloadRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Daten exportieren" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleExportCsv}>
-                <ListItemIcon>
-                  <TableChartRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="CSV exportieren" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleImportClick}>
-                <ListItemIcon>
-                  <FileUploadRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Daten importieren" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleLoadSample}>
-                <ListItemIcon>
-                  <BackupRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Beispieldaten laden" />
-              </ListItemButton>
-            </ListItem>
+            {dataSettings.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton onClick={item.action}>
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                      }}
+                      variant="rounded"
+                    >
+                      {item.icon}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.text}
+                    secondary={item.secondary}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
           <Divider sx={{ my: 1 }} />
           <List subheader={<ListSubheader>Account</ListSubheader>}>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={handleDelete}
-                sx={{ color: "error.main" }}
-              >
-                <ListItemIcon sx={{ color: "error.main" }}>
-                  <DeleteForeverRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Account löschen" />
-              </ListItemButton>
-            </ListItem>
+            {accountSettings.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton
+                  onClick={item.action}
+                  sx={{ color: "error.main" }}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        bgcolor: "error.main",
+                        color: "primary.contrastText",
+                      }}
+                      variant="rounded"
+                    >
+                      {item.icon}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.text}
+                    secondary={item.secondary}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
         </DialogContent>
         <DialogActions>
