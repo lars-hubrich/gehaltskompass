@@ -1,12 +1,5 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
-Given("I am not logged in", () => {
-  cy.intercept("GET", "/api/auth/session", {
-    statusCode: 401,
-    body: {},
-  });
-});
-
 Given("I am logged in", () => {
   cy.intercept("GET", "/api/auth/session", {
     statusCode: 200,
