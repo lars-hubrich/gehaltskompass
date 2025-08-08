@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Typography from "@mui/material/Typography";
 
 interface CustomizedDataGridProps {
   statements: StatementOverviewData[];
@@ -111,9 +110,6 @@ export default function StatementDataGrid({
   // Custom toolbar
   const CustomToolbar = () => (
     <Toolbar>
-      <Typography component="h2" variant="h6" sx={{ flex: 1, mx: 0.5 }}>
-        Gehaltsabrechnungen
-      </Typography>
       <Button
         startIcon={<DeleteIcon />}
         variant="outlined"
