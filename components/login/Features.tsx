@@ -28,7 +28,7 @@ const items = [
     icon: <InsightsIcon />,
     title: "AI Insights",
     description:
-      "Stelle Fragen zu deinen Gehaltsabrechnungen und erhalte KI-gestützte Einblicke.",
+      "Stelle Fragen zu deiner Gehaltsabrechnung und erhalte KI-gestützte Einblicke.",
     imageLight: `url("${
       process.env.TEMPLATE_IMAGE_URL || "https://mui.com"
     }/static/images/templates/templates-images/mobile-light.png")`,
