@@ -12,6 +12,9 @@ export async function POST(req: NextRequest) {
     if (statements.length === 0) {
       return NextResponse.json({ error: "Ungültiges Format" }, { status: 400 });
     }
+    // Remove all existing statements of the user before importing new ones
+    await prisma.statement.deleteMany({ where: { user_id: userOrRes.id } });
+
     const created = [];
     for (const s of statements) {
       const {

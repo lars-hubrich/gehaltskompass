@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 jest.mock("@/lib/prisma", () => ({
-  statement: { create: jest.fn() },
+  statement: { create: jest.fn(), deleteMany: jest.fn() },
 }));
 jest.mock("@/lib/server-utils", () => ({
   requireAuthenticatedUser: jest.fn(),
@@ -66,6 +66,9 @@ describe("/api/user/import", () => {
       }),
     });
     const res = await POST(req as unknown as NextRequest);
+    expect(prisma.statement.deleteMany).toHaveBeenCalledWith({
+      where: { user_id: "u1" },
+    });
     expect(prisma.statement.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         user_id: "u1",

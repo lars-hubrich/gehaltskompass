@@ -77,13 +77,24 @@ export default function MenuContent() {
   const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (
+      !confirm(
+        "Beim Import werden alle vorhandenen Abrechnungen gelöscht und durch die importierten Daten ersetzt. Fortfahren?",
+      )
+    ) {
+      e.target.value = "";
+      return;
+    }
     try {
       const text = await file.text();
-      await fetch("/api/user/import", {
+      const res = await fetch("/api/user/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: text,
       });
+      if (res.ok) {
+        location.reload();
+      }
     } catch {
       // ignore errors
     } finally {
