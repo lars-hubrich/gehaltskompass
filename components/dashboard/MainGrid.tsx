@@ -100,7 +100,7 @@ export default function MainGrid() {
     },
     {
       title: "Anteil Abgaben",
-      value: formatValue(abgabenData[abgabenData.length - 1], true),
+      value: formatValue(abgabenData.at(-1) ?? 0, true),
       interval: "Letztes Jahr",
       trend: trendOf(abgabenData),
       data: abgabenData,
