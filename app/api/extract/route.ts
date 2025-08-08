@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { FIELD_DESCRIPTIONS_AI } from "@/constants/fieldDescriptions";
 import { ensurePositiveStatement } from "@/lib/statement-utils";
+import { MAX_FILE_SIZE } from "@/constants/limits";
 
 // noinspection JSUnusedGlobalSymbols
 export const config = { api: { bodyParser: false } };
@@ -35,6 +36,18 @@ export async function POST(req: NextRequest) {
   if (!file) {
     return NextResponse.json(
       { error: "Keine Datei hochgeladen" },
+      { status: 400 },
+    );
+  }
+  if (file.type !== "application/pdf") {
+    return NextResponse.json(
+      { error: "Nur PDF-Dateien sind erlaubt" },
+      { status: 400 },
+    );
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json(
+      { error: "Datei ist zu groß" },
       { status: 400 },
     );
   }

@@ -24,6 +24,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { StatementData } from "@/constants/Interfaces";
 import { FIELD_DESCRIPTIONS_HUMAN } from "@/constants/fieldDescriptions";
+import {
+  MAX_FILE_SIZE,
+  MAX_FILES_PER_UPLOAD,
+  MAX_STATEMENTS_PER_USER,
+} from "@/constants/limits";
 
 interface StatementFormProps {
   statementId?: string;
@@ -62,6 +67,7 @@ export default function StatementForm({ statementId }: StatementFormProps) {
   } | null>(null);
   const [openResult, setOpenResult] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [existingCount, setExistingCount] = useState(0);
 
   useEffect(() => {
     if (statementId && statementId !== "new") {
@@ -75,6 +81,14 @@ export default function StatementForm({ statementId }: StatementFormProps) {
           setError(err.error || "Fehler beim Laden der Abrechnung");
         }
       })();
+    } else if (statementId === "new") {
+      (async () => {
+        const res = await fetch(`/api/statement`);
+        if (res.ok) {
+          const statements = await res.json();
+          setExistingCount(statements.length);
+        }
+      })();
     }
   }, [statementId]);
 
@@ -84,10 +98,129 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     }
   }, [bulkResult]);
 
+  const handleFiles = useCallback(
+    async (files: FileList) => {
+      if (files.length === 0) return;
+      setError(null);
+      setBulkResult(null);
+
+      if (files.length > MAX_FILES_PER_UPLOAD) {
+        setError(
+          `Maximal ${MAX_FILES_PER_UPLOAD} Dateien gleichzeitig hochladen.`,
+        );
+        return;
+      }
+
+      if (existingCount >= MAX_STATEMENTS_PER_USER) {
+        setError("Maximal 20 Abrechnungen erlaubt.");
+        return;
+      }
+
+      if (existingCount + files.length > MAX_STATEMENTS_PER_USER) {
+        setError(
+          `Es können nur noch ${
+            MAX_STATEMENTS_PER_USER - existingCount
+          } Abrechnungen erstellt werden.`,
+        );
+        return;
+      }
+
+      if (files.length === 1) {
+        const file = files[0];
+        if (file.type !== "application/pdf") {
+          setError("Bitte eine PDF-Datei hochladen.");
+          return;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+          setError("Datei ist zu groß.");
+          return;
+        }
+        setLoading(true);
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const resExtract = await fetch("/api/extract", {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          });
+          if (!resExtract.ok) {
+            const err = await resExtract.json();
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error(err.error || "Upload fehlgeschlagen");
+          }
+          const json: StatementData = await resExtract.json();
+          setData({ ...json, incomes: json.incomes || [] });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+
+      const count = files.length;
+      if (
+        !window.confirm(
+          `Sind Sie sicher, dass Sie ${count} Gehaltsabrechnungen hochladen möchten?`,
+        )
+      ) {
+        return;
+      }
+
+      setLoading(true);
+      let success = 0;
+      let failed = 0;
+
+      for (const file of Array.from(files)) {
+        if (file.type !== "application/pdf" || file.size > MAX_FILE_SIZE) {
+          failed++;
+          continue;
+        }
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const resExtract = await fetch("/api/extract", {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          });
+          if (!resExtract.ok) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error("Extraktion fehlgeschlagen");
+          }
+          const statement: StatementData = await resExtract.json();
+
+          const resSave = await fetch("/api/statement", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(statement),
+            credentials: "include",
+          });
+          if (!resSave.ok) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error("Speichern fehlgeschlagen");
+          }
+
+          success++;
+          setExistingCount((prev) => prev + 1);
+        } catch (err) {
+          console.error(err);
+          failed++;
+        }
+      }
+
+      setLoading(false);
+      setBulkResult({ success, failed });
+    },
+    [existingCount],
+  );
+
   const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     await handleFiles(e.dataTransfer.files);
-  }, []);
+  }, [handleFiles]);
 
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -98,95 +231,6 @@ export default function StatementForm({ statementId }: StatementFormProps) {
     await handleFiles(e.target.files);
   };
 
-  const handleFiles = async (files: FileList) => {
-    if (files.length === 0) return;
-    setError(null);
-    setBulkResult(null);
-
-    if (files.length === 1) {
-      const file = files[0];
-      if (file.type !== "application/pdf") {
-        setError("Bitte eine PDF-Datei hochladen.");
-        return;
-      }
-      setLoading(true);
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        const resExtract = await fetch("/api/extract", {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        });
-        if (!resExtract.ok) {
-          const err = await resExtract.json();
-          // noinspection ExceptionCaughtLocallyJS
-          throw new Error(err.error || "Upload fehlgeschlagen");
-        }
-        const json: StatementData = await resExtract.json();
-        setData({ ...json, incomes: json.incomes || [] });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
-
-    const count = files.length;
-    if (
-      !window.confirm(
-        `Sind Sie sicher, dass Sie ${count} Gehaltsabrechnungen hochladen möchten?`,
-      )
-    ) {
-      return;
-    }
-
-    setLoading(true);
-    let success = 0;
-    let failed = 0;
-
-    for (const file of Array.from(files)) {
-      if (file.type !== "application/pdf") {
-        failed++;
-        continue;
-      }
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        const resExtract = await fetch("/api/extract", {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        });
-        if (!resExtract.ok) {
-          // noinspection ExceptionCaughtLocallyJS
-          throw new Error("Extraktion fehlgeschlagen");
-        }
-        const statement: StatementData = await resExtract.json();
-
-        const resSave = await fetch("/api/statement", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(statement),
-          credentials: "include",
-        });
-        if (!resSave.ok) {
-          // noinspection ExceptionCaughtLocallyJS
-          throw new Error("Speichern fehlgeschlagen");
-        }
-
-        success++;
-      } catch (err) {
-        console.error(err);
-        failed++;
-      }
-    }
-
-    setLoading(false);
-    setBulkResult({ success, failed });
-  };
 
   const handleCloseResult = () => {
     setOpenResult(false);
@@ -231,7 +275,10 @@ export default function StatementForm({ statementId }: StatementFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    if (statementId === "new" && existingCount >= MAX_STATEMENTS_PER_USER) {
+      setError("Maximal 20 Abrechnungen erlaubt.");
+      return;
+    }
     const url =
       statementId === "new"
         ? "/api/statement"

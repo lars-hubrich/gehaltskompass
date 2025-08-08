@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 import { ensurePositiveStatement } from "@/lib/statement-utils";
+import { MAX_STATEMENTS_PER_USER } from "@/constants/limits";
 
 type IncomeCreateInput = {
   name: string;
@@ -55,6 +56,15 @@ export async function POST(request: NextRequest) {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;
   try {
+    const existing = await prisma.statement.count({
+      where: { user_id: userOrRes.id },
+    });
+    if (existing >= MAX_STATEMENTS_PER_USER) {
+      return NextResponse.json(
+        { error: "Maximale Anzahl an Abrechnungen erreicht" },
+        { status: 403 },
+      );
+    }
     const body: StatementCreateBody = ensurePositiveStatement(
       await request.json(),
     );

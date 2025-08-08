@@ -6,6 +6,7 @@ jest.mock("@/lib/prisma", () => ({
     findMany: jest.fn(),
     create: jest.fn(),
     deleteMany: jest.fn(),
+    count: jest.fn(),
   },
 }));
 jest.mock("@/lib/server-utils", () => ({
@@ -49,7 +50,8 @@ describe("/api/statement root", () => {
 
   it("creates statement on POST", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.count as jest.Mock).mockResolvedValueOnce(0);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (prisma.statement.create as any).mockResolvedValueOnce({ id: "s1" });
     const req = new Request("http://localhost/api/statement", {
       method: "POST",
@@ -58,6 +60,17 @@ describe("/api/statement root", () => {
     const res = await POST(req as NextRequest);
     expect(prisma.statement.create).toHaveBeenCalled();
     expect(res.status).toBe(201);
+  });
+
+  it("returns 403 if user exceeded limit on POST", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.statement.count as jest.Mock).mockResolvedValueOnce(20);
+    const req = new Request("http://localhost/api/statement", {
+      method: "POST",
+      body: JSON.stringify({ month: 1, year: 2024, incomes: [] }),
+    });
+    const res = await POST(req as NextRequest);
+    expect(res.status).toBe(403);
   });
 
   it("returns 400 if no ids on DELETE", async () => {

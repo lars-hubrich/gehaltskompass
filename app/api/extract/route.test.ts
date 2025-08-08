@@ -5,6 +5,7 @@ import { POST } from "./route";
 import type { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
+import { MAX_FILE_SIZE } from "@/constants/limits";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockGenerate: any = jest.fn();
@@ -72,6 +73,39 @@ describe("POST /api/extract", () => {
     expect(res.status).toBe(400);
   });
 
+  it("returns 400 if file is not pdf", async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { email: "a@b.c" },
+    });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    const fd = new FormData();
+    fd.append("file", new Blob(["text"], { type: "text/plain" }), "a.txt");
+    const req = new Request("http://localhost/api/extract", {
+      method: "POST",
+      body: fd,
+    });
+    const res = await POST(req as NextRequest);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 if file exceeds size limit", async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { email: "a@b.c" },
+    });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    const fd = new FormData();
+    const big = new Blob([new Uint8Array(MAX_FILE_SIZE + 1)], {
+      type: "application/pdf",
+    });
+    fd.append("file", big, "big.pdf");
+    const req = new Request("http://localhost/api/extract", {
+      method: "POST",
+      body: fd,
+    });
+    const res = await POST(req as NextRequest);
+    expect(res.status).toBe(400);
+  });
+
   it("returns parsed JSON on success", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (getServerSession as any).mockResolvedValue({
@@ -93,6 +127,6 @@ describe("POST /api/extract", () => {
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json).toMatchObject({ month: 1 });
+    expect(json.month).toBe(1);
   });
 });
