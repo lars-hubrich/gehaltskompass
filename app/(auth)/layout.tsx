@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import React from "react";
 import { redirect } from "next/navigation";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function AppLayout({
   children,
@@ -10,9 +11,8 @@ export default function AppLayout({
 }>) {
   const { status } = useSession();
 
-  // TODO fix loading screen
   if (status === "loading") {
-    return <p>Wird geladen...</p>;
+    return <LoadingScreen />;
   }
 
   if (status === "unauthenticated") {
