@@ -9,7 +9,6 @@ import {
   CircularProgress,
   Container,
   FormControl,
-  FormLabel,
   Paper,
   Stack,
   TextareaAutosize,
@@ -64,7 +63,6 @@ export default function ChatPage() {
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
               <FormControl fullWidth>
-                <FormLabel sx={{ mb: 1 }}>Deine Frage</FormLabel>
                 <TextareaAutosize
                   minRows={3}
                   placeholder="Was möchtest du über deine Abrechnungsdaten wissen?"
