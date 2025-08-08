@@ -17,14 +17,19 @@ import { GET, PUT, DELETE } from "./route";
 import type { NextRequest } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/server-utils";
 
-const mockRequire = requireAuthenticatedUser as jest.Mock;
+// Cast mocks to `any` to simplify TypeScript typing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockRequire = requireAuthenticatedUser as any;
 
 describe("/api/statement/[id]", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it("returns 404 when statement not found", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.findUnique as any).mockResolvedValueOnce(null);
     const res = await GET({} as NextRequest, {
       params: Promise.resolve({ id: "s1" }),
     });
@@ -33,7 +38,8 @@ describe("/api/statement/[id]", () => {
 
   it("returns statement when found", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (prisma.statement.findUnique as any).mockResolvedValueOnce({
       id: "s1",
       user_id: "u1",
       incomes: [],
@@ -47,7 +53,8 @@ describe("/api/statement/[id]", () => {
 
   it("returns 404 on PUT when statement missing", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.findUnique as any).mockResolvedValueOnce(null);
     const req = new Request("http://localhost/api/statement/s1", {
       method: "PUT",
       body: JSON.stringify({ month: 2 }),
@@ -60,11 +67,13 @@ describe("/api/statement/[id]", () => {
 
   it("updates statement on PUT", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.findUnique as any).mockResolvedValueOnce({
       id: "s1",
       user_id: "u1",
     });
-    (prisma.statement.update as jest.Mock).mockResolvedValueOnce({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.update as any).mockResolvedValueOnce({
       id: "s1",
       month: 2,
       incomes: [],
@@ -82,7 +91,8 @@ describe("/api/statement/[id]", () => {
 
   it("returns 404 on DELETE when statement missing", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.findUnique as any).mockResolvedValueOnce(null);
     const req = new Request("http://localhost/api/statement/s1", {
       method: "DELETE",
     });
@@ -94,11 +104,13 @@ describe("/api/statement/[id]", () => {
 
   it("deletes statement", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
-    (prisma.statement.findUnique as jest.Mock).mockResolvedValueOnce({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.findUnique as any).mockResolvedValueOnce({
       id: "s1",
       user_id: "u1",
     });
-    (prisma.statement.delete as jest.Mock).mockResolvedValueOnce({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.statement.delete as any).mockResolvedValueOnce({});
     const req = new Request("http://localhost/api/statement/s1", {
       method: "DELETE",
     });

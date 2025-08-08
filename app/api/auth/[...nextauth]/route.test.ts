@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+// jest globals are available without imports
 jest.mock("next-auth", () => jest.fn(() => "handler"));
 jest.mock("@/lib/auth", () => ({ authOptions: { some: "config" } }));
 

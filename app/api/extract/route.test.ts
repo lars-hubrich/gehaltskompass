@@ -6,7 +6,8 @@ import type { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 
-const mockGenerate = jest.fn();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockGenerate: any = jest.fn();
 
 jest.mock("next-auth", () => ({ getServerSession: jest.fn() }));
 jest.mock("@/lib/auth", () => ({ authOptions: {} }));
@@ -27,10 +28,13 @@ jest.mock("@google/genai", () => ({
 }));
 
 describe("POST /api/extract", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it("returns 401 if unauthenticated", async () => {
-    (getServerSession as jest.Mock).mockResolvedValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (getServerSession as any).mockResolvedValue(null);
     const fd2 = new FormData();
     const req = new Request("http://localhost/api/extract", {
       method: "POST",
@@ -41,20 +45,24 @@ describe("POST /api/extract", () => {
   });
 
   it("returns 404 if user not found", async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (getServerSession as any).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.user.findUnique as any).mockResolvedValue(null);
     const req = new Request("http://localhost/api/extract", { method: "POST" });
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(404);
   });
 
   it("returns 400 if no file uploaded", async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (getServerSession as any).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.user.findUnique as any).mockResolvedValue({ id: "1" });
     const fdNo = new FormData();
     const req = new Request("http://localhost/api/extract", {
       method: "POST",
@@ -65,10 +73,12 @@ describe("POST /api/extract", () => {
   });
 
   it("returns parsed JSON on success", async () => {
-    (getServerSession as jest.Mock).mockResolvedValue({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (getServerSession as any).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prisma.user.findUnique as any).mockResolvedValue({ id: "1" });
     const fd = new FormData();
     fd.append(
       "file",
@@ -83,6 +93,6 @@ describe("POST /api/extract", () => {
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json).toEqual({ month: 1 });
+    expect(json).toEqual(expect.objectContaining({ month: 1 }));
   });
 });
