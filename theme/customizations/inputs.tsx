@@ -69,6 +69,13 @@ export const inputsCustomizations: Components<Theme> = {
               "&:active": {
                 backgroundColor: gray[800],
               },
+              "&.Mui-disabled": {
+                backgroundImage: "none",
+                backgroundColor: gray[300],
+                border: `1px solid ${gray[300]}`,
+                boxShadow: "none",
+                color: gray[500],
+              },
               ...theme.applyStyles("dark", {
                 color: "black",
                 backgroundColor: gray[50],
@@ -82,6 +89,13 @@ export const inputsCustomizations: Components<Theme> = {
                 },
                 "&:active": {
                   backgroundColor: gray[400],
+                },
+                "&.Mui-disabled": {
+                  backgroundImage: "none",
+                  backgroundColor: gray[200],
+                  border: `1px solid ${gray[200]}`,
+                  boxShadow: "none",
+                  color: gray[400],
                 },
               }),
             },
