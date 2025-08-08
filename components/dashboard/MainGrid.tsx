@@ -176,9 +176,21 @@ export default function MainGrid() {
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2}>
-            <StatementPieChart statements={statements} variant="social" />
-            <StatementPieChart statements={statements} variant="tax" />
-            <StatementPieChart statements={statements} variant="income" />
+            <StatementPieChart
+              statements={statements}
+              variant="social"
+              inDialog={false}
+            />
+            <StatementPieChart
+              statements={statements}
+              variant="tax"
+              inDialog={false}
+            />
+            <StatementPieChart
+              statements={statements}
+              variant="income"
+              inDialog={false}
+            />
           </Stack>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>

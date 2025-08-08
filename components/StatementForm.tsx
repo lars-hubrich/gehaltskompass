@@ -787,9 +787,9 @@ export default function StatementForm({
         <DialogTitle>Diagramme</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            <StatementPieChart statements={[data]} variant="social" />
-            <StatementPieChart statements={[data]} variant="tax" />
-            <StatementPieChart statements={[data]} variant="income" />
+            <StatementPieChart statements={[data]} variant="social" inDialog />
+            <StatementPieChart statements={[data]} variant="tax" inDialog />
+            <StatementPieChart statements={[data]} variant="income" inDialog />
           </Stack>
         </DialogContent>
         <DialogActions>

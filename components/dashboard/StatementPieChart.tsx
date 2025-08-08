@@ -17,6 +17,7 @@ import { StatementData } from "@/constants/Interfaces";
 interface StatementPieChartProps {
   statements: StatementData[];
   variant: "income" | "social" | "tax";
+  inDialog?: boolean;
 }
 
 /**
@@ -28,6 +29,7 @@ interface StatementPieChartProps {
 export default function StatementPieChart({
   statements = [],
   variant,
+  inDialog = false,
 }: StatementPieChartProps) {
   const theme = useTheme();
 
@@ -110,6 +112,10 @@ export default function StatementPieChart({
       break;
   }
 
+  if (!inDialog) {
+    title += " (der letzten Abrechnung)";
+  }
+
   const baseColors = [
     theme.palette.primary.light,
     theme.palette.primary.main,
@@ -150,37 +156,39 @@ export default function StatementPieChart({
             width={150}
             height={150}
           />
-          <List dense>
-            {pieData.map((item, index) => (
-              <ListItem key={item.id} sx={{ py: 0.5 }}>
-                <ListItemIcon sx={{ minWidth: 16 }}>
-                  <Box
-                    sx={{
-                      width: 12,
-                      height: 12,
-                      bgcolor: colors[index],
-                      borderRadius: 0.5,
+          {inDialog && (
+            <List dense>
+              {pieData.map((item, index) => (
+                <ListItem key={item.id} sx={{ py: 0.5 }}>
+                  <ListItemIcon sx={{ minWidth: 16 }}>
+                    <Box
+                      sx={{
+                        width: 12,
+                        height: 12,
+                        bgcolor: colors[index],
+                        borderRadius: 0.5,
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    secondary={item.value.toLocaleString("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      maximumFractionDigits: 0,
+                    })}
+                    slotProps={{
+                      primary: { variant: "body2" },
+                      secondary: {
+                        variant: "caption",
+                        color: "text.secondary",
+                      },
                     }}
                   />
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  secondary={item.value.toLocaleString("de-DE", {
-                    style: "currency",
-                    currency: "EUR",
-                    maximumFractionDigits: 0,
-                  })}
-                  slotProps={{
-                    primary: { variant: "body2" },
-                    secondary: {
-                      variant: "caption",
-                      color: "text.secondary",
-                    },
-                  }}
-                />
-              </ListItem>
-            ))}
-          </List>
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Stack>
       </CardContent>
     </Card>
