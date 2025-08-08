@@ -129,7 +129,7 @@ export default function MainGrid() {
   if (!loading && statements.length === 0) {
     return (
       <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
-        <NoStatementsCard />
+        <NoStatementsCard onCreated={fetchStatements} />
       </Box>
     );
   }

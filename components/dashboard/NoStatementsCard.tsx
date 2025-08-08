@@ -5,9 +5,17 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { useRouter } from "next/navigation";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import StatementForm from "@/components/StatementForm";
 
-export default function NoStatementsCard() {
+interface NoStatementsCardProps {
+  onCreated?: () => Promise<void> | void;
+}
+
+export default function NoStatementsCard({ onCreated }: NoStatementsCardProps) {
   const router = useRouter();
+  const [open, setOpen] = React.useState(false);
 
   return (
     <Card sx={{ height: "100%" }}>
@@ -27,10 +35,31 @@ export default function NoStatementsCard() {
           variant="contained"
           size="small"
           startIcon={<AddRoundedIcon />}
-          onClick={() => router.push("/statement/new")}
+          onClick={() => setOpen(true)}
         >
           Neue Gehaltsabrechnung erstellen
         </Button>
+        <Dialog
+          open={open}
+          onClose={() => setOpen(false)}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogContent>
+            <StatementForm
+              statementId="new"
+              onSaved={async () => {
+                setOpen(false);
+                if (onCreated) {
+                  await onCreated();
+                } else {
+                  router.refresh();
+                }
+              }}
+              onCancel={() => setOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
