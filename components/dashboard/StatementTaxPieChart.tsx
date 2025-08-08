@@ -67,28 +67,24 @@ export default function TaxPieChart({ statements = [] }: TaxPieChartProps) {
         <Typography component="h2" variant="subtitle2" gutterBottom>
           Verteilung der Steuerabgaben (letzte Abrechnung)
         </Typography>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          alignItems="center"
-          justifyContent="center"
-        >
+        <Stack alignItems="center" justifyContent="center">
           <PieChart
-            series={[{ data: pieData }]}
+            series={[
+              {
+                data: pieData,
+                arcLabel: (item) =>
+                  item.value.toLocaleString("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                    maximumFractionDigits: 0,
+                  }),
+                arcLabelMinAngle: 10,
+              },
+            ]}
             colors={colors}
             width={150}
             height={150}
           />
-          <Stack>
-            {pieData.map((item) => (
-              <Typography key={item.id} variant="body2">
-                {item.label}: {item.value.toLocaleString("de-DE", {
-                  style: "currency",
-                  currency: "EUR",
-                })}
-              </Typography>
-            ))}
-          </Stack>
         </Stack>
       </CardContent>
     </Card>
