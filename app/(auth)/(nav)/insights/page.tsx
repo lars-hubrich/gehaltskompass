@@ -9,7 +9,6 @@ import {
   CircularProgress,
   Container,
   FormControl,
-  FormLabel,
   Paper,
   Stack,
   TextareaAutosize,
@@ -55,7 +54,7 @@ export default function ChatPage() {
       <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2 }}>
         <Stack spacing={3}>
           <Typography variant="h5" align="center">
-            KI Insights
+            AI Insights
           </Typography>
           <Typography variant="body2" color="text.secondary" align="center">
             Stelle Fragen zu deinen Abrechnungsdaten und erhalte KI-gestützte
@@ -64,9 +63,8 @@ export default function ChatPage() {
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
               <FormControl fullWidth>
-                <FormLabel sx={{ mb: 1 }}>Deine Frage</FormLabel>
                 <TextareaAutosize
-                  minRows={6}
+                  minRows={3}
                   placeholder="Was möchtest du über deine Abrechnungsdaten wissen?"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
