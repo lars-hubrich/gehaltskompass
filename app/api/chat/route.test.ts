@@ -6,8 +6,7 @@ import type { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockGenerate: any = jest.fn();
+const mockGenerate: jest.Mock = jest.fn();
 
 jest.mock("next-auth", () => ({ getServerSession: jest.fn() }));
 jest.mock("@/lib/auth", () => ({ authOptions: {} }));
@@ -17,8 +16,7 @@ jest.mock("@/lib/prisma", () => ({
 }));
 jest.mock("@google/genai", () => ({
   GoogleGenAI: jest.fn(() => ({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    models: { generateContent: (...args: any[]) => mockGenerate(...args) },
+    models: { generateContent: (...args: unknown[]) => mockGenerate(...args) },
   })),
 }));
 
@@ -28,8 +26,7 @@ describe("POST /api/chat", () => {
   });
 
   it("returns 401 if unauthenticated", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue(null);
+    (getServerSession as jest.Mock).mockResolvedValue(null);
     const req = new Request("http://localhost/api/chat", {
       method: "POST",
       body: JSON.stringify({ question: "Hi" }),
@@ -39,12 +36,10 @@ describe("POST /api/chat", () => {
   });
 
   it("returns 400 if question missing", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue({
+    (getServerSession as jest.Mock).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.user.findUnique as any).mockResolvedValue({ id: "1" });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
     const req = new Request("http://localhost/api/chat", {
       method: "POST",
       body: JSON.stringify({}),
@@ -54,12 +49,10 @@ describe("POST /api/chat", () => {
   });
 
   it("returns 404 if user not found", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue({
+    (getServerSession as jest.Mock).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.user.findUnique as any).mockResolvedValue(null);
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
     const req = new Request("http://localhost/api/chat", {
       method: "POST",
       body: JSON.stringify({ question: "Hallo" }),
@@ -69,14 +62,11 @@ describe("POST /api/chat", () => {
   });
 
   it("returns answer from model on success", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue({
+    (getServerSession as jest.Mock).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.user.findUnique as any).mockResolvedValue({ id: "1" });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.statement.findMany as any).mockResolvedValue([]);
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    (prisma.statement.findMany as jest.Mock).mockResolvedValue([]);
     mockGenerate.mockResolvedValue({ text: "Antwort" });
     const req = new Request("http://localhost/api/chat", {
       method: "POST",

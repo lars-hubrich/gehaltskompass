@@ -15,10 +15,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockRequire = requireAuthenticatedUser as any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockHandleError = handleError as any;
+const mockRequire = requireAuthenticatedUser as jest.Mock;
+const mockHandleError = handleError as jest.Mock;
 
 describe("/api/user/import", () => {
   beforeEach(() => {

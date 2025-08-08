@@ -3,6 +3,12 @@ import prisma from "@/lib/prisma";
 import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
 import { ensurePositiveStatement } from "@/lib/statement-utils";
 
+interface ImportedIncome extends Record<string, unknown> {
+  name: string;
+  identifier: string;
+  value: number;
+}
+
 export async function POST(req: NextRequest) {
   const userOrRes = await requireAuthenticatedUser();
   if (!("id" in userOrRes)) return userOrRes;
@@ -19,23 +25,24 @@ export async function POST(req: NextRequest) {
     for (const s of statements) {
       const {
         incomes = [],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         id,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         user_id,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         userId,
         ...rest
       } = ensurePositiveStatement(s);
+      void id;
+      void user_id;
+      void userId;
       const stmt = await prisma.statement.create({
         data: {
           ...rest,
           user_id: userOrRes.id,
           incomes: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            create: incomes.map((inc: any) => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            create: incomes.map((inc: ImportedIncome) => {
               const { id, statement_id, statementId, ...incRest } = inc;
+              void id;
+              void statement_id;
+              void statementId;
               return incRest;
             }),
           },

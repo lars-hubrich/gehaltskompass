@@ -7,8 +7,7 @@ import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { MAX_FILE_SIZE } from "@/constants/limits";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockGenerate: any = jest.fn();
+const mockGenerate: jest.Mock = jest.fn();
 
 jest.mock("next-auth", () => ({ getServerSession: jest.fn() }));
 jest.mock("@/lib/auth", () => ({ authOptions: {} }));
@@ -17,8 +16,7 @@ jest.mock("@/lib/prisma", () => ({
 }));
 jest.mock("@google/genai", () => ({
   GoogleGenAI: jest.fn(() => ({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    models: { generateContent: (...args: any[]) => mockGenerate(...args) },
+    models: { generateContent: (...args: unknown[]) => mockGenerate(...args) },
   })),
   Type: {
     OBJECT: "object",
@@ -34,8 +32,7 @@ describe("POST /api/extract", () => {
   });
 
   it("returns 401 if unauthenticated", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue(null);
+    (getServerSession as jest.Mock).mockResolvedValue(null);
     const fd2 = new FormData();
     const req = new Request("http://localhost/api/extract", {
       method: "POST",
@@ -46,24 +43,20 @@ describe("POST /api/extract", () => {
   });
 
   it("returns 404 if user not found", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue({
+    (getServerSession as jest.Mock).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.user.findUnique as any).mockResolvedValue(null);
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
     const req = new Request("http://localhost/api/extract", { method: "POST" });
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(404);
   });
 
   it("returns 400 if no file uploaded", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue({
+    (getServerSession as jest.Mock).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.user.findUnique as any).mockResolvedValue({ id: "1" });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
     const fdNo = new FormData();
     const req = new Request("http://localhost/api/extract", {
       method: "POST",
@@ -107,12 +100,10 @@ describe("POST /api/extract", () => {
   });
 
   it("returns parsed JSON on success", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getServerSession as any).mockResolvedValue({
+    (getServerSession as jest.Mock).mockResolvedValue({
       user: { email: "a@b.c" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (prisma.user.findUnique as any).mockResolvedValue({ id: "1" });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
     const fd = new FormData();
     fd.append(
       "file",

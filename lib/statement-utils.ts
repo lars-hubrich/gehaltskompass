@@ -33,8 +33,7 @@ export function ensurePositiveStatement(data: StatementData): StatementData {
   };
 
   for (const field of NUMERIC_FIELDS) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    result[field] = Math.abs(Number((result as any)[field]) || 0);
+    result[field] = Math.abs(Number(result[field]) || 0);
   }
 
   return result;
@@ -46,11 +45,8 @@ export function ensurePositivePartialStatement<
   const result: T = { ...data };
   for (const field of NUMERIC_FIELDS) {
     if (field in result) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (result as any)[field] = Math.abs(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Number((result as any)[field]) || 0,
-      );
+      const value = result[field as keyof T];
+      (result as Record<string, unknown>)[field] = Math.abs(Number(value) || 0);
     }
   }
   if ("incomes" in result && result.incomes) {

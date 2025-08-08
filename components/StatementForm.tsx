@@ -1,23 +1,23 @@
 "use client";
 import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useCallback, useRef } from "react";
 import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  Box,
-  Divider,
-  Paper,
-  CircularProgress,
   Backdrop,
+  Box,
+  Button,
+  CircularProgress,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton,
+  Paper,
   Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 import AddIcon from "@mui/icons-material/Add";
@@ -144,11 +144,13 @@ export default function StatementForm({
         const statements = await res.json();
         setExistingStatements(statements);
         setExistingCount(statements.length);
-        validate({ ...data });
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    validate({ ...data });
+  }, [data, validate, existingStatements]);
 
   useEffect(() => {
     if (bulkResult) {
@@ -211,9 +213,8 @@ export default function StatementForm({
           const newData = { ...json, incomes: json.incomes || [] };
           setData(newData);
           validate(newData);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (err: any) {
-          setError(err.message);
+        } catch (err: unknown) {
+          setError(err instanceof Error ? err.message : String(err));
         } finally {
           setLoading(false);
         }
