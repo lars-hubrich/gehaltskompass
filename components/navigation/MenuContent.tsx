@@ -70,6 +70,23 @@ export default function MenuContent() {
     }
   };
 
+  const handleExportCsv = async () => {
+    try {
+      const res = await fetch("/api/user/export?format=csv");
+      if (!res.ok) return;
+      const data = await res.text();
+      const blob = new Blob([data], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "gehaltskompass-data.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // ignore errors
+    }
+  };
+
   const handleImportClick = () => {
     fileInputRef.current?.click();
   };
@@ -87,9 +104,13 @@ export default function MenuContent() {
     }
     try {
       const text = await file.text();
-      const res = await fetch("/api/user/import", {
+      const isCsv =
+        file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv");
+      const res = await fetch(`/api/user/import${isCsv ? "?format=csv" : ""}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": isCsv ? "text/csv" : "application/json",
+        },
         body: text,
       });
       if (res.ok) {
@@ -186,13 +207,16 @@ export default function MenuContent() {
           <Stack spacing={2} sx={{ pt: 1 }}>
             <input
               type="file"
-              accept="application/json"
+              accept="application/json,text/csv"
               hidden
               ref={fileInputRef}
               onChange={handleImportFile}
             />
             <Button variant="outlined" onClick={handleExport}>
               Daten exportieren
+            </Button>
+            <Button variant="outlined" onClick={handleExportCsv}>
+              CSV exportieren
             </Button>
             <Button variant="outlined" onClick={handleImportClick}>
               Daten importieren
