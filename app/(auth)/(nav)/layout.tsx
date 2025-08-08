@@ -8,6 +8,12 @@ import Header from "@/components/navigation/Header";
 import AppNavbar from "@/components/navigation/AppNavbar";
 import SideMenu from "@/components/navigation/SideMenu";
 
+/**
+ * Layout component providing navigation elements like side menu and navbar.
+ *
+ * @param {{ children: React.ReactNode }} props React child nodes.
+ * @returns {JSX.Element} The dashboard layout wrapper.
+ */
 export default function DashboardLayout({
   children,
 }: {

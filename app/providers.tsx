@@ -13,6 +13,12 @@ const xThemeComponents = {
   ...dataGridCustomizations,
 };
 
+/**
+ * Root provider component including session and theme providers.
+ *
+ * @param {{ children: React.ReactNode }} props React child nodes.
+ * @returns {JSX.Element} The wrapped application providers.
+ */
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>

@@ -15,13 +15,24 @@ import {
 } from "@mui/material";
 import ErrorSnackbar from "@/components/ErrorSnackbar";
 
+/**
+ * Page component that allows users to ask questions about their statements via AI.
+ *
+ * @returns {JSX.Element} The insights chat page.
+ */
 export default function ChatPage() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /**
+   * Handles form submission to request an AI-generated answer.
+   *
+   * @param {React.FormEvent} e Form submission event.
+   * @returns {Promise<void>} Resolves when the request finishes.
+   */
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setAnswer(null);
     setError(null);

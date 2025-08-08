@@ -10,6 +10,12 @@ export const metadata: Metadata = {
     "Unsere Website ermöglicht es dir, deine Gehaltsabrechnungen hochzuladen und zu speichern, um dir aufbereitete Graphen und Statistiken zu bieten. Mit KI-gestützten Antworten erhältst du wertvolle Informationen zu all deinen Gehaltsfragen, und unsere benutzerfreundliche Oberfläche sorgt für eine nahtlose Erfahrung auf allen Geräten.",
 };
 
+/**
+ * Root layout component for the application.
+ *
+ * @param {Readonly<{ children: React.ReactNode }>} param0 React children elements.
+ * @returns {JSX.Element} The wrapped page layout.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
