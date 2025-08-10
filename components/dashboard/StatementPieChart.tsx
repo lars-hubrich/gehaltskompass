@@ -33,12 +33,7 @@ export default function StatementPieChart({
 }: StatementPieChartProps) {
   const theme = useTheme();
 
-  const sorted = [...statements].sort((a, b) =>
-    a.year !== b.year ? a.year - b.year : a.month - b.month,
-  );
-  const lastStatement = sorted[sorted.length - 1];
-
-  if (!lastStatement) {
+  if (statements.length === 0) {
     return (
       <Card variant="outlined" sx={{ width: "100%" }}>
         <CardContent>
@@ -53,33 +48,46 @@ export default function StatementPieChart({
 
   switch (variant) {
     case "income":
-      pieData = lastStatement.incomes.map((income) => ({
-        id: income.identifier,
-        value: income.value,
-        label: income.name,
-      }));
+      const incomeMap = new Map<string, { name: string; value: number }>();
+      statements.forEach((s) =>
+        s.incomes.forEach((inc) => {
+          const existing = incomeMap.get(inc.identifier);
+          if (existing) {
+            existing.value += inc.value;
+          } else {
+            incomeMap.set(inc.identifier, { name: inc.name, value: inc.value });
+          }
+        }),
+      );
+      pieData = Array.from(incomeMap.entries()).map(
+        ([id, { name, value }]) => ({
+          id,
+          value,
+          label: name,
+        }),
+      );
       title = "Verteilung des Einkommens";
       break;
     case "social":
       pieData = [
         {
           id: "av",
-          value: lastStatement.social_av,
+          value: statements.reduce((sum, s) => sum + s.social_av, 0),
           label: "Arbeitslosenversicherung",
         },
         {
           id: "pv",
-          value: lastStatement.social_pv,
+          value: statements.reduce((sum, s) => sum + s.social_pv, 0),
           label: "Pflegeversicherung",
         },
         {
           id: "rv",
-          value: lastStatement.social_rv,
+          value: statements.reduce((sum, s) => sum + s.social_rv, 0),
           label: "Rentenversicherung",
         },
         {
           id: "kv",
-          value: lastStatement.social_kv,
+          value: statements.reduce((sum, s) => sum + s.social_kv, 0),
           label: "Krankenversicherung",
         },
       ];
@@ -89,22 +97,25 @@ export default function StatementPieChart({
       pieData = [
         {
           id: "income",
-          value: lastStatement.deduction_tax_income,
+          value: statements.reduce((sum, s) => sum + s.deduction_tax_income, 0),
           label: "Einkommenssteuer",
         },
         {
           id: "solidarity",
-          value: lastStatement.deduction_tax_solidarity,
+          value: statements.reduce(
+            (sum, s) => sum + s.deduction_tax_solidarity,
+            0,
+          ),
           label: "Solidaritätszuschlag",
         },
         {
           id: "church",
-          value: lastStatement.deduction_tax_church,
+          value: statements.reduce((sum, s) => sum + s.deduction_tax_church, 0),
           label: "Kirchensteuer",
         },
         {
           id: "other",
-          value: lastStatement.deduction_tax_other,
+          value: statements.reduce((sum, s) => sum + s.deduction_tax_other, 0),
           label: "Andere Steuerabzüge",
         },
       ];
@@ -113,7 +124,7 @@ export default function StatementPieChart({
   }
 
   if (!inDialog) {
-    title += " (der letzten Abrechnung)";
+    title += " (Summe aller Abrechnungen)";
   }
 
   const baseColors = [

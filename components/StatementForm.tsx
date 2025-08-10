@@ -213,8 +213,8 @@ export default function StatementForm({
   }, []);
 
   useEffect(() => {
-    validate({ ...data });
-  }, [data, validate, existingStatements]);
+    validate(data);
+  }, [data, validate]);
 
   useEffect(() => {
     if (bulkResult) {
@@ -403,11 +403,10 @@ export default function StatementForm({
         field === "month" || field === "year"
           ? parseInt(e.target.value, 10)
           : parseFloat(e.target.value);
-      setData((prev) => {
-        const newData = { ...prev, [field]: isNaN(value) ? 0 : value };
-        validate(newData);
-        return newData;
-      });
+      setData((prev) => ({
+        ...prev,
+        [field]: isNaN(value) ? 0 : value,
+      }));
     };
 
   /**
@@ -426,9 +425,7 @@ export default function StatementForm({
           [key]:
             key === "value" ? parseFloat(e.target.value) || 0 : e.target.value,
         };
-        const newData = { ...prev, incomes };
-        validate(newData);
-        return newData;
+        return { ...prev, incomes };
       });
     };
 
