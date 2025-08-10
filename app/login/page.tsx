@@ -4,6 +4,7 @@ import Divider from "@mui/material/Divider";
 import AppAppBar from "@/components/login/AppAppBar";
 import Hero from "@/components/login/Hero";
 import Features from "@/components/login/Features";
+import Disclaimer from "@/components/login/Disclaimer";
 
 /**
  * Renders the public landing page with login and feature sections.
@@ -21,6 +22,7 @@ export default function LoginPage() {
           <Features />
         </div>
         <Divider />
+        <Disclaimer />
       </div>
     </>
   );
