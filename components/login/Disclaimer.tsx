@@ -54,6 +54,32 @@ export default function Disclaimer(): JSX.Element {
             gespeichert. Bitte verwende die Anwendung nur, wenn du damit
             einverstanden bist.
           </Typography>
+          <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+            Cookies
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Wir verwenden ausschließlich technisch notwendige Cookies, um deine
+            Sitzung aufrechtzuerhalten und dich nach dem Login zu
+            authentifizieren. Diese Cookies werden nicht zu Analyse- oder
+            Marketingzwecken eingesetzt und verfallen automatisch nach dem
+            Ausloggen.
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+            Weitere gespeicherte Daten
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Neben den eingegebenen Nutzerdaten werden serverseitig Protokolle
+            über Zugriffe gespeichert, um einen sicheren Betrieb zu
+            gewährleisten. Diese Logs werden regelmäßig gelöscht.
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+            Deine Rechte
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Du hast das Recht auf Auskunft, Berichtigung, Löschung und
+            Einschränkung der Verarbeitung deiner Daten. Wende dich hierfür an
+            die im verlinkten Impressum genannten Kontaktmöglichkeiten.
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Schließen</Button>
