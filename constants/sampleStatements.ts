@@ -18,7 +18,7 @@ export const sampleStatements: StatementData[] = [
     social_rv: 126.63,
     social_kv: 109.61,
     payout_netto: 1074.67,
-    payout_transfer: 6.65,
+    payout_transfer: 0,
     payout_vwl: 6.65,
     payout_other: 0,
     incomes: [
@@ -56,7 +56,7 @@ export const sampleStatements: StatementData[] = [
     social_rv: 100.92,
     social_kv: 95.27,
     payout_netto: 1082.66,
-    payout_transfer: 7.99,
+    payout_transfer: 0,
     payout_vwl: 6.65,
     payout_other: 0,
     incomes: [
@@ -327,7 +327,7 @@ export const sampleStatements: StatementData[] = [
     social_rv: 126.63,
     social_kv: 110.97,
     payout_netto: 1082.66,
-    payout_transfer: 6.65,
+    payout_transfer: 0,
     payout_vwl: 6.65,
     payout_other: 0,
     incomes: [
