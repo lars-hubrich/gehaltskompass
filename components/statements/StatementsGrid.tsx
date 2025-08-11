@@ -50,7 +50,6 @@ export default function StatementsGrid() {
       <ErrorSnackbar error={error} onClose={() => setError(null)} />
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 12 }}>
-          {/*TODO fixed height*/}
           <StatementDataGrid
             statements={statements}
             onRefreshAction={fetchStatements}
