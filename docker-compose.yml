@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/lars-hubrich/gehaltskompass:lars-jan-work-branch
+    image: ghcr.io/lars-hubrich/gehaltskompass
     ports:
       - "3000:3000"
     environment:
