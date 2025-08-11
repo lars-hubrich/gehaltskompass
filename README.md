@@ -1,9 +1,11 @@
 # GehaltsKompass
 
-## Setup DB and run application
+Ein Open-Source-Projekt, das es Nutzern ermöglicht, ihre Gehälter zu analysieren. Die Anwendung nutzt die Gemini-API von
+Google für KI-gestützte Analysen und GitHub für die Authentifizierung.
 
-Initial setup of the database and running the application.
-Also use for new database scheme (delete dev.db beforehand).
+## Lokale Entwicklung
+
+Führe die folgenden Schritte aus, um die Datenbank einzurichten und die Anwendung im Entwicklungsmodus zu starten.
 
 ```bash
 npm install
@@ -12,8 +14,42 @@ npx prisma db push
 npm run dev
 ```
 
-On APS set Proxy before hand. Only use local sqlite db.
+## Self‑Hosting mit Docker
 
-```bash
- $env:HTTPS_PROXY="http://sia-lb.telekom.de:8080"
-```
+1. Lege eine `.env` Datei im Projektverzeichnis an und setze die benötigten Variablen:
+
+   ```env
+   GEMINI_API_KEY=dein_gemini_api_key
+   GITHUB_ID=deine_github_client_id
+   GITHUB_SECRET=dein_github_client_secret
+   NEXTAUTH_SECRET=ein_langes_random_secret
+   ```
+
+   Der Eintrag `DATABASE_URL` ist in der `docker-compose.yml` bereits für den lokalen Postgres‑Container gesetzt.
+
+2. Starte die Container:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   Die Compose-Datei startet die Anwendung, eine PostgreSQL-Datenbank sowie einen Watchdog, der das Image aktuell hält.
+   Beim Start wird das Prisma-Schema automatisch auf die Datenbank angewendet.
+
+## SaaS mit Supabase & Vercel
+
+1. Erstelle ein Supabase-Projekt und notiere dir den Postgres-Verbindungsstring.
+2. Lege in GitHub eine OAuth-App an, um GitHub als Authentifizierungsprovider zu nutzen.
+3. Importiere dieses Repository als neues Projekt in Vercel und hinterlege die folgenden Umgebungsvariablen:
+
+   ```env
+   DATABASE_URL=<supabase_connection_string>
+   GEMINI_API_KEY=<dein_gemini_api_key>
+   GITHUB_ID=<deine_github_client_id>
+   GITHUB_SECRET=<dein_github_client_secret>
+   NEXTAUTH_SECRET=<ein_langes_random_secret>
+   ```
+
+4. Starte das Deployment in Vercel.
+
+Die Gemini-Integration stellt die KI-Funktionalität bereit, und die Anmeldung erfolgt über GitHub.

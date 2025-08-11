@@ -1,16 +1,16 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { handleError, requireAuthenticatedUser } from "@/lib/server-utils";
+import { ensurePositivePartialStatement } from "@/lib/statements/utils";
 
 interface IncomeData {
-  id?: number;
+  id?: string;
   name: string;
   identifier: string;
   value: number;
 }
 
-interface UpdateData {
+interface UpdateStatementData {
   month?: number;
   year?: number;
   brutto_tax?: number;
@@ -31,66 +31,102 @@ interface UpdateData {
   payout_vwl?: number;
   payout_other?: number;
   incomes?: IncomeData[];
+  id?: string;
+  user_id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
+/**
+ * Returns a single statement by ID for the authenticated user.
+ *
+ * @param {NextRequest} _request Unused request object.
+ * @param {{ params: Promise<{ id: string }> }} context Route parameters containing the statement ID.
+ * @returns {Promise<NextResponse>} The statement data or an error response.
+ */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  const userOrResponse = await requireAuthenticatedUser();
+  if (!("id" in userOrResponse)) {
+    return userOrResponse;
   }
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  try {
+    const { id } = await context.params;
+    const statement = await prisma.statement.findUnique({
+      where: { id },
+      include: { incomes: true },
+    });
+
+    if (!statement || statement.user_id !== userOrResponse.id) {
+      return NextResponse.json(
+        { error: "Abrechnung nicht gefunden oder Zugriff verweigert" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(statement);
+  } catch (e) {
+    return handleError(e, "GET /api/statement/[id]");
   }
-
-  const { id } = await context.params;
-  const statement = await prisma.statement.findUnique({
-    where: { id },
-    include: { incomes: true },
-  });
-
-  if (!statement) {
-    return NextResponse.json({ error: "Statement not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(statement);
 }
 
+/**
+ * Updates an existing statement belonging to the authenticated user.
+ *
+ * @param {NextRequest} request The incoming HTTP request with JSON body.
+ * @param {{ params: Promise<{ id: string }> }} context Route parameters containing the statement ID.
+ * @returns {Promise<NextResponse>} The updated statement or an error response.
+ */
 export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  const userOrResponse = await requireAuthenticatedUser();
+  if (!("id" in userOrResponse)) {
+    return userOrResponse;
   }
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 401 });
-  }
+
   try {
     const { id } = await context.params;
-    const statement = await prisma.statement.findUnique({ where: { id } });
-    if (!statement || statement.user_id !== user.id) {
+    const existing = await prisma.statement.findUnique({ where: { id } });
+    if (!existing || existing.user_id !== userOrResponse.id) {
       return NextResponse.json(
-        { error: "Not found or access denied" },
+        { error: "Nicht gefunden oder Zugriff verweigert" },
         { status: 404 },
       );
     }
-    const data: UpdateData = await request.json();
 
-    // Separate incomes from the main data object
+    const data: UpdateStatementData = ensurePositivePartialStatement(
+      await request.json(),
+    );
     const { incomes, ...statementData } = data;
 
-    // Update the statement
-    const updatedStatement = await prisma.statement.update({
+    const newMonth = statementData.month ?? existing.month;
+    const newYear = statementData.year ?? existing.year;
+    if (newMonth < 1 || newMonth > 12 || newYear < 1900 || newYear > 2100) {
+      return NextResponse.json(
+        { error: "Ungültiger Monat oder Jahr" },
+        { status: 400 },
+      );
+    }
+    const duplicate = await prisma.statement.findFirst({
+      where: {
+        user_id: userOrResponse.id,
+        month: newMonth,
+        year: newYear,
+        NOT: { id },
+      },
+    });
+    if (duplicate) {
+      return NextResponse.json(
+        { error: "Abrechnung für diesen Monat existiert bereits" },
+        { status: 409 },
+      );
+    }
+
+    const updated = await prisma.statement.update({
       where: { id },
       data: {
         ...statementData,
@@ -112,48 +148,48 @@ export async function PUT(
             }
           : undefined,
       },
+      include: { incomes: true },
     });
 
-    return NextResponse.json(updatedStatement);
-  } catch (error) {
-    console.error("PUT /api/statements/[id] error:", error);
-    return NextResponse.json(
-      { error: "Could not update statement." },
-      { status: 500 },
-    );
+    return NextResponse.json(updated);
+  } catch (e) {
+    return handleError(e, "PUT /api/statement/[id]");
   }
 }
 
+/**
+ * Deletes a statement of the authenticated user.
+ *
+ * @param {NextRequest} _request Unused request object.
+ * @param {{ params: Promise<{ id: string }> }} context Route parameters containing the statement ID.
+ * @returns {Promise<NextResponse>} A confirmation or an error response.
+ */
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 401 });
+  const userOrResponse = await requireAuthenticatedUser();
+  if (!("id" in userOrResponse)) {
+    return userOrResponse;
   }
   try {
     const { id } = await context.params;
-    const statement = await prisma.statement.findUnique({ where: { id } });
-    if (!statement || statement.user_id !== user.id) {
+    const existing_statement = await prisma.statement.findUnique({
+      where: { id },
+    });
+    if (
+      !existing_statement ||
+      existing_statement.user_id !== userOrResponse.id
+    ) {
       return NextResponse.json(
-        { error: "Not found or access denied" },
+        { error: "Nicht gefunden oder Zugriff verweigert" },
         { status: 404 },
       );
     }
+
     await prisma.statement.delete({ where: { id } });
-    return NextResponse.json({ message: "Statement deleted successfully" });
-  } catch (error) {
-    console.error("DELETE /api/statements/[id] error:", error);
-    return NextResponse.json(
-      { error: "Could not delete statement." },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: "Abrechnung gelöscht" });
+  } catch (e) {
+    return handleError(e, "DELETE /api/statement/[id]");
   }
 }

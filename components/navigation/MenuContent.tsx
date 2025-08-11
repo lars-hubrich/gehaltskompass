@@ -1,0 +1,379 @@
+import * as React from "react";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import ListSubheader from "@mui/material/ListSubheader";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import AssistantIcon from "@mui/icons-material/Assistant";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import BackupRoundedIcon from "@mui/icons-material/BackupRounded";
+import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
+import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
+import TableChartRoundedIcon from "@mui/icons-material/TableChartRounded";
+import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+import { sampleStatements } from "@/constants/sampleStatements";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+
+const mainListItems = [
+  { text: "Übersicht", icon: <AnalyticsRoundedIcon />, path: "/dashboard" },
+  {
+    text: "Abrechnungen",
+    icon: <AccountBalanceIcon />,
+    path: "/statements",
+  },
+  { text: "AI Insights", icon: <AssistantIcon />, path: "/insights" },
+];
+
+/**
+ * Side menu content including navigation items and user actions.
+ *
+ * @returns {JSX.Element} Menu content component.
+ */
+export default function MenuContent() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [openSettings, setOpenSettings] = React.useState(false);
+  const [openAbout, setOpenAbout] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleLoadSample = async () => {
+    if (
+      !confirm(
+        "Beim Laden werden alle vorhandenen Abrechnungen gelöscht und Beispieldaten importiert. Fortfahren?",
+      )
+    )
+      return;
+    try {
+      const res = await fetch("/api/user/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ statements: sampleStatements }),
+      });
+      if (res.ok) {
+        location.reload();
+      }
+    } catch {
+      // ignore errors
+    }
+  };
+
+  const listItemButtonSx = {
+    borderRadius: 1,
+    mx: 0.5,
+    "&.Mui-selected": {
+      bgcolor: "action.selected",
+      borderLeft: "4px solid",
+      borderColor: "primary.main",
+      "& .MuiListItemIcon-root": {
+        color: "primary.main",
+      },
+      "&:hover": {
+        bgcolor: "action.selected",
+      },
+    },
+    "&:hover": {
+      bgcolor: "action.hover",
+    },
+  } as const;
+
+  const secondaryListItems = [
+    {
+      text: "Einstellungen",
+      icon: <SettingsRoundedIcon />,
+      action: () => setOpenSettings(true),
+    },
+    {
+      text: "Über uns",
+      icon: <InfoRoundedIcon />,
+      action: () => setOpenAbout(true),
+    },
+  ];
+
+  /**
+   * Exports user data as JSON file.
+   */
+  const handleExport = async () => {
+    try {
+      const res = await fetch("/api/user/export");
+      if (!res.ok) return;
+      const data = await res.json();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "gehaltskompass-data.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // ignore errors
+    }
+  };
+
+  /**
+   * Exports user data as CSV file.
+   */
+  const handleExportCsv = async () => {
+    try {
+      const res = await fetch("/api/user/export?format=csv");
+      if (!res.ok) return;
+      const data = await res.text();
+      const blob = new Blob([data], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "gehaltskompass-data.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // ignore errors
+    }
+  };
+
+  /**
+   * Triggers the hidden file input for importing data.
+   */
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  /**
+   * Imports user data from a selected file.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - File change event.
+   */
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (
+      !confirm(
+        "Beim Import werden alle vorhandenen Abrechnungen gelöscht und durch die importierten Daten ersetzt. Fortfahren?",
+      )
+    ) {
+      e.target.value = "";
+      return;
+    }
+    try {
+      const text = await file.text();
+      const isCsv =
+        file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv");
+      const res = await fetch(`/api/user/import${isCsv ? "?format=csv" : ""}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": isCsv ? "text/csv" : "application/json",
+        },
+        body: text,
+      });
+      if (res.ok) {
+        location.reload();
+      }
+    } catch {
+      // ignore errors
+    } finally {
+      e.target.value = "";
+    }
+  };
+
+  /**
+   * Deletes the current user account after confirmation.
+   */
+  const handleDelete = async () => {
+    if (!confirm("Möchten Sie Ihren Account wirklich löschen?")) return;
+    try {
+      const res = await fetch("/api/user", { method: "DELETE" });
+      if (res.ok) {
+        signOut();
+      }
+    } catch {
+      // ignore errors
+    }
+  };
+
+  const dataSettings = [
+    {
+      text: "Daten exportieren",
+      secondary: "Sichert deine Daten als JSON-Datei",
+      icon: <FileDownloadRoundedIcon />,
+      action: handleExport,
+    },
+    {
+      text: "CSV exportieren",
+      secondary: "Exportiert Daten als CSV",
+      icon: <TableChartRoundedIcon />,
+      action: handleExportCsv,
+    },
+    {
+      text: "Daten importieren",
+      secondary: "Lädt Daten aus JSON oder CSV",
+      icon: <FileUploadRoundedIcon />,
+      action: handleImportClick,
+    },
+    {
+      text: "Beispieldaten laden",
+      secondary: "Ersetzt deine Daten mit Beispielen",
+      icon: <BackupRoundedIcon />,
+      action: handleLoadSample,
+    },
+  ];
+
+  const accountSettings = [
+    {
+      text: "Account löschen",
+      secondary: "Entfernt alle Daten endgültig",
+      icon: <DeleteForeverRoundedIcon />,
+      action: handleDelete,
+    },
+  ];
+
+  const title = React.useMemo(() => {
+    if (pathname === "/dashboard") {
+      return "Übersicht";
+    } else if (pathname === "/statements") {
+      return "Abrechnungen";
+    } else if (pathname === "/insights") {
+      return "AI Insights";
+    }
+    return undefined;
+  }, [pathname]);
+
+  return (
+    <Stack sx={{ flexGrow: 1, p: 1 }} spacing={1}>
+      <List dense>
+        {mainListItems.map((item, index) => (
+          <ListItem key={index} disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              selected={item.text === title}
+              onClick={() => {
+                router.push(item.path);
+              }}
+              sx={listItemButtonSx}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List dense>
+        {secondaryListItems.map((item, index) => (
+          <ListItem key={index} disablePadding sx={{ display: "block" }}>
+            <ListItemButton sx={listItemButtonSx} onClick={item.action}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+
+      <Dialog open={openAbout} onClose={() => setOpenAbout(false)}>
+        <DialogTitle>Über uns</DialogTitle>
+        <DialogContent dividers>
+          <Typography gutterBottom>
+            GehaltsKompass hilft dir, deine Gehaltsabrechnungen zu verwalten und
+            auszuwerten.
+          </Typography>
+          <Typography gutterBottom>
+            GitHub Repo:{" "}
+            <Link
+              href="https://github.com/lars-hubrich/gehaltskompass"
+              target="_blank"
+              rel="noopener"
+            >
+              github.com/lars-hubrich/gehaltskompass
+            </Link>
+          </Typography>
+          <Typography>
+            Entwickelt von Annabelle Schulz, Jan Lieder und Lars Hubrich.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAbout(false)}>Schließen</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openSettings} onClose={() => setOpenSettings(false)}>
+        <DialogTitle>Einstellungen</DialogTitle>
+        <DialogContent dividers>
+          <input
+            type="file"
+            accept="application/json,text/csv"
+            hidden
+            ref={fileInputRef}
+            onChange={handleImportFile}
+          />
+          <List sx={{ pt: 1 }} subheader={<ListSubheader>Daten</ListSubheader>}>
+            {dataSettings.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton onClick={item.action}>
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                      }}
+                      variant="rounded"
+                    >
+                      {item.icon}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.text}
+                    secondary={item.secondary}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider sx={{ my: 1 }} />
+          <List subheader={<ListSubheader>Account</ListSubheader>}>
+            {accountSettings.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton
+                  onClick={item.action}
+                  sx={{ color: "error.main" }}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        bgcolor: "error.main",
+                        color: "primary.contrastText",
+                      }}
+                      variant="rounded"
+                    >
+                      {item.icon}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.text}
+                    secondary={item.secondary}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenSettings(false)}>Schließen</Button>
+        </DialogActions>
+      </Dialog>
+    </Stack>
+  );
+}

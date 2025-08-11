@@ -1,5 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -88,11 +90,12 @@ model statement {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([user_id, year, month], map: "unique_user_year_month")
   @@map("statement")
 }
 
 model income {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   statement_id String
   statement    statement @relation(fields: [statement_id], references: [id], onDelete: Cascade)
   name         String
@@ -102,5 +105,6 @@ model income {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([statement_id, identifier], map: "unique_statement_identifier")
   @@map("income")
 }
