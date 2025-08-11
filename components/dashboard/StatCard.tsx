@@ -15,6 +15,7 @@ export type StatCardProps = {
   trend: "up" | "down" | "neutral";
   data: number[];
   interval?: string;
+  labels?: string[];
 };
 
 /**
@@ -70,15 +71,20 @@ export default function StatCard({
   interval,
   trend,
   data,
+  labels,
 }: StatCardProps) {
   const theme = useTheme();
-
-  // Ermitteln von Monat und Jahr am aktuellen Datum:
-  const today = new Date();
-  const currentMonth = today.getMonth() + 1; // JS-Monate: 0–11 → +1 → 1–12
-  const currentYear = today.getFullYear();
-
-  const monthsInYear = getMonthsInYear(data.length, currentMonth, currentYear);
+  const xLabels = React.useMemo(() => {
+    if (labels && labels.length === data.length) {
+      return labels;
+    }
+    const today = new Date();
+    return getMonthsInYear(
+      data.length,
+      today.getMonth() + 1,
+      today.getFullYear(),
+    );
+  }, [labels, data.length]);
 
   const trendColors = {
     up:
@@ -162,7 +168,7 @@ export default function StatCard({
               showTooltip
               xAxis={{
                 scaleType: "band",
-                data: monthsInYear,
+                data: xLabels,
               }}
               sx={{
                 [`& .${areaElementClasses.root}`]: {

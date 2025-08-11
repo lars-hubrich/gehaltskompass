@@ -80,6 +80,11 @@ export default function MainGrid() {
   const latestNetto = useMemo(() => nettoData.at(-1) ?? 0, [nettoData]);
   const latestBrutto = useMemo(() => bruttoData.at(-1) ?? 0, [bruttoData]);
 
+  const categories = useMemo(
+    () => sorted.map((s) => `${String(s.month).padStart(2, "0")}.${s.year}`),
+    [sorted],
+  );
+
   /**
    * Determines a basic trend from an array of numbers.
    *
@@ -114,18 +119,21 @@ export default function MainGrid() {
       value: formatValue(latestNetto),
       trend: trendOf(nettoData),
       data: nettoData,
+      labels: categories,
     },
     {
       title: "Brutto",
       value: formatValue(latestBrutto),
       trend: trendOf(bruttoData),
       data: bruttoData,
+      labels: categories,
     },
     {
       title: "Anteil Abgaben",
       value: formatValue(abgabenData.at(-1) ?? 0, true),
       trend: trendOf(abgabenData),
       data: abgabenData,
+      labels: categories,
     },
   ];
   if (!loading && error) {
