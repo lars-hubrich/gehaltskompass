@@ -34,6 +34,7 @@ npm run dev
    ```
 
    Die Compose-Datei startet die Anwendung, eine PostgreSQL-Datenbank sowie einen Watchdog, der das Image aktuell hält.
+   Beim Start wird das Prisma-Schema automatisch auf die Datenbank angewendet.
 
 ## SaaS mit Supabase & Vercel
 
