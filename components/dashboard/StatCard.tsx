@@ -12,23 +12,24 @@ import { areaElementClasses } from "@mui/x-charts/LineChart";
 export type StatCardProps = {
   title: string;
   value: string;
-  interval: string;
   trend: "up" | "down" | "neutral";
   data: number[];
+  interval?: string;
 };
 
 /**
- * Generates labels for the last six months up to a given month and year.
+ * Generates labels for the past months up to a given month and year.
  *
+ * @param {number} count - Number of months to generate.
  * @param {number} month - Current month (1-12).
  * @param {number} year - Current year.
  * @returns {string[]} Array of month labels.
  */
-function getMonthsInYear(month: number, year: number): string[] {
+function getMonthsInYear(count: number, month: number, year: number): string[] {
   const months: string[] = [];
   const current = new Date(year, month - 1);
 
-  for (let offset = 5; offset >= 0; offset--) {
+  for (let offset = count - 1; offset >= 0; offset--) {
     const d = new Date(current.getFullYear(), current.getMonth() - offset);
     const name = d.toLocaleDateString("de-DE", {
       month: "short",
@@ -77,7 +78,7 @@ export default function StatCard({
   const currentMonth = today.getMonth() + 1; // JS-Monate: 0–11 → +1 → 1–12
   const currentYear = today.getFullYear();
 
-  const monthsInYear = getMonthsInYear(currentMonth, currentYear);
+  const monthsInYear = getMonthsInYear(data.length, currentMonth, currentYear);
 
   const trendColors = {
     up:
@@ -146,9 +147,11 @@ export default function StatCard({
               </Typography>
               <Chip size="small" color={color} label={trendValues[trend]} />
             </Stack>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              {interval}
-            </Typography>
+            {interval && (
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                {interval}
+              </Typography>
+            )}
           </Stack>
           <Box sx={{ width: "100%", height: 50 }}>
             <SparkLineChart
