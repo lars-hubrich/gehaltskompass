@@ -57,12 +57,10 @@ export default function MainGrid() {
     [statements],
   );
 
-  const last12 = useMemo(() => sorted.slice(-12), [sorted]);
-
-  const nettoData = useMemo(() => last12.map((s) => s.payout_netto), [last12]);
-  const bruttoData = useMemo(() => last12.map((s) => s.brutto_tax), [last12]);
+  const nettoData = useMemo(() => sorted.map((s) => s.payout_netto), [sorted]);
+  const bruttoData = useMemo(() => sorted.map((s) => s.brutto_tax), [sorted]);
   const abgabenData = useMemo(() => {
-    return last12.map((s) => {
+    return sorted.map((s) => {
       const value =
         ((s.deduction_tax_income +
           s.deduction_tax_church +
@@ -77,16 +75,10 @@ export default function MainGrid() {
 
       return Number(value.toFixed(2));
     });
-  }, [last12]);
+  }, [sorted]);
 
-  const totalNetto = useMemo(
-    () => nettoData.reduce((sum, v) => sum + v, 0),
-    [nettoData],
-  );
-  const totalBrutto = useMemo(
-    () => bruttoData.reduce((sum, v) => sum + v, 0),
-    [bruttoData],
-  );
+  const latestNetto = useMemo(() => nettoData.at(-1) ?? 0, [nettoData]);
+  const latestBrutto = useMemo(() => bruttoData.at(-1) ?? 0, [bruttoData]);
 
   /**
    * Determines a basic trend from an array of numbers.
@@ -119,22 +111,19 @@ export default function MainGrid() {
   const cards: StatCardProps[] = [
     {
       title: "Netto",
-      value: formatValue(totalNetto),
-      interval: "Letztes Jahr",
+      value: formatValue(latestNetto),
       trend: trendOf(nettoData),
       data: nettoData,
     },
     {
       title: "Brutto",
-      value: formatValue(totalBrutto),
-      interval: "Letztes Jahr",
+      value: formatValue(latestBrutto),
       trend: trendOf(bruttoData),
       data: bruttoData,
     },
     {
       title: "Anteil Abgaben",
       value: formatValue(abgabenData.at(-1) ?? 0, true),
-      interval: "Letztes Jahr",
       trend: trendOf(abgabenData),
       data: abgabenData,
     },
