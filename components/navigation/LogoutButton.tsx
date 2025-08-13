@@ -12,6 +12,7 @@ export default function LogoutButton() {
   return (
     <Button
       variant="outlined"
+      aria-label="Abmelden"
       onClick={() => {
         // noinspection JSIgnoredPromiseFromCall
         signOut();

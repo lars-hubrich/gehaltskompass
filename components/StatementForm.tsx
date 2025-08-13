@@ -633,7 +633,11 @@ export default function StatementForm({
           >
             <Typography variant="h6">Einkommensarten</Typography>
             {isEditing && (
-              <IconButton onClick={addIncome} color="primary">
+              <IconButton
+                aria-label="Einkommensart hinzufügen"
+                onClick={addIncome}
+                color="primary"
+              >
                 <AddIcon />
               </IconButton>
             )}
@@ -678,7 +682,11 @@ export default function StatementForm({
                 </Grid>
                 {isEditing && (
                   <Grid size={{ xs: 12 }} textAlign="right">
-                    <IconButton onClick={() => removeIncome(idx)} color="error">
+                    <IconButton
+                      aria-label="Einkommensart entfernen"
+                      onClick={() => removeIncome(idx)}
+                      color="error"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Grid>

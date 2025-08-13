@@ -110,7 +110,10 @@ export default function AppAppBar() {
                     justifyContent: "flex-end",
                   }}
                 >
-                  <IconButton onClick={toggleDrawer(false)}>
+                  <IconButton
+                    aria-label="Menü schließen"
+                    onClick={toggleDrawer(false)}
+                  >
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
