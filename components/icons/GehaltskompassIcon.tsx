@@ -11,8 +11,8 @@ export default function GehaltskompassIcon() {
     <Image
       src="/images/logo_transparent.png"
       alt="Logo"
-      width={150}
-      height={150}
+      width={256}
+      height={85}
     />
   );
 }
