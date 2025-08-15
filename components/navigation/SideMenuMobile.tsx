@@ -1,5 +1,4 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Drawer, { drawerClasses } from "@mui/material/Drawer";
@@ -8,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuContent from "./MenuContent";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
@@ -25,6 +25,9 @@ export default function SideMenuMobile({
   toggleDrawer,
 }: SideMenuMobileProps) {
   const { data: session } = useSession();
+  const avatarSrc = session?.user?.picture
+    ? `${session.user.picture}&s=48`
+    : "/images/logo_icon.png";
 
   return (
     <Drawer
@@ -52,11 +55,12 @@ export default function SideMenuMobile({
             direction="row"
             sx={{ gap: 1, alignItems: "center", flexGrow: 1, p: 1 }}
           >
-            <Avatar
-              sizes="small"
+            <Image
+              src={avatarSrc}
               alt={session?.user?.name || "Unbekannt"}
-              src={session?.user?.picture}
-              sx={{ width: 24, height: 24 }}
+              width={24}
+              height={24}
+              style={{ borderRadius: "50%" }}
             />
             <Typography component="p" variant="h6">
               {session?.user?.name}
