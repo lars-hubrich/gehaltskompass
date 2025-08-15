@@ -1,6 +1,5 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import Avatar from "@mui/material/Avatar";
 import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -10,6 +9,7 @@ import MenuContent from "./MenuContent";
 import LogoutButton from "./LogoutButton";
 import { useSession } from "next-auth/react";
 import GehaltskompassIcon from "@/components/icons/GehaltskompassIcon";
+import Image from "next/image";
 
 const drawerWidth = 240;
 
@@ -33,6 +33,9 @@ const Drawer = styled(MuiDrawer)(({ theme }) => ({
  */
 export default function SideMenu() {
   const { data: session } = useSession();
+  const avatarSrc = session?.user?.picture
+    ? `${session.user.picture}&s=72`
+    : "/images/logo_icon.png";
 
   return (
     <Drawer
@@ -75,11 +78,12 @@ export default function SideMenu() {
           borderColor: "divider",
         }}
       >
-        <Avatar
-          sizes="small"
+        <Image
+          src={avatarSrc}
           alt={session?.user?.name || "Unbekannt"}
-          src={session?.user?.picture}
-          sx={{ width: 36, height: 36 }}
+          width={36}
+          height={36}
+          style={{ borderRadius: "50%" }}
         />
         <Box sx={{ mr: "auto" }}>
           <Typography

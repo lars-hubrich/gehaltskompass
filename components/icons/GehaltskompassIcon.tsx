@@ -13,6 +13,7 @@ export default function GehaltskompassIcon() {
       alt="Logo"
       width={256}
       height={85}
+      priority
     />
   );
 }
