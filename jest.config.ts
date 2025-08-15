@@ -14,6 +14,13 @@ const config: Config = {
     "^@/(.*)$": "<rootDir>/$1",
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      { outputDirectory: "test-results/jest", outputName: "junit.xml" },
+    ],
+  ],
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };

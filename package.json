@@ -13,7 +13,7 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "e2e:open": "cypress open",
-    "e2e:run": "cypress run"
+    "e2e:run": "cypress run --reporter junit --reporter-options mochaFile=test-results/cypress/junit-[hash].xml"
   },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
@@ -61,6 +61,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "jest-junit": "^16.0.0",
+    "junit": "^1.4.9",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",

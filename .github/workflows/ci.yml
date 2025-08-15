@@ -39,8 +39,23 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Unit Tests
-        run: npm run test
+      - name: Run Unit Tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Publish unit test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: unit-tests
+          path: test-results/jest/junit.xml
+          reporter: jest-junit
 
   e2e:
     name: E2E Tests
@@ -73,6 +88,51 @@ jobs:
           wait-on-timeout: 60
           command: npm run e2e:run
 
+      - name: Publish e2e test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: e2e-tests
+          path: test-results/cypress/*.xml
+          reporter: junit
+
+  lighthouse:
+    name: Lighthouse Report
+    runs-on: ubuntu-latest
+    needs:
+      - linting_and_formatting
+      - unit
+      - e2e
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Start server
+        run: npm start &
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Lighthouse
+        run: npx lhci autorun --collect.url=http://localhost:3000 --upload.target=filesystem --upload.outputDir=./lighthouse-report
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: ./lighthouse-report
+
   docker:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
@@ -80,6 +140,7 @@ jobs:
       - linting_and_formatting
       - unit
       - e2e
+      - lighthouse
     permissions:
       contents: read
       packages: write
