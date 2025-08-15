@@ -3,11 +3,7 @@ import { alpha, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
-import Drawer from "@mui/material/Drawer";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ColorModeIconDropdown from "@/theme/ColorModeIconDropdown";
 import GehaltskompassIcon from "@/components/icons/GehaltskompassIcon";
 
@@ -33,19 +29,6 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
  * @returns {JSX.Element} App bar component.
  */
 export default function AppAppBar() {
-  const [open, setOpen] = React.useState(false);
-
-  /**
-   * Returns a handler to toggle the mobile drawer.
-   *
-   * @param {boolean} newOpen - Desired open state.
-   * @returns {() => void} Event handler.
-   */
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-
-  // noinspection HtmlUnknownAnchorTarget,XmlDeprecatedElement
   return (
     <AppBar
       position="fixed"
@@ -75,38 +58,6 @@ export default function AppAppBar() {
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1 }}>
             <ColorModeIconDropdown size="medium" />
-            <IconButton
-              aria-label="Menü-Schaltfläche"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Drawer
-              anchor="top"
-              open={open}
-              onClose={toggleDrawer(false)}
-              PaperProps={{
-                sx: {
-                  top: "var(--template-frame-height, 0px)",
-                },
-              }}
-            >
-              <Box sx={{ p: 2, backgroundColor: "background.default" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <IconButton
-                    aria-label="Menü schließen"
-                    onClick={toggleDrawer(false)}
-                  >
-                    <CloseRoundedIcon />
-                  </IconButton>
-                </Box>
-              </Box>
-            </Drawer>
           </Box>
         </StyledToolbar>
       </Container>

@@ -107,7 +107,6 @@ export default function Hero() {
               fullWidth
               variant="outlined"
               onClick={() => {
-                // noinspection JSIgnoredPromiseFromCall
                 signIn("github", { callbackUrl: "/" });
               }}
               startIcon={<GithubIcon />}
