@@ -94,7 +94,7 @@ jobs:
         with:
           name: e2e-tests
           path: test-results/cypress/*.xml
-          reporter: junit
+          reporter: java-junit
 
   lighthouse:
     name: Lighthouse Report
