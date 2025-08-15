@@ -46,6 +46,30 @@ describe("/api/user/export", () => {
     expect(await res.json()).toEqual({ id: "u1" });
   });
 
+  it("returns 404 if user not found", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.user.findUnique as unknown as jest.Mock).mockResolvedValueOnce(
+      null,
+    );
+    const req = new Request("http://localhost/api/user/export");
+    const res = await GET(req as unknown as NextRequest);
+    expect(res.status).toBe(404);
+  });
+
+  it("handles errors on GET", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.user.findUnique as unknown as jest.Mock).mockRejectedValueOnce(
+      "fail",
+    );
+    const req = new Request("http://localhost/api/user/export");
+    const res = await GET(req as unknown as NextRequest);
+    expect(mockHandleError).toHaveBeenCalledWith(
+      "fail",
+      "GET /api/user/export",
+    );
+    expect(res.status).toBe(500);
+  });
+
   it("returns user data as csv", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
     (prisma.user.findUnique as unknown as jest.Mock).mockResolvedValueOnce({

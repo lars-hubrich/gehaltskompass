@@ -95,6 +95,63 @@ describe("ensurePositiveStatement", () => {
     expect(input).toEqual(copy);
     expect(input.incomes[0].value).toBe(-1000);
   });
+
+  it("handles non-numeric income values", () => {
+    const input: StatementData = {
+      month: 1,
+      year: 2024,
+      incomes: [
+        { name: "n", identifier: "id", value: "abc" as unknown as number },
+      ],
+      brutto_tax: "abc" as unknown as number,
+      brutto_av: 0,
+      brutto_pv: 0,
+      brutto_rv: 0,
+      brutto_kv: 0,
+      deduction_tax_income: 0,
+      deduction_tax_church: 0,
+      deduction_tax_solidarity: 0,
+      deduction_tax_other: 0,
+      social_av: 0,
+      social_pv: 0,
+      social_rv: 0,
+      social_kv: 0,
+      payout_netto: 0,
+      payout_transfer: 0,
+      payout_vwl: 0,
+      payout_other: 0,
+    };
+    const result = ensurePositiveStatement(input);
+    expect(result.brutto_tax).toBe(0);
+    expect(result.incomes[0].value).toBe(0);
+  });
+
+  it("handles missing incomes", () => {
+    const input: StatementData = {
+      month: 1,
+      year: 2024,
+      incomes: undefined as unknown as StatementData["incomes"],
+      brutto_tax: 0,
+      brutto_av: 0,
+      brutto_pv: 0,
+      brutto_rv: 0,
+      brutto_kv: 0,
+      deduction_tax_income: 0,
+      deduction_tax_church: 0,
+      deduction_tax_solidarity: 0,
+      deduction_tax_other: 0,
+      social_av: 0,
+      social_pv: 0,
+      social_rv: 0,
+      social_kv: 0,
+      payout_netto: 0,
+      payout_transfer: 0,
+      payout_vwl: 0,
+      payout_other: 0,
+    };
+    const result = ensurePositiveStatement(input);
+    expect(result.incomes).toEqual([]);
+  });
 });
 
 describe("ensurePositivePartialStatement", () => {
@@ -120,5 +177,17 @@ describe("ensurePositivePartialStatement", () => {
     const result = ensurePositivePartialStatement(input);
     expect(result.custom).toBe("test");
     expect(result.month).toBe(2);
+  });
+
+  it("handles non-numeric partial values", () => {
+    const input = {
+      brutto_tax: "abc" as unknown as number,
+      incomes: [
+        { name: "n", identifier: "id", value: "x" as unknown as number },
+      ],
+    } as Partial<StatementData>;
+    const result = ensurePositivePartialStatement(input);
+    expect(result.brutto_tax).toBe(0);
+    expect(result.incomes![0].value).toBe(0);
   });
 });

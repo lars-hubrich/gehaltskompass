@@ -40,4 +40,12 @@ describe("/api/user", () => {
     expect(prisma.user.delete).toHaveBeenCalledWith({ where: { id: "u1" } });
     expect(res.status).toBe(200);
   });
+
+  it("handles errors on DELETE", async () => {
+    mockRequire.mockResolvedValueOnce({ id: "u1" });
+    (prisma.user.delete as unknown as jest.Mock).mockRejectedValueOnce("fail");
+    const res = await DELETE();
+    expect(mockHandleError).toHaveBeenCalledWith("fail", "DELETE /api/user");
+    expect(res.status).toBe(500);
+  });
 });

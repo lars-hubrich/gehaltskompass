@@ -77,4 +77,34 @@ describe("POST /api/chat", () => {
     const json = await res.json();
     expect(json).toEqual({ answer: "Antwort" });
   });
+
+  it("returns 500 if model returns no text", async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { email: "a@b.c" },
+    });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    (prisma.statement.findMany as jest.Mock).mockResolvedValue([]);
+    mockGenerate.mockResolvedValue({});
+    const req = new Request("http://localhost/api/chat", {
+      method: "POST",
+      body: JSON.stringify({ question: "Hallo?" }),
+    });
+    const res = await POST(req as NextRequest);
+    expect(res.status).toBe(500);
+  });
+
+  it("returns 500 on model error", async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { email: "a@b.c" },
+    });
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
+    (prisma.statement.findMany as jest.Mock).mockResolvedValue([]);
+    mockGenerate.mockRejectedValue(new Error("fail"));
+    const req = new Request("http://localhost/api/chat", {
+      method: "POST",
+      body: JSON.stringify({ question: "Hallo?" }),
+    });
+    const res = await POST(req as NextRequest);
+    expect(res.status).toBe(500);
+  });
 });
