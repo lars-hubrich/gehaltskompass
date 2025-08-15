@@ -22,9 +22,8 @@ export default function Disclaimer(): JSX.Element {
   return (
     <Box sx={{ mt: 4, textAlign: "center", px: 2 }}>
       <Typography variant="body2" color="text.secondary">
-        Diese Seite befindet sich noch in der Entwicklung. Deine Daten werden
-        durch Vercel, Supabase, die Gemini API sowie zu administrativen Zwecken
-        verarbeitet.
+        Deine Daten werden durch Vercel, Supabase, die Gemini API sowie zu
+        administrativen Zwecken verarbeitet.
         <br />
         <Link
           href="https://www.telekom.de/impressum"
@@ -48,10 +47,9 @@ export default function Disclaimer(): JSX.Element {
         </DialogTitle>
         <DialogContent>
           <Typography variant="body2" gutterBottom>
-            Diese Anwendung befindet sich noch in der Entwicklung. Beim Anmelden
-            werden deine Daten an Dienste von Vercel, Supabase und der Gemini
-            API übermittelt, dort verarbeitet und zu administrativen Zwecken
-            gespeichert. Bitte verwende die Anwendung nur, wenn du damit
+            Beim Anmelden werden deine Daten an Dienste von Vercel, Supabase und
+            der Gemini API übermittelt, dort verarbeitet und zu administrativen
+            Zwecken gespeichert. Bitte verwende die Anwendung nur, wenn du damit
             einverstanden bist.
           </Typography>
           <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
