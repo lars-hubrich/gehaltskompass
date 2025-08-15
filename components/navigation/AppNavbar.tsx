@@ -83,7 +83,7 @@ export default function AppNavbar() {
           <Typography
             variant="h4"
             component="h1"
-            sx={{ color: "text.primary" }}
+            sx={{ color: "text.primary", mr: "auto" }}
           >
             {title}
           </Typography>
