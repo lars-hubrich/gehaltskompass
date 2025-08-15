@@ -179,12 +179,16 @@ describe("/api/statement root", () => {
 
   it("returns 400 on invalid JSON on DELETE", async () => {
     mockRequire.mockResolvedValueOnce({ id: "u1" });
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     const req = new Request("http://localhost/api/statement", {
       method: "DELETE",
       body: "not json",
     });
     const res = await DELETE(req as NextRequest);
     expect(res.status).toBe(400);
+    consoleSpy.mockRestore();
   });
 
   it("deletes statements on DELETE", async () => {

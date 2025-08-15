@@ -100,11 +100,15 @@ describe("POST /api/chat", () => {
     (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: "1" });
     (prisma.statement.findMany as jest.Mock).mockResolvedValue([]);
     mockGenerate.mockRejectedValue(new Error("fail"));
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     const req = new Request("http://localhost/api/chat", {
       method: "POST",
       body: JSON.stringify({ question: "Hallo?" }),
     });
     const res = await POST(req as NextRequest);
     expect(res.status).toBe(500);
+    consoleSpy.mockRestore();
   });
 });
