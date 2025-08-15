@@ -3,7 +3,6 @@ import { alpha, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
@@ -64,17 +63,7 @@ export default function AppAppBar() {
           <Box
             sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
           >
-            <a
-              href="#top"
-              style={{ display: "inline-flex", alignItems: "center" }}
-            >
-              <GehaltskompassIcon />
-            </a>
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <Button href="#features" variant="text" color="info" size="small">
-                Funktionen
-              </Button>
-            </Box>
+            <GehaltskompassIcon />
           </Box>
           <Box
             sx={{
