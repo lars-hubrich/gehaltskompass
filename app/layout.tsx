@@ -3,6 +3,12 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Providers from "./providers";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "GehaltsKompass",
@@ -23,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className="min-h-screen bg-gradient-to-r from-gray-50 to-gray-200 text-gray-900">
+      <body
+        className={`${inter.className} min-h-screen bg-gradient-to-r from-gray-50 to-gray-200 text-gray-900`}
+      >
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />
