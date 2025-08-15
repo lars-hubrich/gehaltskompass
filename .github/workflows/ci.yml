@@ -125,7 +125,7 @@ jobs:
         run: npx wait-on http://localhost:3000
 
       - name: Run Lighthouse
-        run: npx lhci autorun --collect.url=http://localhost:3000 --upload.target=filesystem --upload.outputDir=./lighthouse-report
+        run: npx @lhci/cli autorun --collect.url=http://localhost:3000 --upload.target=filesystem --upload.outputDir=./lighthouse-report --collect.settings.chromeFlags="--no-sandbox"
 
       - name: Upload Lighthouse report
         uses: actions/upload-artifact@v4
